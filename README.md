@@ -277,6 +277,23 @@ Several tests were conducted to ensure reliable performance:
 
 ---
 
+## 🏟️ Team in Action
+
+<div align="center">
+<table>
+  <tr>
+    <td align="center"><img width="300" src="docs/team_photos/team_action_1.jpg"/></td>
+    <td align="center"><img width="300" src="docs/team_photos/team_action_2.jpg"/></td>
+    <td align="center"><img width="300" src="docs/team_photos/team_action_3.jpg"/></td>
+  </tr>
+  <tr>
+    <td colspan="3" align="center"><sub><i>Blue Wave Team working on the WRO arena track</i></sub></td>
+  </tr>
+</table>
+</div>
+
+---
+
 ## 👨‍💻 Team Members
 
 <div align="center">
