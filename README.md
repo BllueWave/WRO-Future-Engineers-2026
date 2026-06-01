@@ -283,7 +283,7 @@ Several tests were conducted to ensure reliable performance:
 
 | Name | Role |
 |------|------|
-| **Fawaz Al-Assousi** — فواز العسعوسي | Hardware design · PD control algorithm · System integration · GitHub |
+| **Fawaz Alasousi** — فواز العسعوسي | Hardware design · PD control algorithm · System integration · GitHub |
 | **Bassam** — بسام | Software development · Pixy2 vision system · Testing & calibration |
 
 </div>
