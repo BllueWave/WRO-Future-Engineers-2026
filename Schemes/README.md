@@ -1,5 +1,8 @@
 # ⚡ Electrical Schematic — Blue Wave Team
 
+📄 **[Schematic_Wiring_Diagram.pdf](Schematic_Wiring_Diagram.pdf)** — Full Fritzing wiring diagram
+
+
 ## Wiring Summary
 
 | Component | Pin(s) | Notes |
