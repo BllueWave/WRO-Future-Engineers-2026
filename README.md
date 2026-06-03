@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/BllueWave/WRO-Future-Engineers-2026/main/docs/logo.png" width="450" alt="Blue Wave Team Logo"/>
+<img src="https://github.com/user-attachments/assets/89c7f452-d86f-4b59-bb18-3a73f45c3450" width="450" alt="Blue Wave Team Logo"/>
 
 # 🌊 Blue Wave Team — WRO Future Engineers 2026
 
