@@ -1,10 +1,16 @@
+<div align="center">
+
 # 🧱 3D Models — Blue Wave Team
 
-Contains 3D design files for the robot's mechanical structure and sensor mounts.
+3D design files for **"Tracer"** — main body, electronics tray, and sensor mounts.
+
+<img width="480" src="https://github.com/user-attachments/assets/41ec272d-5294-4c83-8e19-9ecab00ad179" alt="3D Model"/>
+
+</div>
 
 | File | Description |
 |------|-------------|
-| `main_body.3mf` | Main chassis and electronics tray |
+| [`WRO_AUMers_main_body_3D_Design_v2.3mf`](WRO_AUMers_main_body_3D_Design_v2.3mf) | Main body — chassis cover, electronics tray, and sensor mounts |
 
-**Software:** Tinkercad / Fusion 360  
+**Software:** Fusion 360  
 **Material:** PLA — 20% infill, 0.2 mm layer height
