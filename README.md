@@ -4,7 +4,7 @@
 
 # 🌊 Blue Wave Team — WRO Future Engineers 2026
 
-**Kuwait National Qualifier · May 31, 2026**
+**Kuwait National Qualifier · June 4, 2026**
 
 ![Arduino](https://img.shields.io/badge/Arduino-Uno-00979D?style=for-the-badge&logo=arduino&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-C%2FC%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
