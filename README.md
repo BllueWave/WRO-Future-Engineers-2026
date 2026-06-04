@@ -283,12 +283,24 @@ Several tests were conducted to ensure reliable performance:
 
 ## 🎬 Video Demonstrations
 
-| Challenge | Description | Watch |
-|-----------|-------------|-------|
-| 🎥 Open Challenge | 3-lap autonomous wall-following run | [Download / view ▶](videos/openChallenge.mp4) |
-| 🎥 Obstacle Challenge | Full obstacle avoidance with red/green pillar detection | [Download / view ▶](videos/Obstacle_Challenge.mp4) |
+<div align="center">
 
-> The clips are stored in [`videos/`](videos/). Click a link above to download or view them.
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://youtube.com/shorts/_rmwh_EwI1A"><img width="260" src="https://img.youtube.com/vi/_rmwh_EwI1A/hqdefault.jpg" alt="Open Challenge"/></a><br/>
+      <b>▶ Open Challenge</b><br/><sub>3-lap autonomous wall-following run</sub>
+    </td>
+    <td align="center">
+      <a href="https://youtube.com/shorts/2quu5O000I0"><img width="260" src="https://img.youtube.com/vi/2quu5O000I0/hqdefault.jpg" alt="Obstacle Challenge"/></a><br/>
+      <b>▶ Obstacle Challenge</b><br/><sub>Full obstacle avoidance with red/green pillar detection</sub>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+> Click a thumbnail to watch on **YouTube**. The raw clips are also stored in [`videos/`](videos/).
 
 ---
 
