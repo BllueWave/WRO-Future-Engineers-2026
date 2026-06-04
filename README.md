@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/89c7f452-d86f-4b59-bb18-3a73f45c3450" width="130" alt="Blue Wave"/>
+<img src="docs/logo.png" width="340" alt="Blue Wave Robotics"/>
 
 # T R A C E R
 
@@ -174,6 +174,11 @@ LiPo 7.4 V ─┬─→ Cytron MD13S  →  DC motor
 
 Full schematic: [`Schemes/`](Schemes/) · printable models: [`Models/`](Models/)
 
+<div align="center">
+<img width="380" src="docs/workshop_tools.jpg" alt="Workshop bench"/>
+<br/><sub>Where Tracer comes together — soldering iron, glue gun, cutters, and a bench full of sensors.</sub>
+</div>
+
 ```text
 repo
 ├── src/Open_Challenge        wall-following build
@@ -245,17 +250,41 @@ Tuning happened on the real mat, one variable at a time:
 </table>
 </div>
 
-**Builders**
-
-- **Fawaz Alasousi** — فواز العسعوسي — chassis & hardware, control algorithm, system integration, repository
-- **Bassam** — بسام — software, Pixy2 vision pipeline, testing & calibration
-
-**Coached by — Prof. Mohammad Sharsheer.** Every clean lap traces back to his guidance; the sharpest, most generous mentor a team could build under. 🙌
-
 <div align="center">
+
+### The Crew
+
+<table>
+  <tr>
+    <td align="center" width="280">
+      <b>Fawaz Alasousi</b><br/>
+      <sub>فواز العسعوسي</sub>
+      <br/><br/>
+      <sub>Chassis &amp; hardware · Control algorithm<br/>System integration · Repository</sub>
+    </td>
+    <td align="center" width="280">
+      <b>Bassam</b><br/>
+      <sub>بسام</sub>
+      <br/><br/>
+      <sub>Software · Pixy2 vision pipeline<br/>Testing &amp; calibration</sub>
+    </td>
+  </tr>
+</table>
+
 <br/>
 
-**Blue Wave Robotics — Kuwait 2026**
-*small car, clean lines, no excuses.*
+🏆 &nbsp; **C O A C H** &nbsp; 🏆
+
+## Prof. Mohammad Sharsheer
+
+*Every clean lap traces back to his guidance —*
+*the sharpest, most generous mentor a team could build under.*
+
+<br/>
+
+—
+
+**Blue Wave Robotics · Kuwait 2026**
+*small car · clean lines · no excuses*
 
 </div>
