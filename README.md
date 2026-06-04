@@ -153,6 +153,11 @@ The platform is a WLtoys 284010 (1:28 RC chassis) wearing a custom 3D-printed sh
 | Vision | Pixy2 (SPI) | red / green pillar detection |
 | Battery | 7.4 V 2S LiPo | single power source |
 
+<div align="center">
+<img width="560" src="docs/components.jpg" alt="Tracer components laid out"/>
+<br/><sub>Every part before assembly — 3D-printed body, RC chassis, Arduino Uno, Cytron MD13S, Pixy2, BNO055, HC-SR04, servo, and the 2S LiPo.</sub>
+</div>
+
 **Power path**
 
 ```text
@@ -263,8 +268,8 @@ Tuning happened on the real mat, one variable at a time:
       <sub>Chassis &amp; hardware · Control algorithm<br/>System integration · Repository</sub>
     </td>
     <td align="center" width="280">
-      <b>Bassam</b><br/>
-      <sub>بسام</sub>
+      <b>Bassam Al-Azmi</b><br/>
+      <sub>بسام العازمي</sub>
       <br/><br/>
       <sub>Software · Pixy2 vision pipeline<br/>Testing &amp; calibration</sub>
     </td>
