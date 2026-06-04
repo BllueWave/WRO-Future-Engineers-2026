@@ -4,7 +4,7 @@
 
 3D design files for **"Tracer"** — main body, electronics tray, and sensor mounts.
 
-<img width="480" src="https://github.com/user-attachments/assets/41ec272d-5294-4c83-8e19-9ecab00ad179" alt="3D Model"/>
+<img width="560" src="tracer_exploded_view.png" alt="Tracer — 3D exploded view"/>
 
 </div>
 

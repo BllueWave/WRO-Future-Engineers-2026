@@ -227,8 +227,8 @@ Servo travel is bounded to **30°–160°** with a straight-ahead **center of 90
 The robot chassis is based on the WLtoys 284010 (1:28 scale RC car), modified with 3D-printed mounts for electronics and sensors.
 
 <div align="center">
-<img width="512" src="https://github.com/user-attachments/assets/41ec272d-5294-4c83-8e19-9ecab00ad179" alt="3D Model"/>
-<br/><sub><i>3D printed design — electronics tray and sensor mounts</i></sub>
+<img width="640" src="Models/tracer_exploded_view.png" alt="Tracer — 3D exploded view"/>
+<br/><sub><i>Exploded view — chassis, electronics tray, sensor mounts, and 3D-printed body cover</i></sub>
 </div>
 
 3D files available in [`Models/`](Models/)
