@@ -247,7 +247,7 @@ Tuning happened on the real mat, one variable at a time:
 <div align="center">
 <table>
   <tr>
-    <td align="center"><img width="300" src="docs/team_photos/team_action_1.jpg"/></td>
+    <td align="center"><img width="300" src="<img width="1536" height="2048" alt="WhatsApp Image 2026-06-04 at 12 33 05 PM (1)" src="https://github.com/user-attachments/assets/77136d56-a5ab-4aa1-89ad-fbcbf1fd4ecd" />"/></td>
     <td align="center"><img width="300" src="docs/team_photos/team_action_2.jpg"/></td>
     <td align="center"><img width="300" src="docs/team_photos/team_action_3.jpg"/></td>
   </tr>
