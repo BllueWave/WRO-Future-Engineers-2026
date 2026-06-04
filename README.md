@@ -283,12 +283,12 @@ Several tests were conducted to ensure reliable performance:
 
 ## 🎬 Video Demonstrations
 
-| Challenge | Description |
-|-----------|-------------|
-| 🎥 Open Challenge | 3-lap autonomous wall-following run |
-| 🎥 Obstacle Challenge | Full obstacle avoidance with pillar detection |
+| Challenge | Description | Watch |
+|-----------|-------------|-------|
+| 🎥 Open Challenge | 3-lap autonomous wall-following run | [▶ Play](videos/openChallenge.mp4) |
+| 🎥 Obstacle Challenge | Full obstacle avoidance with red/green pillar detection | [▶ Play](videos/Obstacle_Challenge.mp4) |
 
-> Video files available in [`videos/`](videos/)
+> Click **▶ Play** to open the clip in GitHub's video player. Source files live in [`videos/`](videos/).
 
 ---
 
@@ -317,6 +317,17 @@ Several tests were conducted to ensure reliable performance:
 |------|------|
 | **Fawaz Alasousi** — فواز العسعوسي | Hardware design · PD control algorithm · System integration · GitHub |
 | **Bassam** — بسام | Software development · Pixy2 vision system · Testing & calibration |
+
+</div>
+
+### 🏆 Team Coach
+
+<div align="center">
+
+| ✨ The Best Coach & Mentor ✨ |
+|:-----------------------------:|
+| **Prof. Mohammad Sharsheer** |
+| The driving force behind Blue Wave — the most dedicated, knowledgeable, and inspiring coach a team could ask for. Every line of clean code and every clean lap traces back to his guidance. 🙌 |
 
 </div>
 
