@@ -283,19 +283,12 @@ Several tests were conducted to ensure reliable performance:
 
 ## 🎬 Video Demonstrations
 
-<div align="center">
+| Challenge | Description | Watch |
+|-----------|-------------|-------|
+| 🎥 Open Challenge | 3-lap autonomous wall-following run | [Download / view ▶](videos/openChallenge.mp4) |
+| 🎥 Obstacle Challenge | Full obstacle avoidance with red/green pillar detection | [Download / view ▶](videos/Obstacle_Challenge.mp4) |
 
-**🎥 Open Challenge** — 3-lap autonomous wall-following run
-
-https://github.com/BllueWave/WRO-Future-Engineers-2026/raw/main/videos/openChallenge.mp4
-
-**🎥 Obstacle Challenge** — full obstacle avoidance with red/green pillar detection
-
-https://github.com/BllueWave/WRO-Future-Engineers-2026/raw/main/videos/Obstacle_Challenge.mp4
-
-</div>
-
-> If a player doesn't appear above, download the clips from [`videos/`](videos/) — [Open Challenge](videos/openChallenge.mp4) · [Obstacle Challenge](videos/Obstacle_Challenge.mp4).
+> The clips are stored in [`videos/`](videos/). Click a link above to download or view them.
 
 ---
 
