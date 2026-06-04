@@ -1,310 +1,238 @@
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/89c7f452-d86f-4b59-bb18-3a73f45c3450" width="450" alt="Blue Wave Team Logo"/>
+<img src="https://github.com/user-attachments/assets/89c7f452-d86f-4b59-bb18-3a73f45c3450" width="130" alt="Blue Wave"/>
 
-# 🌊 Blue Wave Team — WRO Future Engineers 2026
+# T R A C E R
 
-**Kuwait National Qualifier · June 4, 2026**
+**a self-driving robot car by Blue Wave Robotics**
+WRO Future Engineers · Kuwait National Round · 4 June 2026
 
-![Arduino](https://img.shields.io/badge/Arduino-Uno-00979D?style=for-the-badge&logo=arduino&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-C%2FC%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Competition%20Ready-brightgreen?style=for-the-badge)
-![WRO](https://img.shields.io/badge/WRO-Future%20Engineers-0057A8?style=for-the-badge)
+> *Trace the line · hold the center · never stop.*
+
+`Arduino Uno` &nbsp;·&nbsp; `3× HC-SR04` &nbsp;·&nbsp; `Pixy2` &nbsp;·&nbsp; `BNO055` &nbsp;·&nbsp; `Cytron MD13S` &nbsp;·&nbsp; `C / C++`
+
+<img src="Models/tracer_exploded_view.png" width="660" alt="Tracer exploded view"/>
 
 </div>
 
----
+<p align="center">
+<a href="#1-meet-tracer">Meet Tracer</a> &nbsp;•&nbsp;
+<a href="#2-how-tracer-drives">Driving</a> &nbsp;•&nbsp;
+<a href="#3-how-tracer-sees">Sensing</a> &nbsp;•&nbsp;
+<a href="#4-the-decision-loop">Decision Loop</a> &nbsp;•&nbsp;
+<a href="#5-build-and-wiring">Build</a> &nbsp;•&nbsp;
+<a href="#6-tested-on-the-track">Testing</a> &nbsp;•&nbsp;
+<a href="#7-see-it-run">Video</a> &nbsp;•&nbsp;
+<a href="#8-behind-tracer">Team</a>
+</p>
 
-## 📋 Table of Contents
+<br/>
 
-- [🧩 Project Overview](#-project-overview)
-- [🏷️ Meet "Tracer"](#️-meet-tracer)
-- [📁 Repository Structure](#-repository-structure)
-- [🔩 Hardware & Components](#-hardware--components)
-- [⚡ Power & Electrical System](#-power--electrical-system)
-- [💻 Software Description](#-software-description)
-- [🚗 Mobility, Power & Sensing System](#-mobility-power--sensing-system)
-- [👁️ Obstacle Management & Vision System](#️-obstacle-management--vision-system)
-- [🧱 3D Model](#-3d-model)
-- [📸 Robot Photos](#-robot-photos)
-- [🧪 Testing & Calibration](#-testing--calibration)
-- [📈 Results & Performance](#-results--performance)
-- [🎬 Video Demonstrations](#-video-demonstrations)
-- [👨‍💻 Team Members](#-team-members)
+## 1. Meet Tracer
 
----
+Tracer is a small, fully autonomous model car. Drop it on a closed track, press one button, and it drives three complete laps on its own — staying centered between the walls, reading randomly placed red and green pillars, and never touching a thing.
 
-## 🧩 Project Overview
+We named it **Tracer** because that is the whole idea: *trace* the cleanest possible line, lap after lap. It darts between the walls, slips past every pillar on the correct side, and snaps straight again the instant the path is clear.
 
-The **Blue Wave Team** project introduces an autonomous vehicle designed to complete three fully autonomous laps on a closed track featuring randomly placed traffic signs. The system integrates mechanical design, embedded control, and computer vision to achieve smooth navigation, adaptive decision-making, and intelligent obstacle management.
+Everything on the car answers to one tiny brain — an Arduino Uno — that fuses three ultrasonic sensors, an IMU, and a Pixy2 vision camera sixty-something times a second to decide exactly how much to steer.
 
-Our robot is built around four core subsystems:
+| At a glance | |
+|---|---|
+| **Brain** | Arduino Uno (ATmega328P · 16 MHz) |
+| **Drive** | Brushed DC motor + Cytron MD13S, rear-wheel drive |
+| **Steering** | Front servo, Ackermann geometry |
+| **Senses** | 3× HC-SR04 ultrasonic · BNO055 IMU · Pixy2 camera |
+| **Power** | 7.4 V 2S LiPo |
+| **Size / mass** | ~17 × 9 × 7 cm · ~0.5 kg — well inside the 30×20×30 cm / 1.5 kg limits |
+| **Code** | C / C++ on Arduino IDE |
 
-**Mobility System:**  
-A balanced chassis driven by a DC motor for propulsion and a servo motor for steering enables precise motion control. The system ensures stable navigation through curves and speed variations using real-time sensor feedback.
+<br/>
 
-**Power System:**  
-A 7.4V Li-Po battery supplies stable power to both motors and control electronics. The Cytron MD13S board manages efficient power distribution, minimizing electrical noise and ensuring consistent performance during acceleration and steering.
+## 2. How Tracer Drives
 
-**Sensing System:**  
-Three ultrasonic sensors (left, right, and front) continuously measure distances to nearby walls, keeping the robot centered and detecting obstacles ahead. A BNO055 IMU tracks heading for accurate lap counting, and a Pixy2 vision sensor detects red and green traffic pillars, guiding directional decisions and sign-based behavior.
+The car keeps itself centered with a **PID wall-follower**. Every cycle it compares the left and right wall distances; the difference is the steering error. A proportional term reacts to where the car is now, a derivative term anticipates where it is heading, and a clamped integral term trims any constant drift.
 
-**Obstacle Management & Intelligent Behavior:**  
-Sensor fusion between ultrasonic data and Pixy2 vision enables dynamic lane centering, traffic pillar interpretation, and smooth navigation. After detecting a pillar, the robot dynamically adjusts its steering angle based on the pillar's color and horizontal position.
-
----
-
-## 🏷️ Meet "Tracer"
-
-Our vehicle has a name: **Tracer**.
-
-The name says exactly what it was built to do — *trace* the ideal line around the track with speed and precision. Tracer blinks from corner to corner, holds a clean centered path between the walls, and always snaps back to the perfect racing line after every turn or obstacle. Fast, agile, and relentless — a small robot with a racer's instinct.
-
-> **Tracer** — *trace the line, hold the center, never stop.*
-
----
-
-## 📁 Repository Structure
-
-```
-WRO-Future-Engineers-2026/
-├── README.md
-├── src/
-│   ├── Open_Challenge/
-│   │   └── Open_Challenge.ino       ← PD wall-following controller
-│   └── Obstacle_Challenge/
-│       └── Obstacle_Challenge.ino   ← PD + Pixy2 obstacle avoidance
-├── Vehicle_Photos/                   ← 6-angle robot photography
-├── Models/                           ← 3D design files (.3mf)
-├── Schemes/                          ← Electrical schematic & wiring
-├── videos/                           ← Demo video links
-└── docs/                             ← Team logo & assets
-```
-
----
-
-## 🔩 Hardware & Components
-
-| Component | Model / Spec | Purpose |
-|-----------|-------------|---------|
-| Microcontroller | Arduino Uno (ATmega328P, 16MHz) | Main logic, sensor reading & control |
-| Motor Driver | Cytron MD13S | DC motor speed & direction control |
-| Drive Motor | Brushed DC 7.4V | Rear-wheel propulsion (RWD) |
-| Steering Servo | Standard servo motor | Front Ackermann steering |
-| Distance Sensors | 3× HC-SR04 ultrasonic | Left / right / front distance measurement |
-| Orientation Sensor | BNO055 IMU (I2C) | Yaw-based lap counting (3 laps → stop) |
-| Vision Sensor | Pixy2 Camera (SPI) | Red/green pillar color detection |
-| Battery | 7.4V LiPo 2S | Main power supply for all systems |
-| Chassis | WLtoys 284010 (1:28 RC scale) | Compact, robust, competition-ready platform |
-
-**Physical Specs:**  
-📐 Dimensions: ~17 × 9 × 7 cm — within WRO 30×20×30 cm limit ✅  
-⚖️ Mass: ~0.5 kg (without electronics) — within 1.5 kg limit ✅
-
-<div align="center">
-<img width="512" src="https://github.com/user-attachments/assets/b178bf55-6c87-4521-a2f3-9c944bf2b491" alt="Robot Components"/>
-<br/><sub><i>Robot components layout</i></sub>
-</div>
-
----
-
-## ⚡ Power & Electrical System
-
-```
-LiPo 7.4V ──→ Cytron MD13S  (motor power)
-          └──→ Arduino Vin   (logic power)
-                  └──→ 5V pin ──→ Servo + HC-SR04 (×3) + Pixy2 + BNO055
-```
-
-**Wiring Summary:**
-
-| Component | Pin Connection |
-|-----------|---------------|
-| HC-SR04 Left | TRIG → D4 · ECHO → D5 · VCC → 5V |
-| HC-SR04 Right | TRIG → D2 · ECHO → D9 · VCC → 5V |
-| HC-SR04 Front | TRIG → D6 · ECHO → D7 · VCC → 5V |
-| Servo | SIG → D10 · VCC → 5V |
-| Cytron MD13S | PWM → D3 · DIR → D8 |
-| Pixy2 (SPI) | via ICSP header — MOSI · MISO · SCK |
-| BNO055 IMU (I2C) | SDA → A4 · SCL → A5 · VCC → 3.3V |
-
-<div align="center">
-<img width="512" src="https://github.com/user-attachments/assets/b750eb5a-1c5d-4c75-9160-fdc2dd91ea35" alt="Lab Tools"/>
-<br/><sub><i>Tools and equipment used in development</i></sub>
-</div>
-
----
-
-## 💻 Software Description
-
-The Arduino Uno is programmed using **Arduino IDE** with code written in C/C++. The code architecture is divided into two main modules:
-
-- **`Open_Challenge.ino`** — PID wall-following with front-obstacle avoidance and IMU lap counting
-- **`Obstacle_Challenge.ino`** — the same unified controller, with the Pixy2 vision mode active for red/green pillar handling
-
-Both sketches run the **same proven control core**: a PID wall-follower, a front-ultrasonic avoidance layer, BNO055 yaw-based lap counting (stops automatically after 3 laps), and a hysteresis-based mode manager that hands control to the Pixy2 vision system whenever a valid pillar is detected.
-
-### Control Flow Diagram
-
-```
-[HC-SR04 L/R]   ──→ [Low-Pass Filter] ──→ ┐
-[HC-SR04 Front] ──→ [Obstacle check]  ──→ ┤
-                                           ├──→ [Mode Manager] ──→ [PID / Pixy / Avoid] ──→ [Servo D10]
-[Pixy2 Camera]  ──→ [Area + X Filter] ──→ ┘                                                     │
-[BNO055 IMU]    ──→ [Yaw → Lap count] ──→ (stop after 3 laps)                                    ↓
-                                                                                        [Cytron MD13S]
-                                                                                                 │
-                                                                                            [DC Motor]
-```
-
-### Tuned Parameters
-
-| Parameter | Value | Role |
-|-----------|-------|------|
-| `KP` | 0.6 | Proportional gain |
-| `KD` | 0.05 | Derivative gain |
-| `KI` | 0.0 | Integral gain (disabled) |
-| `I_MAX` | 80 | Integral wind-up clamp |
-| `MOTOR_SPEED` | 30 | Normal cruising PWM |
-| `MOTOR_SPEED_AVOID` | 20 | Reduced PWM while avoiding a front obstacle |
-| `FRONT_AVOID_CM` | 28 cm | Front-obstacle trigger distance |
-| `DEFAULT_SIDE_CM` | 60 cm | Fallback side distance when an echo is lost |
-| `CENTER_ANGLE` | 90° | Servo straight-ahead |
-| `MIN_SERVO_ANGLE` | 30° | Maximum right steering |
-| `MAX_SERVO_ANGLE` | 160° | Maximum left steering |
-| `ALPHA` | 0.9 | Side-distance low-pass filter |
-| `SERVO_SLEW_DEG_PER_STEP` | 6° | Servo slew-rate limit (smooth steering) |
-| `PIXY_MIN_AREA` | 200 px² | Minimum pillar detection area |
-
----
-
-## 🚗 Mobility, Power & Sensing System
-
-The robot's mobility relies on a single DC motor controlled through the **Cytron MD13S** driver, providing smooth forward motion. A **7.4V LiPo battery** powers all components efficiently through the Arduino's onboard regulator.
-
-**Wall-following PD Controller:**
-
-```
-error      = lpfLeft − lpfRight
-integral   = clamp(integral + error, ±I_MAX)
+```text
+error      = leftDistance − rightDistance        (after low-pass filtering)
+integral   = clamp( integral + error, ±I_MAX )
 derivative = error − lastError
-output     = KP × error + KI × integral + KD × derivative
-servoAngle = CENTER_ANGLE + output
+output     = KP·error + KI·integral + KD·derivative
+servoAngle = 90° + output                         (clamped to 30°…160°)
 ```
 
-**Stability & safety techniques applied:**
-- **Side-distance low-pass filter** (α=0.9): smooths ultrasonic noise before steering
-- **Servo slew-rate limit** (6°/step): eliminates mechanical oscillation in Pixy mode
-- **Integral wind-up clamp** (±80): keeps the PID stable on long straights
-- **Front-obstacle avoidance**: when the front sensor reads ≤ 28 cm, the robot keeps moving slowly and steers toward the side with more free space — it never stops mid-run
-- **Lost-echo fallback**: if a side sensor returns no echo, it reuses the other side / last filtered value instead of stopping
-- **IMU lap counting**: BNO055 yaw integration counts 3 full laps, then stops the motor
+What keeps it smooth and crash-resistant on a real track:
 
----
+- **Filtered distances** — a light low-pass filter (α = 0.9) takes the jitter out of the ultrasonic readings before they ever reach the controller.
+- **Integral clamp (±80)** — stops the I-term from winding up on long straights.
+- **Slew-limited steering (6°/step)** — the servo eases into vision corrections instead of snapping, which kills oscillation.
+- **Never-stop front avoidance** — if the front sensor sees a wall closer than 28 cm, Tracer doesn't brake; it slows and turns toward whichever side has more room, then resumes.
+- **Lost-echo fallback** — if one side sensor returns nothing (an angled or dark wall), the controller borrows the opposite side or the last good reading instead of freezing.
 
-## 👁️ Obstacle Management & Vision System
+<br/>
 
-The Pixy2 camera identifies red and green pillars using color signatures trained under WRO arena lighting:
+## 3. How Tracer Sees
 
-| Pillar | Signature | Rule | Steering Action |
-|--------|-----------|------|----------------|
-| 🟢 Green | Sig 1 | Pass on LEFT of pillar | Steer LEFT → servo **140°** |
-| 🔴 Red | Sig 2 | Pass on RIGHT of pillar | Steer RIGHT → servo **40°** |
+Three jobs — *stay centered*, *don't hit the wall ahead*, and *read the pillars* — are split across purpose-placed sensors.
 
-Servo travel is bounded to **30°–160°** with a straight-ahead **center of 90°**, so green commands a strong left and red a strong right. The pillar's horizontal position (`x`) is read every frame so the response can be re-tuned per zone (`x` < 120 / 120–170 / > 170) without touching the control logic.
+| Sensor | Where it sits | Why it's there |
+|---|---|---|
+| HC-SR04 (left & right) | flat on each side | the two distances that feed the wall-following error |
+| HC-SR04 (front) | facing forward | catches the wall at the end of a straight so the car turns in time |
+| BNO055 IMU | on the chassis tray | integrates yaw to count exactly three laps, then stops the motor |
+| Pixy2 camera | raised above the body | spots red and green pillars by trained color signature |
 
-**Mode switching hysteresis:**
-- Enters `PIXY MODE` after **2 consecutive** valid detections
-- Returns to `PID MODE` after **3 consecutive** misses
-- Minimum hold time **280 ms** — prevents rapid flickering
-- Slew-rate limit **6°/step** — ensures smooth servo transitions
-- Detection filters: minimum area **200 px²**, X range **20–300 px**
+**Reading the pillars.** The Pixy2 is trained on two signatures under real arena lighting — red as signature 2, green as signature 1. For every frame Tracer takes the largest valid block and decides a side to pass on:
 
----
+| Pillar | Rule | What the car does |
+|---|---|---|
+| 🟢 Green (sig 1) | keep the pillar on the **right** | steer **left**, toward servo 140° |
+| 🔴 Red (sig 2) | keep the pillar on the **left** | steer **right**, toward servo 40° |
 
-## 🧱 3D Model
+The pillar's horizontal position in the frame is read every cycle, so the steering can be eased as the pillar slides toward the edge — the car passes it and straightens out instead of circling it.
 
-The robot chassis is based on the WLtoys 284010 (1:28 scale RC car), modified with 3D-printed mounts for electronics and sensors.
+<br/>
+
+## 4. The Decision Loop
+
+Both challenge programs share one control core. A **mode manager** decides, every cycle, who is allowed to steer: the wall-follower, the vision avoider, or the front-avoidance routine — with hysteresis so it never flickers between them.
+
+```mermaid
+flowchart TD
+    L[Left HC-SR04] --> LPF[Low-pass filter]
+    R[Right HC-SR04] --> LPF
+    LPF --> MM{Mode manager}
+    Fr[Front HC-SR04] --> MM
+    Cam[Pixy2 camera] --> MM
+    Imu[BNO055 IMU] --> Laps[Yaw lap counter]
+    MM -->|walls only| PID[PID wall-follow]
+    MM -->|pillar in view| VIS[Vision steering]
+    MM -->|wall ahead| AV[Front avoidance]
+    PID --> SRV[Servo D10]
+    VIS --> SRV
+    AV --> SRV
+    SRV --> DRV[Cytron MD13S]
+    DRV --> MOT[DC motor]
+    Laps -->|3 laps done| STOP([Stop])
+```
+
+**Mode-switching rules**
+
+- Hands control to **vision** after **2** consecutive valid pillar detections.
+- Returns to **wall-follow** after **3** consecutive misses.
+- A **280 ms** minimum hold time blocks rapid back-and-forth.
+- A pillar only counts if its blob area ≥ **200 px²** and sits inside the trusted X band of the frame.
+
+**The numbers that make it work**
+
+| Knob | Value | What it does |
+|---|---|---|
+| `KP` / `KD` / `KI` | 0.6 / 0.05 / 0.0 | wall-following gains (I disabled, D light) |
+| `I_MAX` | 80 | integral wind-up clamp |
+| `MOTOR_SPEED` | 30 | cruising PWM |
+| `MOTOR_SPEED_AVOID` | 20 | PWM while squeezing past an obstacle |
+| `FRONT_AVOID_CM` | 28 | distance that triggers front avoidance |
+| `CENTER_ANGLE` | 90° | servo straight-ahead |
+| `MIN…MAX_SERVO_ANGLE` | 30°…160° | full right … full left |
+| `ALPHA` | 0.9 | side-distance filter strength |
+| `SERVO_SLEW_DEG_PER_STEP` | 6° | how fast vision corrections build up |
+
+<br/>
+
+## 5. Build and Wiring
+
+The platform is a WLtoys 284010 (1:28 RC chassis) wearing a custom 3D-printed shell, electronics tray, and sensor mounts.
+
+| Part | Choice | Job |
+|---|---|---|
+| Microcontroller | Arduino Uno (ATmega328P) | runs the whole control loop |
+| Motor driver | Cytron MD13S | speed + direction for the DC motor |
+| Drive motor | brushed DC, 7.4 V | rear-wheel propulsion |
+| Steering | standard servo | front Ackermann steering |
+| Distance | 3× HC-SR04 | left / right / front |
+| Heading | BNO055 IMU | yaw → lap counting |
+| Vision | Pixy2 (SPI) | red / green pillar detection |
+| Battery | 7.4 V 2S LiPo | single power source |
+
+**Power path**
+
+```text
+LiPo 7.4 V ─┬─→ Cytron MD13S  →  DC motor
+            └─→ Arduino Vin  →  5 V rail  →  servo · 3× HC-SR04 · Pixy2 · BNO055 (3.3 V)
+```
+
+**Pin map**
+
+| Connection | Pins |
+|---|---|
+| HC-SR04 left | TRIG D4 · ECHO D5 |
+| HC-SR04 right | TRIG D2 · ECHO D9 |
+| HC-SR04 front | TRIG D6 · ECHO D7 |
+| Steering servo | SIG D10 |
+| Cytron MD13S | PWM D3 · DIR D8 |
+| Pixy2 | SPI over the ICSP header |
+| BNO055 | I2C — SDA A4 · SCL A5 |
+
+Full schematic: [`Schemes/`](Schemes/) · printable models: [`Models/`](Models/)
+
+```text
+repo
+├── src/Open_Challenge        wall-following build
+├── src/Obstacle_Challenge     wall-following + vision build
+├── Vehicle_Photos             six-angle gallery
+├── Models                     3D body + mounts (.3mf)
+├── Schemes                    wiring schematic
+├── videos                     run footage
+└── docs                       logo + team photos
+```
+
+<br/>
+
+## 6. Tested on the Track
+
+Tuning happened on the real mat, one variable at a time:
+
+- **Servo center** — found the true 90° that drives dead straight.
+- **Motor dead-zone** — found the lowest PWM the wheels actually move at.
+- **Side-filter (α) + slew rate** — dialed until the wall-following stopped zig-zagging.
+- **KP then KD** — raised P for response, added just enough D to settle it.
+- **Pixy color training** — trained red and green under the arena's own lighting.
+- **Front-avoidance distance** — set the 28 cm trigger from repeated corner runs.
+- **Full runs** — three clean laps for the open track, then every red/green pillar position for the obstacle track.
+
+**Where it landed**
+
+| Check | Result |
+|---|---|
+| Three autonomous laps | completed, consistent times ✅ |
+| Centering on straights | under ~2 cm deviation ✅ |
+| Pillar recognition | >95% under arena lighting ✅ |
+| Obstacle passing | clean, no contact ✅ |
+| Mode switching | no flicker between wall-follow and vision ✅ |
+
+<br/>
+
+## 7. See It Run
 
 <div align="center">
-<img width="640" src="Models/tracer_exploded_view.png" alt="Tracer — 3D exploded view"/>
-<br/><sub><i>Exploded view — chassis, electronics tray, sensor mounts, and 3D-printed body cover</i></sub>
-</div>
-
-3D files available in [`Models/`](Models/)
-
----
-
-## 📸 Robot Photos
-
-<div align="center">
-<table>
-  <tr>
-    <td align="center"><img width="240" src="https://github.com/user-attachments/assets/e3ce21d4-4cd9-439d-9274-82af3605b75f"/><br/><sub><b>Front</b></sub></td>
-    <td align="center"><img width="240" src="https://github.com/user-attachments/assets/581d9ba8-7fb7-40f2-ab8f-64d2de9f3165"/><br/><sub><b>Back</b></sub></td>
-    <td align="center"><img width="240" src="https://github.com/user-attachments/assets/afcc0fe8-2d0e-4aef-aea4-6d611f3f30ef"/><br/><sub><b>Left</b></sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img width="240" src="https://github.com/user-attachments/assets/2a9d8bb3-ee46-4803-8cc3-46ba6ddcda77"/><br/><sub><b>Right</b></sub></td>
-    <td align="center"><img width="240" src="https://github.com/user-attachments/assets/bcfedd58-0cac-417d-aeb3-2eb8b212f7ef"/><br/><sub><b>Top</b></sub></td>
-    <td align="center"><img width="240" src="https://github.com/user-attachments/assets/a8079dca-615e-4b55-9f72-6bb9f630937b"/><br/><sub><b>Bottom</b></sub></td>
-  </tr>
-</table>
-</div>
-
----
-
-## 🧪 Testing & Calibration
-
-Several tests were conducted to ensure reliable performance:
-
-- **Ultrasonic calibration** — verified accuracy against known wall distances, tuned MAX_VALID_CM
-- **Servo center calibration** — found true CENTER_ANGLE for straight-line driving
-- **Motor dead zone test** — found minimum effective PWM value
-- **PD on-track tuning** — iterative KP/KD field calibration for smooth wall-following
-- **Pixy2 color training** — trained red & green signatures under actual arena lighting conditions
-- **Anti-zigzag validation** — tuned DERIV_ALPHA and SERVO_ALPHA to eliminate oscillation
-- **Full 3-lap run** — validated Open Challenge completion
-- **Obstacle avoidance** — tested all pillar color/position combinations
-
----
-
-## 📈 Results & Performance
-
-| Task | Performance |
-|------|-------------|
-| Track navigation — 3 laps | Completed successfully in consistent times ✅ |
-| Wall-following accuracy | < 2 cm center deviation on straight segments ✅ |
-| Traffic pillar recognition | >95% accuracy under arena lighting conditions ✅ |
-| Obstacle avoidance | Smooth navigation, no collisions ✅ |
-| Mode switching | Clean PID↔Pixy transitions with no oscillation ✅ |
-
----
-
-## 🎬 Video Demonstrations
-
-<div align="center">
-
 <table>
   <tr>
     <td align="center">
       <a href="https://youtube.com/shorts/_rmwh_EwI1A"><img width="260" src="https://img.youtube.com/vi/_rmwh_EwI1A/hqdefault.jpg" alt="Open Challenge"/></a><br/>
-      <b>▶ Open Challenge</b><br/><sub>3-lap autonomous wall-following run</sub>
+      <b>Open Challenge</b><br/><sub>three-lap wall-following run</sub>
     </td>
     <td align="center">
       <a href="https://youtube.com/shorts/2quu5O000I0"><img width="260" src="https://img.youtube.com/vi/2quu5O000I0/hqdefault.jpg" alt="Obstacle Challenge"/></a><br/>
-      <b>▶ Obstacle Challenge</b><br/><sub>Full obstacle avoidance with red/green pillar detection</sub>
+      <b>Obstacle Challenge</b><br/><sub>pillar detection + avoidance</sub>
     </td>
   </tr>
 </table>
-
 </div>
 
-> Click a thumbnail to watch on **YouTube**. The raw clips are also stored in [`videos/`](videos/).
+<sub>Tap a thumbnail to watch on YouTube — raw clips also live in [`videos/`](videos/).</sub>
 
----
+<br/>
 
-## 🏟️ Team in Action
+## 8. Behind Tracer
 
 <div align="center">
 <table>
@@ -313,42 +241,21 @@ Several tests were conducted to ensure reliable performance:
     <td align="center"><img width="300" src="docs/team_photos/team_action_2.jpg"/></td>
     <td align="center"><img width="300" src="docs/team_photos/team_action_3.jpg"/></td>
   </tr>
-  <tr>
-    <td colspan="3" align="center"><sub><i>Blue Wave Team working on the WRO arena track</i></sub></td>
-  </tr>
+  <tr><td colspan="3" align="center"><sub>Blue Wave on the arena, mid-build</sub></td></tr>
 </table>
 </div>
 
----
+**Builders**
 
-## 👨‍💻 Team Members
+- **Fawaz Alasousi** — فواز العسعوسي — chassis & hardware, control algorithm, system integration, repository
+- **Bassam** — بسام — software, Pixy2 vision pipeline, testing & calibration
 
-<div align="center">
-
-| Name | Role |
-|------|------|
-| **Fawaz Alasousi** — فواز العسعوسي | Hardware design · PD control algorithm · System integration · GitHub |
-| **Bassam** — بسام | Software development · Pixy2 vision system · Testing & calibration |
-
-</div>
-
-### 🏆 Team Coach
+**Coached by — Prof. Mohammad Sharsheer.** Every clean lap traces back to his guidance; the sharpest, most generous mentor a team could build under. 🙌
 
 <div align="center">
+<br/>
 
-| ✨ The Best Coach & Mentor ✨ |
-|:-----------------------------:|
-| **Prof. Mohammad Sharsheer** |
-| The driving force behind Blue Wave — the most dedicated, knowledgeable, and inspiring coach a team could ask for. Every line of clean code and every clean lap traces back to his guidance. 🙌 |
-
-</div>
-
----
-
-<div align="center">
-
-**🌊 Blue Wave Team — Kuwait 2026**
-
-*Built with precision. Driven by code.*
+**Blue Wave Robotics — Kuwait 2026**
+*small car, clean lines, no excuses.*
 
 </div>
