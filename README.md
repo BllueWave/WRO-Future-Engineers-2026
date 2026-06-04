@@ -18,6 +18,7 @@
 ## 📋 Table of Contents
 
 - [🧩 Project Overview](#-project-overview)
+- [🏷️ Meet "Tracer"](#️-meet-tracer)
 - [📁 Repository Structure](#-repository-structure)
 - [🔩 Hardware & Components](#-hardware--components)
 - [⚡ Power & Electrical System](#-power--electrical-system)
@@ -46,10 +47,20 @@ A balanced chassis driven by a DC motor for propulsion and a servo motor for ste
 A 7.4V Li-Po battery supplies stable power to both motors and control electronics. The Cytron MD13S board manages efficient power distribution, minimizing electrical noise and ensuring consistent performance during acceleration and steering.
 
 **Sensing System:**  
-Two ultrasonic sensors continuously measure distances to nearby walls, maintaining the robot's centered position. A Pixy2 vision sensor detects red and green traffic pillars, guiding directional decisions and sign-based behavior.
+Three ultrasonic sensors (left, right, and front) continuously measure distances to nearby walls, keeping the robot centered and detecting obstacles ahead. A BNO055 IMU tracks heading for accurate lap counting, and a Pixy2 vision sensor detects red and green traffic pillars, guiding directional decisions and sign-based behavior.
 
 **Obstacle Management & Intelligent Behavior:**  
 Sensor fusion between ultrasonic data and Pixy2 vision enables dynamic lane centering, traffic pillar interpretation, and smooth navigation. After detecting a pillar, the robot dynamically adjusts its steering angle based on the pillar's color and horizontal position.
+
+---
+
+## 🏷️ Meet "Tracer"
+
+Our vehicle has a name: **Tracer**.
+
+The name says exactly what it was built to do — *trace* the ideal line around the track with speed and precision. Tracer blinks from corner to corner, holds a clean centered path between the walls, and always snaps back to the perfect racing line after every turn or obstacle. Fast, agile, and relentless — a small robot with a racer's instinct.
+
+> **Tracer** — *trace the line, hold the center, never stop.*
 
 ---
 
@@ -80,7 +91,8 @@ WRO-Future-Engineers-2026/
 | Motor Driver | Cytron MD13S | DC motor speed & direction control |
 | Drive Motor | Brushed DC 7.4V | Rear-wheel propulsion (RWD) |
 | Steering Servo | Standard servo motor | Front Ackermann steering |
-| Distance Sensors | 2× HC-SR04 ultrasonic | Left/right wall distance measurement |
+| Distance Sensors | 3× HC-SR04 ultrasonic | Left / right / front distance measurement |
+| Orientation Sensor | BNO055 IMU (I2C) | Yaw-based lap counting (3 laps → stop) |
 | Vision Sensor | Pixy2 Camera (SPI) | Red/green pillar color detection |
 | Battery | 7.4V LiPo 2S | Main power supply for all systems |
 | Chassis | WLtoys 284010 (1:28 RC scale) | Compact, robust, competition-ready platform |
@@ -101,7 +113,7 @@ WRO-Future-Engineers-2026/
 ```
 LiPo 7.4V ──→ Cytron MD13S  (motor power)
           └──→ Arduino Vin   (logic power)
-                  └──→ 5V pin ──→ Servo + HC-SR04 (×2) + Pixy2
+                  └──→ 5V pin ──→ Servo + HC-SR04 (×3) + Pixy2 + BNO055
 ```
 
 **Wiring Summary:**
@@ -110,9 +122,11 @@ LiPo 7.4V ──→ Cytron MD13S  (motor power)
 |-----------|---------------|
 | HC-SR04 Left | TRIG → D4 · ECHO → D5 · VCC → 5V |
 | HC-SR04 Right | TRIG → D2 · ECHO → D9 · VCC → 5V |
-| Servo | SIG → A0 · VCC → 5V |
+| HC-SR04 Front | TRIG → D6 · ECHO → D7 · VCC → 5V |
+| Servo | SIG → D10 · VCC → 5V |
 | Cytron MD13S | PWM → D3 · DIR → D8 |
-| Pixy2 (SPI) | CS → D10 · MOSI → D11 · MISO → D12 · SCK → D13 |
+| Pixy2 (SPI) | via ICSP header — MOSI · MISO · SCK |
+| BNO055 IMU (I2C) | SDA → A4 · SCL → A5 · VCC → 3.3V |
 
 <div align="center">
 <img width="512" src="https://github.com/user-attachments/assets/b750eb5a-1c5d-4c75-9160-fdc2dd91ea35" alt="Lab Tools"/>
@@ -125,37 +139,42 @@ LiPo 7.4V ──→ Cytron MD13S  (motor power)
 
 The Arduino Uno is programmed using **Arduino IDE** with code written in C/C++. The code architecture is divided into two main modules:
 
-- **`Open_Challenge.ino`** — PD wall-following controller with anti-zigzag techniques
-- **`Obstacle_Challenge.ino`** — PD wall-following + Pixy2 vision mode switching
+- **`Open_Challenge.ino`** — PID wall-following with front-obstacle avoidance and IMU lap counting
+- **`Obstacle_Challenge.ino`** — the same unified controller, with the Pixy2 vision mode active for red/green pillar handling
 
-Both sketches share the same core PD logic and tuned parameters, with the Obstacle Challenge adding a hysteresis-based mode manager for pillar detection.
+Both sketches run the **same proven control core**: a PID wall-follower, a front-ultrasonic avoidance layer, BNO055 yaw-based lap counting (stops automatically after 3 laps), and a hysteresis-based mode manager that hands control to the Pixy2 vision system whenever a valid pillar is detected.
 
 ### Control Flow Diagram
 
 ```
-[HC-SR04 L/R] ──→ [3× Average + LPF] ──→ ┐
-                                           ├──→ [Mode Manager] ──→ [PD / Pixy2] ──→ [Servo A0]
-[Pixy2 Camera] ──→ [Area + X Filter]  ──→ ┘                                              │
-                                                                                           ↓
-                                                                                  [Cytron MD13S]
-                                                                                           │
-                                                                                      [DC Motor]
+[HC-SR04 L/R]   ──→ [Low-Pass Filter] ──→ ┐
+[HC-SR04 Front] ──→ [Obstacle check]  ──→ ┤
+                                           ├──→ [Mode Manager] ──→ [PID / Pixy / Avoid] ──→ [Servo D10]
+[Pixy2 Camera]  ──→ [Area + X Filter] ──→ ┘                                                     │
+[BNO055 IMU]    ──→ [Yaw → Lap count] ──→ (stop after 3 laps)                                    ↓
+                                                                                        [Cytron MD13S]
+                                                                                                 │
+                                                                                            [DC Motor]
 ```
 
 ### Tuned Parameters
 
 | Parameter | Value | Role |
 |-----------|-------|------|
-| `KP` | 0.10 | Proportional gain |
-| `KD` | 0.09 | Derivative gain |
-| `MOTOR_SPEED` | 55 | Normal cruising PWM |
-| `TURN_SPEED` | 45 | Reduced PWM on sharp turns |
+| `KP` | 0.6 | Proportional gain |
+| `KD` | 0.05 | Derivative gain |
+| `KI` | 0.0 | Integral gain (disabled) |
+| `I_MAX` | 80 | Integral wind-up clamp |
+| `MOTOR_SPEED` | 30 | Normal cruising PWM |
+| `MOTOR_SPEED_AVOID` | 20 | Reduced PWM while avoiding a front obstacle |
+| `FRONT_AVOID_CM` | 28 cm | Front-obstacle trigger distance |
+| `DEFAULT_SIDE_CM` | 60 cm | Fallback side distance when an echo is lost |
 | `CENTER_ANGLE` | 90° | Servo straight-ahead |
-| `ERROR_DEADBAND` | 0.8 cm | Noise suppression threshold |
-| `DERIV_ALPHA` | 0.45 | Derivative low-pass filter |
-| `SERVO_ALPHA` | 0.55 | Servo output smoother |
-| `MAX_VALID_CM` | 75 cm | Corner spike clamp value |
-| `HARD_TURN_DEG` | 28° | Speed-reduction trigger |
+| `MIN_SERVO_ANGLE` | 30° | Maximum right steering |
+| `MAX_SERVO_ANGLE` | 160° | Maximum left steering |
+| `ALPHA` | 0.9 | Side-distance low-pass filter |
+| `SERVO_SLEW_DEG_PER_STEP` | 6° | Servo slew-rate limit (smooth steering) |
+| `PIXY_MIN_AREA` | 200 px² | Minimum pillar detection area |
 
 ---
 
@@ -166,19 +185,20 @@ The robot's mobility relies on a single DC motor controlled through the **Cytron
 **Wall-following PD Controller:**
 
 ```
-error      = leftDist − rightDist
-derivative = smoothed(error − lastError)
-output     = KP × error + KD × derivative
+error      = lpfLeft − lpfRight
+integral   = clamp(integral + error, ±I_MAX)
+derivative = error − lastError
+output     = KP × error + KI × integral + KD × derivative
 servoAngle = CENTER_ANGLE + output
 ```
 
-**Anti-zigzag techniques applied:**
-- **Error deadband** (±0.8 cm): ignores sensor noise below threshold
-- **Derivative low-pass filter** (α=0.45): prevents jitter from spike readings
-- **Servo output smoothing** (α=0.55): eliminates mechanical oscillation
-- **Corner spike clamping** (max 75 cm): ignores false corner wall readings
-- **Adaptive speed**: automatically slows down on turns >28° from center
-- **Sensor fallback**: if one ultrasonic fails, mirrors the other side
+**Stability & safety techniques applied:**
+- **Side-distance low-pass filter** (α=0.9): smooths ultrasonic noise before steering
+- **Servo slew-rate limit** (6°/step): eliminates mechanical oscillation in Pixy mode
+- **Integral wind-up clamp** (±80): keeps the PID stable on long straights
+- **Front-obstacle avoidance**: when the front sensor reads ≤ 28 cm, the robot keeps moving slowly and steers toward the side with more free space — it never stops mid-run
+- **Lost-echo fallback**: if a side sensor returns no echo, it reuses the other side / last filtered value instead of stopping
+- **IMU lap counting**: BNO055 yaw integration counts 3 full laps, then stops the motor
 
 ---
 
@@ -188,22 +208,17 @@ The Pixy2 camera identifies red and green pillars using color signatures trained
 
 | Pillar | Signature | Rule | Steering Action |
 |--------|-----------|------|----------------|
-| 🟢 Green | Sig 1 | Pass on LEFT of pillar | Steer LEFT (angle > 90°) |
-| 🔴 Red | Sig 2 | Pass on RIGHT of pillar | Steer RIGHT (angle < 90°) |
+| 🟢 Green | Sig 1 | Pass on LEFT of pillar | Steer LEFT → servo **140°** |
+| 🔴 Red | Sig 2 | Pass on RIGHT of pillar | Steer RIGHT → servo **40°** |
 
-**Steering angles by pillar position (X coordinate on camera):**
-
-| Color | X < 120 | X 120–170 | X > 170 |
-|-------|---------|-----------|---------|
-| 🟢 Green | Hard Left (135°) | Med Left (120°) | Soft Left (105°) |
-| 🔴 Red | Soft Right (75°) | Med Right (60°) | Hard Right (45°) |
+Servo travel is bounded to **30°–160°** with a straight-ahead **center of 90°**, so green commands a strong left and red a strong right. The pillar's horizontal position (`x`) is read every frame so the response can be re-tuned per zone (`x` < 120 / 120–170 / > 170) without touching the control logic.
 
 **Mode switching hysteresis:**
 - Enters `PIXY MODE` after **2 consecutive** valid detections
 - Returns to `PID MODE` after **3 consecutive** misses
 - Minimum hold time **280 ms** — prevents rapid flickering
 - Slew-rate limit **6°/step** — ensures smooth servo transitions
-- Detection filters: minimum area 200 px², X range 20–300 px
+- Detection filters: minimum area **200 px²**, X range **20–300 px**
 
 ---
 
