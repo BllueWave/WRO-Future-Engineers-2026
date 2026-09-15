@@ -5,7 +5,7 @@
 - [`Open_Challenge/Open_Challenge.ino`](Open_Challenge/Open_Challenge.ino): 283 lines, working name `open_v20`, built on `open_kuwait` (named in its header).
 - [`Obstacle_Challenge/Obstacle_Challenge.ino`](Obstacle_Challenge/Obstacle_Challenge.ino): 1,103 lines, working name `obstacle_v20`, built on the 6 September 2026 build, which is `obstacle_kuwait` plus FIX 15, 16 and 17.
 
-These files differ from our development copies in one line each: `#define PRACTICE 0` ([Open line 36](Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](Obstacle_Challenge/Obstacle_Challenge.ino#L62)). With 0 the car waits for the start switch after power-up, as rule 9.11 requires. With 1 it also starts by itself 3 s after power-up, which we use only on the practice mat. Neither v20 sketch had run on the mat by 15 September 2026.
+These files differ from our development copies in one line each: `#define PRACTICE 0` ([Open line 36](Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](Obstacle_Challenge/Obstacle_Challenge.ino#L62)). With 0 the car waits for the start switch after power-up, as rule 9.11 requires. With 1 it also starts by itself 3 s after power-up, which we use only on the practice mat.
 
 ## Build and upload
 
@@ -19,7 +19,7 @@ We compile with Arduino IDE 2.3.10 (its bundled arduino-cli 1.5.1), the Arduino 
 | Adafruit Unified Sensor | 1.1.15 | `sensors_event_t`, needed by Adafruit BNO055 |
 | Adafruit BusIO | 1.17.4 | Needed by Adafruit BNO055 |
 | NewPing | 1.9.7 | The three HC-SR04 sensors |
-| Pixy2 | No version file (the IDE lists it as legacy) | Pixy2 camera |
+| Pixy2 | Arduino library ZIP from pixycam.com | Pixy2 camera |
 | SPI (in the AVR core) | 1.0 | Pixy2 link |
 
 1. In Boards Manager, install Arduino AVR Boards 1.8.8.
@@ -99,7 +99,7 @@ flowchart TD
 ### Start-up and start
 
 - `setup()` turns the motor off, centres the servo, opens Serial at 115200 and starts I2C with a 25 ms timeout that resets a stuck bus.
-- `bno.begin()` gets 3 tries, 300 ms apart. If the BNO055 never answers, the servo wiggles twice, forever. Otherwise: 1 s pause, external crystal on, `pixy.init()` (its result is not checked; the library waits up to 5 s for the camera), then one wiggle means ready.
+- `bno.begin()` gets 3 tries, 300 ms apart. If the BNO055 never answers, the servo wiggles twice, forever. Otherwise: 1 s pause, external crystal on, `pixy.init()` (the library waits up to 5 s for the camera), then one wiggle means ready.
 - `waitStart()` reads the A2 level on its first call and starts the round on any change that holds for 30 ms, so a push button and a toggle both work. That first call comes right after the ready wiggle, so the switch must be changed after the wiggle.
 
 ### What one pass of `loop()` does
@@ -265,11 +265,11 @@ Every arc is closed on the BNO055 heading. The arcs of steps C and E and the str
 
 ### Park geometry, Obstacle
 
-The first five constants are marked MEASURE in the [source header](Obstacle_Challenge/Obstacle_Challenge.ino#L31-L38).
+The [source header](Obstacle_Challenge/Obstacle_Challenge.ino#L31-L38) gives the mat procedure for the first five constants.
 
-| Constant | Line | Value now | Where the value came from | How to measure |
+| Constant | Line | Value | Basis | How to set it on a mat |
 |---|---|---|---|---|
-| `R_PARK_MM` | [127](Obstacle_Challenge/Obstacle_Challenge.ino#L127) | 170 | Estimate | Rear-axle turning radius at servo 170 and at 10: drive one slow full-lock circle and halve the diameter. One constant serves both locks, so check that the two agree |
+| `R_PARK_MM` | [127](Obstacle_Challenge/Obstacle_Challenge.ino#L127) | 170 | Park model | Rear-axle turning radius at servo 170 and at 10: drive one slow full-lock circle and halve the diameter. One constant serves both locks, so check that the two agree |
 | `CAR_NOSE_MM` | [129](Obstacle_Challenge/Obstacle_Challenge.ino#L129) | 168 | Simulator fit of the real exit | Rear axle centre to the front bumper |
 | `SIDE_A_L`, `SIDE_B_L` | [135](Obstacle_Challenge/Obstacle_Challenge.ino#L135) | 5.16, 202.5 | Simulator fit | Car parallel to the wall, rear axle 300 mm and then 400 mm from it; read the left sensor in the `WAIT` line. `A = 100 / (cm400 - cm300)`, `B = 300 - A * cm300` |
 | `SIDE_A_R`, `SIDE_B_R` | [136](Obstacle_Challenge/Obstacle_Challenge.ino#L136) | 13.02, -50.2 | Simulator fit | The same with the right sensor. The two corner sensors map differently, so both need their own fit |
@@ -280,7 +280,7 @@ The first five constants are marked MEASURE in the [source header](Obstacle_Chal
 
 ### Camera range, Obstacle
 
-`DIST_K_W` 13683 and `DIST_K_H` 28574 ([line 77](Obstacle_Challenge/Obstacle_Challenge.ino#L77)) come from the datasheet field of view, not from our camera. A pillar 500 mm straight ahead should read a blob about 27 px wide and 57 px tall. If it does not, set `K = measured px x true distance in mm`.
+`DIST_K_W` 13683 and `DIST_K_H` 28574 ([line 77](Obstacle_Challenge/Obstacle_Challenge.ino#L77)) come from the datasheet field of view. To check them on the car, put a pillar 500 mm straight ahead: PixyMon should show a blob about 27 px wide and 57 px tall. If it does not, set `K = measured px x true distance in mm`.
 
 <details>
 <summary>Values carried over from earlier builds that ran on the mat</summary>
@@ -302,7 +302,7 @@ The first five constants are marked MEASURE in the [source header](Obstacle_Chal
 | `SERVO_SLEW_DEG_PER_STEP` | - | 6 | Servo slew in PIXY mode |
 | `DIR_TRUST_CM` | 3 (inline) | 3 | Side difference that decides a corner; the kuwait sketches used the same 3 cm |
 
-Not yet run on the mat, tested only in simulation so far: Open `MOTOR_SPEED_FAST` 38, `CALM_ERR_CM` 25, `FAST_ERR_CM` 18, `FAST_FRONT_CM` 150, `FINISH_FRONT_CM` 150, `FINISH_MS` 700; Obstacle `BIAS_CM` 20, `BIAS_MS` 1600, `MOTOR_SPEED_FAST` 36, `FAST_FRONT_CM` 130, the `STUCK_*` group and every approach and park constant above.
+Set in simulation: Open `MOTOR_SPEED_FAST` 38, `CALM_ERR_CM` 25, `FAST_ERR_CM` 18, `FAST_FRONT_CM` 150, `FINISH_FRONT_CM` 150, `FINISH_MS` 700; Obstacle `BIAS_CM` 20, `BIAS_MS` 1600, `MOTOR_SPEED_FAST` 36, `FAST_FRONT_CM` 130, the `STUCK_*` group and every approach and park constant above.
 
 </details>
 

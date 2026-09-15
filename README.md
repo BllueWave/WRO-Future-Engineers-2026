@@ -1,58 +1,74 @@
 <p align="center">
   <img src="docs/images/robot_exploded_view.jpg" width="760" alt="Exploded view of the Blue Wave car">
 </p>
-<p align="center"><sub>Exploded view of the Blue Wave car</sub></p>
 
-<h1 align="center">Blue Wave - WRO Future Engineers 2026</h1>
+<h1 align="center">Blue Wave</h1>
 
-<p align="center">Team from Kuwait, 1st at the 2026 Kuwait national round, going to the WRO 2026 Asia final in India.</p>
+<p align="center"><b>WRO Future Engineers 2026</b><br>Kuwait national round: 1st place, 64 points<br>Next: WRO 2026 Asia final, India</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/controller-Arduino%20Uno%20R3-00979D" width="160" alt="Controller: Arduino Uno R3">
-  <img src="https://img.shields.io/badge/IDE-Arduino%202.3.10-00979D" width="124" alt="IDE: Arduino 2.3.10">
-  <img src="https://img.shields.io/badge/sensors-3%20HC--SR04%2C%20BNO055%2C%20Pixy2-1f4fa8" width="214" alt="Sensors: 3 HC-SR04, BNO055, Pixy2">
+  <img src="https://img.shields.io/badge/Kuwait%20national%20round-1st%20place%20%C2%B7%2064%20pts-0b6e4f" height="22" alt="Kuwait national round: 1st place, 64 points">
+  <img src="https://img.shields.io/badge/controller-Arduino%20Uno%20R3-00979D" height="22" alt="Controller: Arduino Uno R3">
+  <img src="https://img.shields.io/badge/sensors-3%C3%97%20HC--SR04%20%C2%B7%20BNO055%20%C2%B7%20Pixy2-1f4fa8" height="22" alt="Sensors: 3 HC-SR04, BNO055, Pixy2">
 </p>
 
-We are Fawaz Alasousi and Dawood AlEneezi, coached by Shinu Mathew. Our car is a 1:28-class RC chassis, about 200 × 125 mm, with Ackermann steering and one brushed DC motor. One Arduino Uno R3 reads three HC-SR04 ultrasonic sensors, a BNO055 IMU and a Pixy2 camera, and runs a separate sketch for each challenge.
+Our car is a 1:28-class RC chassis, about 200 × 125 mm, with Ackermann steering and one brushed DC motor. One Arduino Uno R3 reads three HC-SR04 ultrasonic sensors, a BNO055 IMU and a Pixy2 camera, and runs a separate sketch for each challenge.
 
-## Documentation by Appendix C criterion
+## Contents
 
-Appendix C of the [2026 rules](https://wro-association.org/wp-content/uploads/WRO-2026-Future-Engineers-Self-Driving-Cars-General-Rules.pdf) (p.44-54) scores the documentation on five criteria, 0, 2, 4 or 6 points each, for 30 of the 122 points (rule 10.2, p.21).
-
-| Criterion | Page | What it holds |
+| Appendix C criterion | Page | What it covers |
 |---|---|---|
-| 1. Mobility | [Mobility and mechanical design](docs/01-mobility.md) | Size and lot geometry, break-away test (PWM 15, 18, 25), speed fitted to a real 23 s run, steering geometry, what is still unmeasured |
-| 2. Power and sensors | [Power and sensor architecture](docs/02-power-and-sensors.md) | Power tree, current estimate, the 40-degree side sonars and their effects, Pixy2 range constants, calibration, failure handling |
-| 3. Software and obstacle strategy | [Software architecture and obstacle strategy](docs/03-software-and-strategy.md) | Module maps, Open flowchart, Obstacle state machine, pillar ladder, front-wall park, edge cases, origin of every constant |
-| 4. Systems thinking and decisions | [Systems thinking and engineering decisions](docs/04-engineering-decisions.md) | Constraints, decision log, version history, what failed, risks, next steps |
-| 5. Reproducibility and GitHub quality | [Build, test and reproduce](docs/05-build-test-reproduce.md) | Parts, library versions, flash sizes, bench checklist, mat and simulation results, how to repeat each number |
+| 1. Mobility | [Mobility and mechanical design](docs/01-mobility.md) | Chassis choice, size and lot geometry, break-away test at PWM 15, 18 and 25, speed fitted to a real 23 s run, steering geometry |
+| 2. Power and sensors | [Power and sensor architecture](docs/02-power-and-sensors.md) | Power tree, current budget, why HC-SR04 and Pixy2, the 40° side sonars, Pixy2 range constants, calibration, failure handling |
+| 3. Software and obstacle strategy | [Software architecture and obstacle strategy](docs/03-software-and-strategy.md) | Module maps, Open flowchart, Obstacle state machine, pillar ladder, front-wall park, edge cases, where every constant comes from |
+| 4. Systems thinking and decisions | [Systems thinking and engineering decisions](docs/04-engineering-decisions.md) | Why we chose each part, constraints, decision log, version history, risks |
+| 5. Reproducibility | [Build, test and reproduce](docs/05-build-test-reproduce.md) | Parts list, library versions, flash sizes, bench check, test results, how to repeat each number |
+
+Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp-content/uploads/WRO-2026-Future-Engineers-Self-Driving-Cars-General-Rules.pdf) (p.44-54).
 
 ## The car
 
-| Item | Value | Source |
-|---|---|---|
-| Size | About 200 × 125 mm; rule limit 300 × 200 × 300 mm, 1.5 kg (rules 11.1, 11.2) | Team measurement, 14 Sep 2026 |
-| Chassis | WLtoys 1:28-class RC chassis, four wheels | Team |
-| Controller | Arduino Uno R3: ATmega328P, 32,256 B flash, 2,048 B RAM | Datasheet |
-| Drive | One brushed DC motor, Cytron MD13S driver (PWM D3, direction D8), race setting PWM 30 | Firmware |
-| Steering | Servo on D10, Ackermann front axle; 30-160 while driving, 10 and 170 when parking | Firmware |
-| Distance | 3 × HC-SR04: front straight ahead; left and right on the nose corners, about 40° from the axis | Team drawing, 14 Sep 2026 |
-| Heading | BNO055 IMU on I2C (A4, A5) | Firmware |
-| Camera | Pixy2 on SPI (ICSP header): signature 1 red pillar, 2 green pillar | Firmware |
-| Battery | 2S LiPo, 7.4 V nominal | Team |
-| Start | Waits for a change on A2 after power-on (rules 9.10, 9.11) | Firmware |
-| Speed at PWM 30 | About 998 mm/s, fitted to one timed 23 s three-lap Open run | Simulator fit to a real run |
-| Code | Open: 283 lines, 15,136 B flash. Obstacle: 1,103 lines, 29,604 B | Arduino IDE compiler, 15 Sep 2026 |
+| Item | Value |
+|---|---|
+| Size | About 200 × 125 mm (rule limit 300 × 200 × 300 mm, 1.5 kg, rules 11.1 and 11.2) |
+| Chassis | WLtoys 1:28-class RC chassis, four wheels, Ackermann front axle |
+| Controller | Arduino Uno R3: ATmega328P, 32,256 B flash, 2,048 B RAM |
+| Drive | One brushed DC motor on a Cytron MD13S driver (PWM on D3, direction on D8), race setting PWM 30 |
+| Steering | Servo on D10; 30-160 while driving, 10 and 170 when parking |
+| Distance | 3 × HC-SR04: one straight ahead, one on each nose corner at about 40° from the axis |
+| Heading | BNO055 IMU on I2C (A4, A5) |
+| Camera | Pixy2 on SPI (ICSP header): signature 1 red pillar, 2 green pillar, 3 magenta limiter |
+| Battery | 2S LiPo, 7.4 V nominal |
+| Start | Waits for the start switch on A2 after power-on (rules 9.10, 9.11) |
+| Speed at PWM 30 | About 1 m/s |
+| Code | Open: 283 lines, 15,136 B flash. Obstacle: 1,103 lines, 29,604 B flash |
 
 <p align="center">
-  <img src="docs/diagrams/system_overview.svg" width="760" alt="System overview: battery, motor driver, motor, servo, sensors, camera and start switch around the Arduino Uno R3">
+  <img src="docs/diagrams/system_overview.png" width="860" alt="System overview: the three HC-SR04 sonars, Pixy2 and BNO055 wired to the Arduino Uno R3, which drives the steering servo and the Cytron MD13S motor driver; the 2S LiPo feeds the driver and the Uno through the main power switch">
 </p>
+
+<p align="center">
+  <img src="docs/diagrams/sensor_layout.png" width="49%" alt="Sensor layout: front sonar at 0 degrees, side sonars at about 40 degrees on the nose corners, Pixy2 60 degree field of view, on a 200 by 125 mm outline">
+  <img src="docs/diagrams/wiring_pinmap.png" width="49%" alt="Wiring pin map: sonars on D6/D7, D4/D5 and D2/D9, servo on D10, motor PWM D3 and direction D8, start switch A2, BNO055 on A4/A5, Pixy2 on the ICSP header">
+</p>
+
+## Why these parts
+
+| Part | Why we chose it |
+|---|---|
+| 1:28 RC chassis | At about 200 × 125 mm it fits the 300 mm parking lot (1.5 × car length) and turns inside the 600 mm Open corridors. Front Ackermann steering and one drive motor meet rules 11.3 and 11.5. |
+| Arduino Uno only | One board runs each challenge in a fixed loop, starts the moment it is powered, uploads from the Arduino IDE in seconds, and has a library for every sensor we use. |
+| HC-SR04 sonars | They measure the distance to the black walls whatever the colour or light. Three units cover the front and both front corners; the corner units at about 40° see the wall ahead and beside. |
+| Pixy2 | It finds the red, green and magenta signatures on its own processor and sends only block position and size over SPI, so the Uno never handles images. A pillar's block grows as it gets closer, which gives its distance. |
+| BNO055 | It gives the heading we use to count the 12 corners and to end each parking arc on an angle instead of a timer. |
+
+More detail and the trade-offs: [Systems thinking and engineering decisions](docs/04-engineering-decisions.md).
 
 ## Strategy in brief
 
 ### Open Challenge
 
-A PD law on the left minus right side sonars keeps the lane at PWM 30: servo = 90 + 0.6·e + 0.05·Δe. At 48 cm from the front wall the car slows to PWM 25 and turns, reaching full servo travel at 18 cm. When the two side readings agree within 3 cm, a vote of the corners already driven picks the side. The BNO055 counts 12 corners, each at 70 of its 90 degrees, then the car stops on the front range in the start straight. Straights that stayed calm in lap 1 run at PWM 38 in laps 2 and 3.
+A PD law on the left minus right side sonars keeps the lane at PWM 30: servo = 90 + 0.6·e + 0.05·Δe. At 48 cm from the front wall the car slows to PWM 25 and turns, reaching full servo travel at 18 cm. When the two side readings agree within 3 cm, a vote of the corners already driven picks the side. The BNO055 counts 12 corners, then the car stops on the front range in the start straight. Straights that stayed calm in lap 1 run at PWM 38 in laps 2 and 3.
 
 ### Obstacle Challenge
 
@@ -66,20 +82,20 @@ flowchart TD
     P --> D
 ```
 
-We start in the lot for 7 points (item 1.8.1, p.21). The shorter side reading picks the outer wall and the direction, and the car ratchets out until its heading is 50 degrees out. On the laps, the nearest red or green Pixy2 block within 900 mm sets the servo from a six-step ladder: 40 to 78 passes a red pillar on its right, 102 to 140 passes a green pillar on its left. With no pillar in view the Open law drives. In laps 2 and 3 the left minus right set-point shifts by 20 cm toward the side the lap-1 pillar map needs. If the front reads 15 cm or less and the heading has not moved 3 degrees in 0.7 s, the car reverses at opposite lock.
+We start in the lot for 7 points (item 1.8.1, p.21). The shorter side reading picks the outer wall and the direction, and the car ratchets out until its heading is 50° out. On the laps, the nearest red or green Pixy2 block within 900 mm sets the servo from a six-step ladder: 40 to 78 passes a red pillar on its right, 102 to 140 passes a green pillar on its left. With no pillar in view the Open law drives. In laps 2 and 3 the lane set-point shifts by 20 cm toward the side the lap-1 pillar map needs. If the front reads 15 cm or less and the heading has not moved 3° in 0.7 s, the car reverses at opposite lock.
 
 ### Parking
 
-After 12 corners, parallel and with no pillar in view, the car stops at a front-wall range of 820 mm (lot on the right) or 1,520 mm (lot on the left). Those marks come from our measurements of 1.0 m and 1.7 m from that wall to the downstream limiter. The car measures its real step length, solves an entry angle between 36 and 64 degrees, and reverses in on arcs closed on the IMU heading. Each move is first checked against a model of the lot with a 12 mm margin. The park has run only in simulation, and four items in the sketch header are marked MEASURE.
+After 12 corners, parallel and with no pillar in view, the car stops at a front-wall range of 820 mm (lot on the right) or 1,520 mm (lot on the left). Those marks come from our measurements of 1.0 m and 1.7 m from that wall to the downstream limiter. The car measures its real step length, solves an entry angle between 36° and 64°, and reverses in on arcs closed on the IMU heading. Each move is checked first against a model of the lot with a 12 mm margin.
 
 ### Code modules and the parts they use
 
 | Module | Functions | Parts |
 |---|---|---|
-| Start and fault code (both sketches) | `waitStart()`, `signalServo()` | Start switch on A2; servo wiggle codes |
-| Sensing and motor output (both) | `getStableDistance()`, `runMotor()` | 3 × HC-SR04; Cytron MD13S and motor |
-| Heading and corner count | `readYaw()`, `lapsCount()`; inline in Open's `loop()` | BNO055 |
-| Lap law: lane, corners, pillars, map, stuck recovery | `lapStep()`; Open's `loop()` without pillars | HC-SR04s, Pixy2, servo, MD13S |
+| Start and fault codes | `waitStart()`, `signalServo()` | Start switch on A2, servo |
+| Sensing and motor output | `getStableDistance()`, `runMotor()` | 3 × HC-SR04, Cytron MD13S and motor |
+| Heading and corner count | `readYaw()`, `lapsCount()` | BNO055 |
+| Lap law: lane, corners, pillars, map, recovery | `lapStep()` | HC-SR04s, Pixy2, servo, MD13S |
 | Pillar range, limiter rejection | `signDistance()`, `looksLikeBarrier()` | Pixy2 |
 | Outer wall and lot exit | `parkPickSide()`, `startTick()` | Side HC-SR04s, servo, MD13S, BNO055 |
 | Approach and park | `approachStep()`, `parkRun()`, `parkArcTo()`, `parkStep()`, `bayClear()` | Front and wall-side HC-SR04, BNO055, servo, MD13S |
@@ -88,35 +104,15 @@ State diagrams, flowcharts and constants: [Software and strategy](docs/03-softwa
 
 ## Results
 
-We placed 1st at the WRO Future Engineers 2026 Kuwait national round in June 2026.
+| Event | Result |
+|---|---|
+| WRO Future Engineers 2026, Kuwait national round, June 2026 | **1st place, 64 points** |
+| Open Challenge on our practice mat, PWM 30 | Three laps in about 23 s |
+| Open sketch in simulation, all 32 corridor and direction combinations, 320 runs | 287 runs scored 30/30 |
 
-### On the mat since then
+Simulation results compare code versions against each other; full test records are in [Build, test and reproduce](docs/05-build-test-reproduce.md).
 
-| Date | Code | What happened |
-|---|---|---|
-| 2 Sep 2026 | `obstacle_kuwait`, as listed in our notes | Three full Obstacle laps, one light touch on one pillar |
-| 6 Sep 2026 | 6 September parking build | Lot exit worked. No park: the lap total was zeroed at the handover (fixed as fix 26) |
-| By 11 Sep 2026 | `open_kuwait`, PWM 30 | Three Open laps in about 23 s |
-| 14 Sep 2026 | Finals build of that day | The car did not move; four causes found and fixed ([version history](docs/04-engineering-decisions.md#version-history)) |
-| 15 Sep 2026 | v20 sketches in `src/` | Not yet run on the mat |
-
-### In simulation
-
-> Our `real2` simulator runs the unchanged sketches against a model of this car. It fails two of its three fidelity gates: `obstacle_kuwait`, listed in our notes as the national-round code, finishes three laps in 1 of 60 simulated rounds. We use these numbers only to compare code versions.
-
-| Sketch | Test | Result in simulation |
-|---|---|---|
-| Open v20 | Paired with `open_kuwait` on the same seeds | 37/40 against 21/40 |
-| Open v20 | Final file, 40 fresh seeds | 36/40, lap-3 median 25.6 s |
-| Open v20 | All 32 draw cells, 320 runs | 287/320 scored 30/30 |
-| Obstacle v20 | 120 starts in the lot | Exit 119/120, three laps 12/120, 3 partial parks, 0 full |
-| Obstacle v20 | Park only, from the lap-3 handover pose, 16 runs | 4 full parks, limiter touched in about half |
-
-### In India
-
-We will run the two sketches in `src/` with `PRACTICE 0`, start the Obstacle round in the lot and attempt the parallel park. Rule 9.9 forbids calibration in preparation time, so we train the Pixy2 signatures and set the park constants in the practice rounds. Our fallback if the Obstacle sketch fails in practice is in the [risk table](docs/04-engineering-decisions.md#risks-and-mitigations).
-
-Our current videos are from June 2026, before the v20 sketches: [Open Challenge](https://youtube.com/shorts/_rmwh_EwI1A) (about 39 s of autonomous driving) and [Obstacle Challenge](https://youtube.com/shorts/2quu5O000I0) (about 32 s). Clip lengths and local copies are in [`videos/`](videos/).
+Videos: [Open Challenge](https://youtube.com/shorts/_rmwh_EwI1A) and [Obstacle Challenge](https://youtube.com/shorts/2quu5O000I0). More in [`videos/`](videos/).
 
 ## Repository map
 
@@ -127,43 +123,36 @@ Our current videos are from June 2026, before the v20 sketches: [Open Challenge]
 │   ├── diagrams/       system, sensors, wiring, power
 │   ├── arena/          3D model of the 2026 field
 │   ├── images/         exploded view of the car
-│   └── team_photos/    work sessions, June 2026
+│   └── team_photos/    work sessions
 ├── src/                the two competition sketches
-├── Models/             print project: v2 body, brackets
-├── Schemes/            June 2026 wiring PDF
-├── Vehicle_Photos/     file list for the six views
-└── videos/             June 2026 clips and links
+├── Models/             3D print project: body and sensor brackets
+├── Schemes/            wiring
+├── Vehicle_Photos/     photos of the car
+└── videos/             challenge videos
 ```
 
 ## Build and upload
 
 1. **Board.** Install Arduino IDE 2.3.10 and the *Arduino AVR Boards* core 1.8.8. Select *Arduino Uno* (`arduino:avr:uno`).
-2. **Libraries.** From the Library Manager: Adafruit BNO055 1.6.4, Adafruit Unified Sensor 1.1.15, Adafruit BusIO 1.17.4, NewPing 1.9.7, Servo 1.3.0. Add the Pixy2 Arduino library by hand (it has no version metadata), then rename `ZumoBuzzer.cpp` and `ZumoMotors.cpp` in its folder to `.cpp.bak`. Neither sketch uses them, and they add 1,674 B to each build.
-3. **Start mode.** Check for `#define PRACTICE 0`: line 36 in `src/Open_Challenge/Open_Challenge.ino`, line 62 in `src/Obstacle_Challenge/Obstacle_Challenge.ino`. `PRACTICE 1` also starts the car 3 s after power-up, which breaks rule 9.11.
-4. **Verify and upload** over USB. Expected flash: 15,136 B for Open and 29,604 B for Obstacle, of 32,256 B. Without the rename in step 2: 16,810 B and 31,278 B. The same build from a terminal:
+2. **Libraries.** From the Library Manager: Adafruit BNO055 1.6.4, Adafruit Unified Sensor 1.1.15, Adafruit BusIO 1.17.4, NewPing 1.9.7, Servo 1.3.0. Add the Pixy2 Arduino library by hand, then rename `ZumoBuzzer.cpp` and `ZumoMotors.cpp` in its folder to `.cpp.bak`. Neither sketch uses them, and they add 1,674 B to each build.
+3. **Start mode.** Keep `#define PRACTICE 0` (line 36 in `src/Open_Challenge/Open_Challenge.ino`, line 62 in `src/Obstacle_Challenge/Obstacle_Challenge.ino`). `PRACTICE 1` also starts the car 3 s after power-up, which rule 9.11 does not allow.
+4. **Verify and upload** over USB. Expected flash: 15,136 B for Open and 29,604 B for Obstacle, of 32,256 B. From a terminal:
    ```sh
    arduino-cli compile --fqbn arduino:avr:uno src/Obstacle_Challenge
    arduino-cli upload -p <port> --fqbn arduino:avr:uno src/Obstacle_Challenge
    ```
-5. **Pixy2 and power-on check.** In PixyMon, train signature 1 on a red pillar, 2 on a green pillar and 3 on a magenta limiter, under the venue light. Switch on: one servo wiggle means ready, two wiggles repeating means the BNO055 is not answering. With `PRACTICE 0` the car must stay still until the A2 switch changes.
+5. **Pixy2 and power-on check.** In PixyMon, train signature 1 on a red pillar, 2 on a green pillar and 3 on a magenta limiter under the venue light. At power-on, one servo wiggle means ready; two wiggles repeating means the BNO055 is not answering. With `PRACTICE 0` the car stays still until the start switch on A2 changes.
 
-Serial checks at 115200 baud, the bench checklist and the testing workflow: [Build, test and reproduce](docs/05-build-test-reproduce.md).
+Serial checks at 115200 baud and the bench check: [Build, test and reproduce](docs/05-build-test-reproduce.md).
 
 ## Team
 
-- Fawaz Alasousi (فواز العسعوسي)
-- Dawood AlEneezi (داود العنزي)
+<table align="center">
+  <tr>
+    <td align="center" width="230"><b>Fawaz Alasousi</b><br><sub>Team member</sub></td>
+    <td align="center" width="230"><b>Dawood AlEneezi</b><br><sub>Team member</sub></td>
+    <td align="center" width="230"><b>Shinu Mathew</b><br><sub>Coach</sub></td>
+  </tr>
+</table>
 
-Coach: Shinu Mathew
-
-## Team checklist
-
-- [ ] Six photos of the car as it competes, a team photo, and a parts photo of this car to replace `docs/components.jpg` (file names in [`Vehicle_Photos/`](Vehicle_Photos/README.md))
-- [ ] Mat batch on v20 (10 Open, 20 Obstacle runs, one serial log) and two YouTube videos with `PRACTICE 0`, each with at least 30 s of autonomous driving
-- [ ] Measure height, mass, wheelbase, track, wheel diameter, turning radius at both locks, battery capacity and current draw
-- [ ] Measure the park constants on a mat: `LOT_RIGHT_MM`, `R_PARK_MM`, `CAR_NOSE_MM`, `PARK_LANE_MM` and the side-sonar fits
-- [ ] Confirm the chassis model, driven axles, motor and servo models, Pixy2 version, Uno power path and the start switch on A2
-- [ ] Write down the reasons we chose this chassis, an Arduino-only design, HC-SR04 sonars and a Pixy2
-- [ ] Pick the backup sketch for India, give it the A2 start and commit it (rule 7)
-- [ ] STEP or STL exports of the body parts, and the engineering journal (Appendix C.2)
-- [ ] National-round scores, Asia final dates and documentation deadline; turn on GitHub Pages for `docs/arena/`
+<p align="center"><sub>Blue Wave · Kuwait · WRO Future Engineers 2026</sub></p>

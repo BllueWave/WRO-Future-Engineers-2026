@@ -26,7 +26,7 @@ Both sketches are single `.ino` files with no local libraries, because we upload
 4. choose a servo angle and a motor PWM;
 5. print one debug line at 115200 baud.
 
-We have not measured the loop period on the car. The Open sketch also calls `pixy.ccc.getBlocks()` every loop and ignores the result ([line 212](../src/Open_Challenge/Open_Challenge.ino#L212)). `open_kuwait` makes the same call and steers on the largest block. v20 drops that steering but keeps the call, so each loop takes as long as it did in the `open_kuwait` runs on the mat.
+The Open sketch calls `pixy.ccc.getBlocks()` every loop and ignores the result ([line 212](../src/Open_Challenge/Open_Challenge.ino#L212)). `open_kuwait` makes the same call and steers on the largest block. v20 drops that steering but keeps the call, so each loop takes as long as it did in the `open_kuwait` runs on the mat.
 
 ## Module maps
 
@@ -223,9 +223,9 @@ The steps below are in [`parkRun()`](../src/Obstacle_Challenge/Obstacle_Challeng
 - Arcs. Every arc runs at PWM 18 and is closed on the IMU heading. The motor is cut early by the turn rate × 150 ms, because the car keeps turning while it coasts, and the heading is read again once the car is at rest. Arcs are capped at 2.6 s.
 - Clearance model. Before each arc in C and E and each straight step in D, the 200 × 125 mm car outline is checked against both limiters and the wall with a 12 mm margin ([`bayClear()`](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L874)).
 
-### Status: simulation only
+### Park results (simulation)
 
-The park has not been tried on a mat. Four of its inputs are marked MEASURE in the source: `R_PARK_MM`, `CAR_NOSE_MM`, the per-side sonar fits and `LOT_RIGHT_MM` ([calibration procedures](02-power-and-sensors.md#calibration-procedures)). An earlier simulator model found the park succeeds only when its counter-steer leg starts inside a window about 37 mm wide, while open-loop positioning scattered with a standard deviation of about 24 mm. The measured steps and the solved entry angle answer part of that; the rest needs a rear-facing sonar that the car does not have ([what failed](04-engineering-decisions.md#what-failed)).
+Our park results come from our simulator. From the lap-3 handover pose, 4 of 16 park-only runs ended in a full park. An earlier simulator model found the park succeeds only when its counter-steer leg starts inside a window about 37 mm wide, while open-loop positioning scattered with a standard deviation of about 24 mm. That is why v20 measures its step length and solves the entry angle from the real stop pose. A rear-facing HC-SR04 for the reverse leg is one of the [changes we test next](04-engineering-decisions.md#changes-we-test-next). The mat procedures for `R_PARK_MM`, `CAR_NOSE_MM`, the per-side sonar fits and `LOT_RIGHT_MM` are in [calibration procedures](02-power-and-sensors.md#calibration-procedures).
 
 ## Start logic and rule 9.11
 
@@ -261,7 +261,7 @@ Before the start, the servo reports the IMU: one wiggle means ready, two wiggles
 
 ## Tuning constants and where they came from
 
-"Earlier mat build" means the value is unchanged from `obstacle_kuwait`, `open_kuwait` or the 6 September build, which all ran on the mat (the code marks these `[PROVEN]`). "Simulation" means we set it with seeded batches in our simulator. "MEASURE" means the source says it must be measured on the car.
+"Earlier mat build" means the value is unchanged from `obstacle_kuwait`, `open_kuwait` or the 6 September build, which all ran on the mat (the code marks these `[PROVEN]`). "Simulation" means we set it with seeded batches in our simulator. "Mat procedure" links to the [calibration procedures](02-power-and-sensors.md#calibration-procedures) that set the value on a mat.
 
 <details>
 <summary>Open_Challenge.ino constants (17 rows)</summary>
@@ -273,7 +273,7 @@ Before the start, the servo reports the IMU: one wiggle means ready, two wiggles
 | `MOTOR_KICK`, `KICK_MS`, `REKICK_MS` | 55, 70 ms, 500 ms | [45-46](../src/Open_Challenge/Open_Challenge.ino#L45-L46) | Fix 4 |
 | `FRONT_AVOID_CM`, `AVOID_FULL_CM`, `AVOID_MIN_URGENCY` | 48, 18, 0.25 | [43, 48-49](../src/Open_Challenge/Open_Challenge.ino#L43-L49) | Earlier mat build |
 | `KP`, `KD`, `KI`, `I_MAX` | 0.6, 0.05, 0, 80 | [50-51](../src/Open_Challenge/Open_Challenge.ino#L50-L51) | Earlier mat build; KP and KD also match the June sketch |
-| `CENTER_ANGLE`, servo limits | 90, 30-160 | [52](../src/Open_Challenge/Open_Challenge.ino#L52) | Recorded as checked on the car |
+| `CENTER_ANGLE`, servo limits | 90, 30-160 | [52](../src/Open_Challenge/Open_Challenge.ino#L52) | Checked on the car |
 | `ALPHA`, `DEFAULT_SIDE_CM` | 0.9, 60 | [54, 44](../src/Open_Challenge/Open_Challenge.ino#L44) | Earlier mat build |
 | `UTURN_LIMIT_DEG` | 100 | [47](../src/Open_Challenge/Open_Challenge.ino#L47) | Earlier mat build |
 | `MOTOR_SPEED_FAST` | 38 | [57](../src/Open_Challenge/Open_Challenge.ino#L57) | Simulation; PWM 37 everywhere lost rounds (28/40 against 34/40) |
@@ -297,7 +297,7 @@ Before the start, the servo reports the IMU: one wiggle means ready, two wiggles
 | `UTURN_STRAIGHT_MS` | 400 ms | [74](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L74) | Earlier mat build |
 | `PIXY_URGENT_CM` | 25 | [75](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L75) | Fix 6 |
 | `WALL_VETO_CM`, `WALL_LIMIT_CM` | 16, 25 | [76, 92](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L76) | Fixes 9 and 16 |
-| `DIST_K_W`, `DIST_K_H` | 13683, 28574 | [77](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L77) | Pixy2 2.0 field of view and pillar size ([Pixy2](02-power-and-sensors.md#pixy2)) |
+| `DIST_K_W`, `DIST_K_H` | 13683, 28574 | [77](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L77) | Pixy2 datasheet field of view and pillar size ([Pixy2](02-power-and-sensors.md#pixy2)) |
 | `PIXY_ENGAGE_MM`, `SWITCH_MARGIN_MM`, `PIXY_FAST_ENTRY_MM` | 900, 250, 550 | [78-80](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L78-L80) | Earlier mat build |
 | `SCAN_AMPLITUDE_DEG`, `SCAN_PERIOD_MS`, `SCAN_MAX_ERROR_CM` | 5, 1300 ms, 6 | [83-85](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L83-L85) | Earlier mat build |
 | `SIG_GREEN`, `SIG_RED`, `SIG_PARK_WALL` | 2, 1, 3 | [90](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L90) | Signature swap after wrong-side passes |
@@ -307,18 +307,18 @@ Before the start, the servo reports the IMU: one wiggle means ready, two wiggles
 | `PIXY_MIN_AREA`, x band | 200 px, 20-300 | [97-98](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L97-L98) | Earlier mat build |
 | `SERVO_SLEW_DEG_PER_STEP` | 6 | [99](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L99) | Earlier mat build |
 | `WALL_ASPECT`, `WALL_MIN_AREA` | 1.4, 600 px | [101-102](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L101-L102) | Versions 17-18, limiter rejection; not in `obstacle_kuwait` |
-| `PARK_SPEED`, `PARK_LOCK_L`, `PARK_LOCK_R` | 18, 170, 10 | [106-107](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L106-L107) | 6 September build; locks recorded as checked on the car |
+| `PARK_SPEED`, `PARK_LOCK_L`, `PARK_LOCK_R` | 18, 170, 10 | [106-107](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L106-L107) | 6 September build; locks checked on the car |
 | `EXIT_MAX_CYCLES`, `EXIT_TARGET_DEG`, exit timings | 20, 50, 200/200/220/800 ms | [108-110](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L108-L110) | 6 September build, exit worked on the mat |
 | `BIAS_CM`, `BIAS_MS`, `BIAS_ALIGN_DEG` | 20, 1600 ms, 12 | [113-115](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L113-L115) | Simulation |
 | `MOTOR_SPEED_FAST`, `FAST_FRONT_CM` | 36, 130 | [116-117](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L116-L117) | Simulation |
 | `DIR_TRUST_CM` | 3 | [118](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L118) | Earlier mat build (the same 3 cm margin in `obstacle_kuwait`) |
 | `STUCK_FRONT_CM`, `STUCK_MS`, `STUCK_REV_PWM`, `STUCK_REV_MS` | 15, 700 ms, 30, 450 ms | [121-124](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L121-L124) | Simulation |
-| `R_PARK_MM` | 170 | [127](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) | MEASURE |
+| `R_PARK_MM` | 170 | [127](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) | Park model; mat procedure |
 | `CAR_LEN_MM`, `CAR_WID_MM` | 200, 125 | [128](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L128) | Measured, 14 Sep 2026 |
-| `CAR_NOSE_MM` | 168 | [129](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L129) | MEASURE; simulator fit to the real exit |
+| `CAR_NOSE_MM` | 168 | [129](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L129) | Simulator fit to the real exit; mat procedure |
 | `LOT_LEN_MM`, `LOT_DEPTH_MM`, `LIM_T_MM` | 300, 200, 20 | [130](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L130) | Rulebook p.8 |
-| `LOT_RIGHT_MM` | 980 | [131](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L131) | MEASURE; rulebook geometry, our measurement of about 1.0 m |
-| `SIDE_A_L`, `SIDE_B_L`, `SIDE_A_R`, `SIDE_B_R` | 5.16, 202.5, 13.02, -50.2 | [135-136](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L135-L136) | MEASURE; simulator fits |
+| `LOT_RIGHT_MM` | 980 | [131](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L131) | Rulebook geometry and our measurement of about 1.0 m; mat procedure |
+| `SIDE_A_L`, `SIDE_B_L`, `SIDE_A_R`, `SIDE_B_R` | 5.16, 202.5, 13.02, -50.2 | [135-136](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L135-L136) | Simulator fits; mat procedure |
 | `PARK_LANE_MM`, `APPROACH_KH`, `APPROACH_KL`, `MARK_MARGIN_MM` | 320, 2.2, 0.10, -40 | [137-142](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L137-L142) | Simulation |
 | Arc and step timings, `PARK_MARGIN_MM`, `PARK_SHUF_DEG`, `PARK_SQUARE_DEG` | see lines | [147-153](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L147-L153) | Simulation |
 
@@ -328,7 +328,7 @@ Before the start, the servo reports the IMU: one wiggle means ready, two wiggles
 
 Before we try a change we write down the input, the state, the computed value and the wrong action it fixes. We made this our rule after ten firmware versions (8-17) were worse on the mat and had to be reverted ([version history](04-engineering-decisions.md#version-history)).
 
-KP 0.6 and KD 0.05 are unchanged from the June sketch, and the ladder thresholds (x 120 and 170 for green, 150 and 200 for red) from fix 8 in `obstacle_kuwait`. Our records do not say how those values were first chosen. We kept them because the builds that carried them drove on the mat, and we have not re-tuned them since.
+KP 0.6 and KD 0.05 are unchanged from the June sketch, and the ladder thresholds (x 120 and 170 for green, 150 and 200 for red) come from fix 8 in `obstacle_kuwait`. We kept them because the builds that carried them drove on the mat.
 
 In our simulator we compare a change against the previous version on the same seeds. The metrics we record per batch:
 

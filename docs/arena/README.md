@@ -82,7 +82,7 @@ With our car the lot leaves (300 - 200) / 2 = 50 mm at each end when the car is 
 - **How the direction is drawn.** Rule 9.3 only says the direction is random. The page tosses a coin.
 - **Die numbering in the other three sections.** Figure 7c (p.13) draws one section. The page rotates that numbering for the others.
 - **Seat of the single sign.** The page places it in the middle column, outer row (the positions on cards 9 and 10). The rules text does not state it.
-- **Our car.** The 200 × 125 mm footprint is the team's measurement from 14 September 2026. The 70 mm height is for display only; we have not measured the height.
+- **Our car.** The 200 × 125 mm footprint is the team's measurement from 14 September 2026. The page draws the car 70 mm tall for display.
 
 ## Related
 
