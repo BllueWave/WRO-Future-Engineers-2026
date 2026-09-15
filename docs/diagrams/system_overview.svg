@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="610" viewBox="0 0 1000 610" role="img" aria-labelledby="t d">
+  <title id="t">System overview of the Blue Wave car</title>
+  <desc id="d">Arduino Uno R3 in the centre. Left: three HC-SR04 sonars on trig and echo pins D6/D7, D4/D5 and D2/D9, a Pixy2 camera on SPI through the ICSP header, a BNO055 IMU on I2C A4/A5 and a start switch on A2. Right: a 2S LiPo feeding the Cytron MD13S, the MD13S on PWM D3 and DIR D8 driving the motor, and the steering servo on D10. The battery path to the Uno is dashed, to confirm.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #1f2328; }
+    .title { font-size: 20px; font-weight: 600; }
+    .name { font-size: 15px; font-weight: 600; }
+    .sub { font-size: 13px; fill: #57606a; }
+    .pin { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 13px; }
+    .lab { font-size: 12px; fill: #0969da; }
+    .labg { font-size: 12px; fill: #57606a; }
+    .box { fill: #f6f8fa; stroke: #8c959f; stroke-width: 1.5; }
+    .mcu { fill: #f6f8fa; stroke: #0969da; stroke-width: 2; }
+    .sig { stroke: #0969da; stroke-width: 2; fill: none; }
+    .pwr { stroke: #1f2328; stroke-width: 2.5; fill: none; }
+    .tbc { stroke: #57606a; stroke-width: 2; stroke-dasharray: 7 5; fill: none; }
+    .ha { fill: #0969da; }
+    .hp { fill: #1f2328; }
+    .hg { fill: #57606a; }
+  </style>
+
+  <rect x="1" y="1" width="998" height="608" rx="12" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+
+  <text class="title" x="32" y="42">System overview</text>
+  <text class="sub" x="32" y="64">Signal pins from Open_Challenge.ino and Obstacle_Challenge.ino (the same in both). Arrowheads show signal direction.</text>
+
+  <!-- Left column: inputs -->
+  <rect class="box" x="32" y="92" width="240" height="56" rx="6"/>
+  <text class="name" x="48" y="115">HC-SR04 front</text>
+  <text class="sub" x="48" y="135">centred on the nose, 0°</text>
+
+  <rect class="box" x="32" y="164" width="240" height="56" rx="6"/>
+  <text class="name" x="48" y="187">HC-SR04 left</text>
+  <text class="sub" x="48" y="207">front-left corner, ≈40°</text>
+
+  <rect class="box" x="32" y="236" width="240" height="56" rx="6"/>
+  <text class="name" x="48" y="259">HC-SR04 right</text>
+  <text class="sub" x="48" y="279">front-right corner, ≈40°</text>
+
+  <rect class="box" x="32" y="308" width="240" height="56" rx="6"/>
+  <text class="name" x="48" y="331">Pixy2 camera</text>
+  <text class="sub" x="48" y="351">red and green pillars</text>
+
+  <rect class="box" x="32" y="380" width="240" height="56" rx="6"/>
+  <text class="name" x="48" y="403">BNO055 IMU</text>
+  <text class="sub" x="48" y="423">heading, I2C address 0x28</text>
+
+  <rect class="box" x="32" y="452" width="240" height="56" rx="6"/>
+  <text class="name" x="48" y="475">Start switch</text>
+  <text class="sub" x="48" y="495">other side to GND</text>
+
+  <!-- Left connectors -->
+  <line class="sig" x1="283" y1="120" x2="419" y2="120"/>
+  <polygon class="ha" points="273,120 283,115 283,125"/>
+  <polygon class="ha" points="429,120 419,115 419,125"/>
+  <text class="lab" x="351" y="112" text-anchor="middle">trig / echo</text>
+
+  <line class="sig" x1="283" y1="192" x2="419" y2="192"/>
+  <polygon class="ha" points="273,192 283,187 283,197"/>
+  <polygon class="ha" points="429,192 419,187 419,197"/>
+  <text class="lab" x="351" y="184" text-anchor="middle">trig / echo</text>
+
+  <line class="sig" x1="283" y1="264" x2="419" y2="264"/>
+  <polygon class="ha" points="273,264 283,259 283,269"/>
+  <polygon class="ha" points="429,264 419,259 419,269"/>
+  <text class="lab" x="351" y="256" text-anchor="middle">trig / echo</text>
+
+  <line class="sig" x1="283" y1="336" x2="419" y2="336"/>
+  <polygon class="ha" points="273,336 283,331 283,341"/>
+  <polygon class="ha" points="429,336 419,331 419,341"/>
+  <text class="lab" x="351" y="328" text-anchor="middle">SPI</text>
+
+  <line class="sig" x1="283" y1="408" x2="419" y2="408"/>
+  <polygon class="ha" points="273,408 283,403 283,413"/>
+  <polygon class="ha" points="429,408 419,403 419,413"/>
+  <text class="lab" x="351" y="400" text-anchor="middle">I2C</text>
+
+  <line class="sig" x1="272" y1="480" x2="419" y2="480"/>
+  <polygon class="ha" points="429,480 419,475 419,485"/>
+  <text class="lab" x="351" y="472" text-anchor="middle">digital input</text>
+
+  <!-- Controller -->
+  <rect class="mcu" x="430" y="92" width="220" height="416" rx="8"/>
+  <text class="pin" x="442" y="124.5">D6 / D7</text>
+  <text class="pin" x="442" y="196.5">D4 / D5</text>
+  <text class="pin" x="442" y="268.5">D2 / D9</text>
+  <text class="pin" x="442" y="340.5">ICSP</text>
+  <text class="pin" x="442" y="412.5">A4 / A5</text>
+  <text class="pin" x="442" y="484.5">A2</text>
+  <text class="name" x="540" y="296" text-anchor="middle" style="font-size:16px">Arduino Uno R3</text>
+  <text class="sub" x="540" y="316" text-anchor="middle">ATmega328P, 16 MHz</text>
+  <text class="pin" x="638" y="124.5" text-anchor="end" style="fill:#57606a">power in</text>
+  <text class="pin" x="638" y="244.5" text-anchor="end">D3 / D8</text>
+  <text class="pin" x="638" y="456.5" text-anchor="end">D10</text>
+
+  <!-- Right column: power and outputs -->
+  <rect class="box" x="740" y="92" width="228" height="56" rx="6"/>
+  <text class="name" x="756" y="115">2S LiPo battery</text>
+  <text class="sub" x="756" y="135">7.4 V nominal</text>
+
+  <rect class="box" x="740" y="212" width="228" height="56" rx="6"/>
+  <text class="name" x="756" y="235">Cytron MD13S</text>
+  <text class="sub" x="756" y="255">motor driver, PWM + DIR</text>
+
+  <rect class="box" x="740" y="308" width="228" height="56" rx="6"/>
+  <text class="name" x="756" y="331">Drive motor</text>
+  <text class="sub" x="756" y="351">brushed DC</text>
+
+  <rect class="box" x="740" y="424" width="228" height="56" rx="6"/>
+  <text class="name" x="756" y="447">Steering servo</text>
+  <text class="sub" x="756" y="467">90 = straight ahead</text>
+
+  <!-- Right connectors -->
+  <line class="tbc" x1="740" y1="120" x2="661" y2="120"/>
+  <polygon class="hg" points="651,120 661,115 661,125"/>
+  <text class="labg" x="695" y="110" text-anchor="middle">to confirm</text>
+
+  <line class="sig" x1="650" y1="240" x2="729" y2="240"/>
+  <polygon class="ha" points="739,240 729,235 729,245"/>
+  <text class="lab" x="695" y="232" text-anchor="middle">PWM, DIR</text>
+
+  <line class="sig" x1="650" y1="452" x2="729" y2="452"/>
+  <polygon class="ha" points="739,452 729,447 729,457"/>
+  <text class="lab" x="695" y="444" text-anchor="middle">servo pulse</text>
+
+  <line class="pwr" x1="854" y1="148" x2="854" y2="201"/>
+  <polygon class="hp" points="854,211 849,201 859,201"/>
+  <text class="labg" x="866" y="184" style="fill:#1f2328">7.4 V</text>
+
+  <line class="pwr" x1="854" y1="268" x2="854" y2="297"/>
+  <polygon class="hp" points="854,307 849,297 859,297"/>
+  <text class="labg" x="866" y="292" style="fill:#1f2328">motor leads</text>
+
+  <!-- Notes and legend -->
+  <text class="sub" x="32" y="546">USB on the Uno: upload from the Arduino IDE and serial debug at 115200 baud on D0/D1. Free pins: A0, A1, A3.</text>
+  <line class="sig" x1="32" y1="576" x2="62" y2="576"/>
+  <text class="sub" x="70" y="580">signal</text>
+  <line class="pwr" x1="130" y1="576" x2="160" y2="576"/>
+  <text class="sub" x="168" y="580">power</text>
+  <line class="tbc" x1="226" y1="576" x2="262" y2="576"/>
+  <text class="sub" x="270" y="580">to confirm on the car</text>
+</svg>

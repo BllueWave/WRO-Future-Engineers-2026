@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="720" viewBox="0 0 1000 720" role="img" aria-labelledby="t d">
+  <title id="t">Power tree of the Blue Wave car</title>
+  <desc id="d">A 2S LiPo, 7.4 V nominal, feeds the Cytron MD13S and the drive motor; both June documents agree on this path. The main power switch required by rule 9.10 is to confirm. Two June documents disagree on the Uno supply: straight to Vin, or through a 5 V buck converter to Vin; both are dashed, to confirm. The Uno 5 V rail feeds the Pixy2 through the ICSP header. The supply of the three HC-SR04s, the BNO055 and the servo is to confirm. Current figures are estimates, not measurements.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #1f2328; }
+    .title { font-size: 20px; font-weight: 600; }
+    .name { font-size: 15px; font-weight: 600; }
+    .name14 { font-size: 14px; font-weight: 600; }
+    .body { font-size: 13px; fill: #1f2328; }
+    .sub { font-size: 13px; fill: #57606a; }
+    .small { font-size: 12px; fill: #57606a; }
+    .est { font-size: 12px; fill: #0969da; font-weight: 600; }
+    .box { fill: #f6f8fa; stroke: #8c959f; stroke-width: 1.5; }
+    .boxd { fill: #ffffff; stroke: #57606a; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .pwr { stroke: #1f2328; stroke-width: 2.5; fill: none; }
+    .tbc { stroke: #57606a; stroke-width: 2; stroke-dasharray: 7 5; fill: none; }
+    .hp { fill: #1f2328; }
+    .hg { fill: #57606a; }
+  </style>
+
+  <rect x="1" y="1" width="998" height="718" rx="12" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+
+  <text class="title" x="32" y="42">Power tree</text>
+  <text class="sub" x="32" y="64">Currents are estimates from our audit notes, not meter readings.</text>
+  <line class="pwr" x1="690" y1="38" x2="720" y2="38"/>
+  <text class="sub" x="728" y="43">documented</text>
+  <line class="tbc" x1="826" y1="38" x2="860" y2="38"/>
+  <text class="sub" x="868" y="43">to confirm</text>
+
+  <!-- Battery and main switch on the trunk -->
+  <rect class="box" x="32" y="300" width="160" height="80" rx="6"/>
+  <text class="name" x="48" y="326">2S LiPo</text>
+  <text class="body" x="48" y="346">7.4 V nominal</text>
+  <text class="small" x="48" y="366">capacity: to confirm</text>
+
+  <line class="pwr" x1="192" y1="340" x2="420" y2="340"/>
+
+  <rect class="boxd" x="222" y="306" width="160" height="68" rx="6"/>
+  <text class="name14" x="234" y="329">Main power switch</text>
+  <text class="small" x="234" y="347">rule 9.10: one switch</text>
+  <text class="small" x="234" y="364">to confirm</text>
+
+  <circle cx="420" cy="340" r="5" class="hp"/>
+
+  <!-- Motor branch: both June documents agree -->
+  <path class="pwr" d="M420,340 V150 H469"/>
+  <polygon class="hp" points="479,150 469,145 469,155"/>
+  <text class="body" x="430" y="250" style="font-weight:600">7.4 V</text>
+
+  <rect class="box" x="480" y="112" width="220" height="76" rx="6"/>
+  <text class="name" x="496" y="137">Cytron MD13S</text>
+  <text class="body" x="496" y="157">7.4 V motor supply</text>
+  <text class="small" x="496" y="176">same in both June documents</text>
+
+  <line class="pwr" x1="700" y1="150" x2="769" y2="150"/>
+  <polygon class="hp" points="779,150 769,145 769,155"/>
+
+  <rect class="box" x="780" y="112" width="188" height="76" rx="6"/>
+  <text class="name" x="796" y="137">Drive motor</text>
+  <text class="body" x="796" y="157">brushed DC</text>
+  <text class="small" x="796" y="176">current: not measured</text>
+
+  <!-- Uno supply, option B: buck converter -->
+  <line class="tbc" x1="425" y1="340" x2="469" y2="340"/>
+  <polygon class="hg" points="479,340 469,335 469,345"/>
+  <rect class="boxd" x="480" y="300" width="220" height="80" rx="6"/>
+  <text class="name14" x="496" y="325">B: 5 V buck converter</text>
+  <text class="small" x="496" y="345">from the June Schemes page</text>
+  <text class="small" x="496" y="364">part and rating: to confirm</text>
+
+  <line class="tbc" x1="590" y1="380" x2="590" y2="429"/>
+  <polygon class="hg" points="590,439 585,429 595,429"/>
+  <text class="small" x="600" y="414">5 V into Vin</text>
+
+  <!-- Uno supply, option A: straight to Vin -->
+  <path class="tbc" d="M420,345 V500 H469"/>
+  <polygon class="hg" points="479,500 469,495 469,505"/>
+  <text class="name14" x="410" y="470" text-anchor="end">A: straight to Vin</text>
+  <text class="small" x="410" y="488" text-anchor="end">from the June README</text>
+  <text class="small" x="410" y="506" text-anchor="end">to confirm</text>
+
+  <!-- Uno -->
+  <rect class="box" x="480" y="440" width="220" height="120" rx="6" style="stroke:#0969da;stroke-width:2"/>
+  <text class="name" x="496" y="466">Arduino Uno R3</text>
+  <text class="small" x="496" y="486">Vin feeds its 5 V regulator</text>
+  <text class="est" x="496" y="506">logic about 50 mA, estimate</text>
+
+  <!-- 5 V rail to the loads -->
+  <line class="pwr" x1="700" y1="520" x2="730" y2="520"/>
+  <text class="small" x="715" y="512" text-anchor="middle" style="fill:#1f2328;font-weight:600">5 V</text>
+  <line class="pwr" x1="730" y1="521" x2="730" y2="324"/>
+  <line class="pwr" x1="729" y1="324" x2="750" y2="324"/>
+  <polygon class="hp" points="760,324 750,319 750,329"/>
+  <line class="tbc" x1="730" y1="402" x2="750" y2="402"/>
+  <polygon class="hg" points="760,402 750,397 750,407"/>
+  <line class="tbc" x1="730" y1="480" x2="750" y2="480"/>
+  <polygon class="hg" points="760,480 750,475 750,485"/>
+  <path class="tbc" d="M730,522 V558 H750"/>
+  <polygon class="hg" points="760,558 750,553 750,563"/>
+
+  <rect class="box" x="760" y="292" width="208" height="64" rx="6"/>
+  <text class="name14" x="776" y="313">Pixy2 camera</text>
+  <text class="small" x="776" y="331">5 V through the ICSP header</text>
+  <text class="est" x="776" y="349">about 140 mA, estimate</text>
+
+  <rect class="box" x="760" y="370" width="208" height="64" rx="6"/>
+  <text class="name14" x="776" y="391">3 × HC-SR04</text>
+  <text class="small" x="776" y="409">supply rail: to confirm</text>
+  <text class="est" x="776" y="427">about 15 mA each, estimate</text>
+
+  <rect class="box" x="760" y="448" width="208" height="64" rx="6"/>
+  <text class="name14" x="776" y="469">BNO055 IMU</text>
+  <text class="small" x="776" y="487">supply pin: to confirm</text>
+  <text class="small" x="776" y="505">current: not estimated</text>
+
+  <rect class="box" x="760" y="526" width="208" height="64" rx="6"/>
+  <text class="name14" x="776" y="547">Steering servo</text>
+  <text class="small" x="776" y="565">supply rail: to confirm</text>
+  <text class="small" x="776" y="583">current: not measured</text>
+
+  <!-- Notes -->
+  <line x1="32" y1="612" x2="968" y2="612" stroke="#d0d7de" stroke-width="1"/>
+  <text class="body" x="32" y="640"><tspan style="font-weight:600">About 235 mA</tspan> for logic and sensors before the servo and the motor: 140 + 50 + 3 × 15 mA, all estimates.</text>
+  <text class="body" x="32" y="668">Ground rule: motor current never returns through the Uno header. Only signal ground goes to the Uno.</text>
+  <text class="sub" x="32" y="690">We keep this rule since a black lead connected near the Uno power header caused heat and a burnt component.</text>
+</svg>

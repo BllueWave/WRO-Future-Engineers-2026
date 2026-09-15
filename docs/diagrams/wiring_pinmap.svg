@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="832" viewBox="0 0 1000 832" role="img" aria-labelledby="t d">
+  <title id="t">Wiring pin map of the Blue Wave car</title>
+  <desc id="d">Signal wires to the Arduino Uno R3 as set in Open_Challenge.ino and Obstacle_Challenge.ino. HC-SR04 front TRIG D6, ECHO D7. HC-SR04 left TRIG D4, ECHO D5. HC-SR04 right TRIG D2, ECHO D9. Start switch on A2 with the other side to GND. Cytron MD13S PWM D3, DIR D8. Steering servo signal D10. BNO055 SDA A4, SCL A5. Pixy2 on SPI through the ICSP header. Below, the Uno R3 headers with the used pins filled.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #1f2328; }
+    .title { font-size: 20px; font-weight: 600; }
+    .h2 { font-size: 15px; font-weight: 600; }
+    .name { font-size: 15px; font-weight: 600; }
+    .sub { font-size: 13px; fill: #57606a; }
+    .small { font-size: 12px; fill: #57606a; }
+    .pin { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 13px; }
+    .hp { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 11px; }
+    .box { fill: #f6f8fa; stroke: #8c959f; stroke-width: 1.5; }
+    .mcu { fill: #f6f8fa; stroke: #0969da; stroke-width: 2; }
+    .sig { stroke: #0969da; stroke-width: 2; fill: none; }
+    .cable { stroke: #0969da; stroke-width: 4; fill: none; }
+    .ha { fill: #0969da; }
+    .used { fill: #0969da; stroke: #0969da; stroke-width: 1.5; }
+    .free { fill: #ffffff; stroke: #8c959f; stroke-width: 1.5; }
+  </style>
+
+  <rect x="1" y="1" width="998" height="830" rx="12" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+
+  <text class="title" x="32" y="42">Wiring pin map</text>
+  <text class="sub" x="32" y="64">Signal wires from the pin constants in Open_Challenge.ino and Obstacle_Challenge.ino (identical in both). Supply wires are in power_tree.svg.</text>
+
+  <!-- ===== Left components ===== -->
+  <rect class="box" x="32" y="132" width="220" height="80" rx="6"/>
+  <text class="name" x="46" y="161">HC-SR04 front</text>
+  <text class="sub" x="46" y="193">nose, 0°</text>
+  <text class="pin" x="240" y="160.5" text-anchor="end">TRIG</text>
+  <text class="pin" x="240" y="192.5" text-anchor="end">ECHO</text>
+
+  <rect class="box" x="32" y="232" width="220" height="80" rx="6"/>
+  <text class="name" x="46" y="261">HC-SR04 left</text>
+  <text class="sub" x="46" y="293">front-left, ≈40°</text>
+  <text class="pin" x="240" y="260.5" text-anchor="end">TRIG</text>
+  <text class="pin" x="240" y="292.5" text-anchor="end">ECHO</text>
+
+  <rect class="box" x="32" y="332" width="220" height="80" rx="6"/>
+  <text class="name" x="46" y="361">HC-SR04 right</text>
+  <text class="sub" x="46" y="393">front-right, ≈40°</text>
+  <text class="pin" x="240" y="360.5" text-anchor="end">TRIG</text>
+  <text class="pin" x="240" y="392.5" text-anchor="end">ECHO</text>
+
+  <rect class="box" x="32" y="432" width="220" height="80" rx="6"/>
+  <text class="name" x="46" y="465">Start switch</text>
+  <text class="sub" x="46" y="487">other terminal to GND</text>
+
+  <!-- Left wires: TRIG leaves the Uno, ECHO returns to it -->
+  <line class="sig" x1="263" y1="156" x2="400" y2="156"/>
+  <polygon class="ha" points="253,156 263,151 263,161"/>
+  <line class="sig" x1="252" y1="188" x2="389" y2="188"/>
+  <polygon class="ha" points="399,188 389,183 389,193"/>
+
+  <line class="sig" x1="263" y1="256" x2="400" y2="256"/>
+  <polygon class="ha" points="253,256 263,251 263,261"/>
+  <line class="sig" x1="252" y1="288" x2="389" y2="288"/>
+  <polygon class="ha" points="399,288 389,283 389,293"/>
+
+  <line class="sig" x1="263" y1="356" x2="400" y2="356"/>
+  <polygon class="ha" points="253,356 263,351 263,361"/>
+  <line class="sig" x1="252" y1="388" x2="389" y2="388"/>
+  <polygon class="ha" points="399,388 389,383 389,393"/>
+
+  <line class="sig" x1="252" y1="472" x2="389" y2="472"/>
+  <polygon class="ha" points="399,472 389,467 389,477"/>
+
+  <!-- ===== Uno ===== -->
+  <rect class="mcu" x="400" y="80" width="200" height="460" rx="8"/>
+  <text class="name" x="500" y="108" text-anchor="middle" style="font-size:16px">Arduino Uno R3</text>
+  <text class="sub" x="500" y="126" text-anchor="middle">ATmega328P, 16 MHz</text>
+  <line x1="412" y1="138" x2="588" y2="138" stroke="#d0d7de" stroke-width="1"/>
+
+  <text class="pin" x="412" y="160.5">D6</text>
+  <text class="pin" x="412" y="192.5">D7</text>
+  <text class="pin" x="412" y="260.5">D4</text>
+  <text class="pin" x="412" y="292.5">D5</text>
+  <text class="pin" x="412" y="360.5">D2</text>
+  <text class="pin" x="412" y="392.5">D9</text>
+  <text class="pin" x="412" y="476.5">A2 pull-up</text>
+
+  <text class="pin" x="588" y="160.5" text-anchor="end">D3</text>
+  <text class="pin" x="588" y="192.5" text-anchor="end">D8</text>
+  <text class="pin" x="588" y="266.5" text-anchor="end">D10</text>
+  <text class="pin" x="588" y="340.5" text-anchor="end">A4</text>
+  <text class="pin" x="588" y="372.5" text-anchor="end">A5</text>
+  <text class="pin" x="588" y="466.5" text-anchor="end">ICSP</text>
+
+  <text class="small" x="500" y="508" text-anchor="middle">D0, D1: serial 115200</text>
+  <text class="small" x="500" y="526" text-anchor="middle">Free: A0, A1, A3</text>
+
+  <!-- ===== Right wires ===== -->
+  <line class="sig" x1="600" y1="156" x2="737" y2="156"/>
+  <polygon class="ha" points="747,156 737,151 737,161"/>
+  <line class="sig" x1="600" y1="188" x2="737" y2="188"/>
+  <polygon class="ha" points="747,188 737,183 737,193"/>
+
+  <line class="sig" x1="600" y1="262" x2="737" y2="262"/>
+  <polygon class="ha" points="747,262 737,257 737,267"/>
+
+  <line class="sig" x1="611" y1="336" x2="737" y2="336"/>
+  <polygon class="ha" points="601,336 611,331 611,341"/>
+  <polygon class="ha" points="747,336 737,331 737,341"/>
+  <line class="sig" x1="600" y1="368" x2="737" y2="368"/>
+  <polygon class="ha" points="747,368 737,363 737,373"/>
+
+  <line class="cable" x1="613" y1="462" x2="735" y2="462"/>
+  <polygon class="ha" points="601,462 613,456 613,468"/>
+  <polygon class="ha" points="747,462 735,456 735,468"/>
+
+  <!-- ===== Right components ===== -->
+  <rect class="box" x="748" y="132" width="220" height="80" rx="6"/>
+  <text class="pin" x="760" y="160.5">PWM</text>
+  <text class="pin" x="760" y="192.5">DIR</text>
+  <text class="name" x="812" y="161">Cytron MD13S</text>
+  <text class="sub" x="812" y="193">DIR HIGH = forward</text>
+
+  <rect class="box" x="748" y="232" width="220" height="60" rx="6"/>
+  <text class="pin" x="760" y="266.5">SIG</text>
+  <text class="name" x="812" y="257">Steering servo</text>
+  <text class="sub" x="812" y="277">Servo library</text>
+
+  <rect class="box" x="748" y="312" width="220" height="80" rx="6"/>
+  <text class="pin" x="760" y="340.5">SDA</text>
+  <text class="pin" x="760" y="372.5">SCL</text>
+  <text class="name" x="812" y="341">BNO055 IMU</text>
+  <text class="sub" x="812" y="373">address 0x28</text>
+
+  <rect class="box" x="748" y="412" width="220" height="100" rx="6"/>
+  <text class="pin" x="760" y="466.5">SPI</text>
+  <text class="name" x="812" y="436">Pixy2 camera</text>
+  <text class="small" x="812" y="458">MOSI D11, MISO D12</text>
+  <text class="small" x="812" y="476">SCK D13</text>
+  <text class="small" x="812" y="494">5 V and GND from ICSP</text>
+
+  <text class="sub" x="32" y="566">Single arrow: signal direction. Double arrow: two-way line. Thick line: the ICSP connection.</text>
+
+  <!-- ===== Header view ===== -->
+  <line x1="32" y1="586" x2="968" y2="586" stroke="#d0d7de" stroke-width="1"/>
+  <text class="h2" x="32" y="614">Where these pins sit on the Uno R3</text>
+  <text class="sub" x="32" y="634">Top view, USB connector on the left, spacing not to scale. Filled pins are wired by the v20 sketches.</text>
+
+  <rect x="100" y="648" width="830" height="148" rx="8" fill="#f6f8fa" stroke="#8c959f" stroke-width="1.5"/>
+  <rect x="78" y="664" width="52" height="40" rx="3" fill="#eaeef2" stroke="#8c959f" stroke-width="1.5"/>
+  <text class="hp" x="104" y="688" text-anchor="middle">USB</text>
+
+  <!-- Top header: SCL SDA AREF GND 13..8 | 7..0 -->
+  <g text-anchor="middle">
+    <text class="hp" x="170" y="672">SCL</text>
+    <text class="hp" x="210" y="672">SDA</text>
+    <text class="hp" x="250" y="672">AREF</text>
+    <text class="hp" x="290" y="672">GND</text>
+    <text class="hp" x="330" y="672">13</text>
+    <text class="hp" x="370" y="672">12</text>
+    <text class="hp" x="410" y="672">11</text>
+    <text class="hp" x="450" y="672">10</text>
+    <text class="hp" x="490" y="672">9</text>
+    <text class="hp" x="530" y="672">8</text>
+    <text class="hp" x="594" y="672">7</text>
+    <text class="hp" x="634" y="672">6</text>
+    <text class="hp" x="674" y="672">5</text>
+    <text class="hp" x="714" y="672">4</text>
+    <text class="hp" x="754" y="672">3</text>
+    <text class="hp" x="794" y="672">2</text>
+    <text class="hp" x="834" y="672">1</text>
+    <text class="hp" x="874" y="672">0</text>
+  </g>
+  <rect class="free" x="161" y="680" width="18" height="18"/>
+  <rect class="free" x="201" y="680" width="18" height="18"/>
+  <rect class="free" x="241" y="680" width="18" height="18"/>
+  <rect class="free" x="281" y="680" width="18" height="18"/>
+  <rect class="free" x="321" y="680" width="18" height="18"/>
+  <rect class="free" x="361" y="680" width="18" height="18"/>
+  <rect class="free" x="401" y="680" width="18" height="18"/>
+  <rect class="used" x="441" y="680" width="18" height="18"/>
+  <rect class="used" x="481" y="680" width="18" height="18"/>
+  <rect class="used" x="521" y="680" width="18" height="18"/>
+  <rect class="used" x="585" y="680" width="18" height="18"/>
+  <rect class="used" x="625" y="680" width="18" height="18"/>
+  <rect class="used" x="665" y="680" width="18" height="18"/>
+  <rect class="used" x="705" y="680" width="18" height="18"/>
+  <rect class="used" x="745" y="680" width="18" height="18"/>
+  <rect class="used" x="785" y="680" width="18" height="18"/>
+  <rect class="free" x="825" y="680" width="18" height="18"/>
+  <rect class="free" x="865" y="680" width="18" height="18"/>
+
+  <!-- Bottom header: IOREF RESET 3V3 5V GND GND VIN | A0..A5 -->
+  <rect class="free" x="231" y="752" width="18" height="18"/>
+  <rect class="free" x="271" y="752" width="18" height="18"/>
+  <rect class="free" x="311" y="752" width="18" height="18"/>
+  <rect class="free" x="351" y="752" width="18" height="18"/>
+  <rect class="free" x="391" y="752" width="18" height="18"/>
+  <rect class="free" x="431" y="752" width="18" height="18"/>
+  <rect class="free" x="471" y="752" width="18" height="18"/>
+  <rect class="free" x="535" y="752" width="18" height="18"/>
+  <rect class="free" x="575" y="752" width="18" height="18"/>
+  <rect class="used" x="615" y="752" width="18" height="18"/>
+  <rect class="free" x="655" y="752" width="18" height="18"/>
+  <rect class="used" x="695" y="752" width="18" height="18"/>
+  <rect class="used" x="735" y="752" width="18" height="18"/>
+  <g text-anchor="middle">
+    <text class="hp" x="240" y="787">IOREF</text>
+    <text class="hp" x="280" y="787">RESET</text>
+    <text class="hp" x="320" y="787">3V3</text>
+    <text class="hp" x="360" y="787">5V</text>
+    <text class="hp" x="400" y="787">GND</text>
+    <text class="hp" x="440" y="787">GND</text>
+    <text class="hp" x="480" y="787">VIN</text>
+    <text class="hp" x="544" y="787">A0</text>
+    <text class="hp" x="584" y="787">A1</text>
+    <text class="hp" x="624" y="787">A2</text>
+    <text class="hp" x="664" y="787">A3</text>
+    <text class="hp" x="704" y="787">A4</text>
+    <text class="hp" x="744" y="787">A5</text>
+  </g>
+
+  <!-- ICSP: 1 MISO, 2 5V, 3 SCK, 4 MOSI, 5 RESET, 6 GND -->
+  <rect class="used" x="842" y="714" width="16" height="16"/>
+  <rect class="used" x="866" y="714" width="16" height="16"/>
+  <rect class="used" x="842" y="736" width="16" height="16"/>
+  <rect class="used" x="866" y="736" width="16" height="16"/>
+  <rect class="free" x="842" y="758" width="16" height="16"/>
+  <rect class="used" x="866" y="758" width="16" height="16"/>
+  <text class="hp" x="834" y="726" text-anchor="end">MISO</text>
+  <text class="hp" x="834" y="748" text-anchor="end">SCK</text>
+  <text class="hp" x="834" y="770" text-anchor="end">RESET</text>
+  <text class="hp" x="890" y="726">5V</text>
+  <text class="hp" x="890" y="748">MOSI</text>
+  <text class="hp" x="890" y="770">GND</text>
+  <text class="hp" x="862" y="814" text-anchor="middle" style="font-weight:600">ICSP</text>
+
+  <text class="small" x="32" y="814">SDA and SCL beside AREF carry the same signals as A4 and A5. ICSP is drawn in pin-number order, pin 1 = MISO.</text>
+</svg>
