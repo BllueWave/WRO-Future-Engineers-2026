@@ -46,7 +46,7 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 | Chassis | WLtoys 284131, 1:28, four-wheel drive through a propshaft, Ackermann front axle; wheelbase about 97 mm, track about 70 mm, wheels about 28 mm |
 | Controller | Arduino Uno R3: ATmega328P, 32,256 B flash, 2,048 B RAM |
 | Drive | One 130-size brushed DC motor on a Cytron MD13S driver (PWM on D3, direction on D8), race setting PWM 30 |
-| Steering | Servo on D10; 30-160 while driving, 10 and 170 when parking |
+| Steering | Servo on D10; 30-160 |
 | Distance | 3 × HC-SR04: one straight ahead, one on each nose corner at about 40° from the axis |
 | Heading | BNO055 IMU on I2C (A4, A5) |
 | Camera | Pixy2 on SPI (ICSP header): signature 1 red pillar, 2 green pillar, 3 magenta limiter |
@@ -101,31 +101,35 @@ A PD law on the left minus right side sonars keeps the lane at PWM 30: servo = 9
 
 ```mermaid
 flowchart TD
-    W["WAIT: power on, wait for A2"] --> E["EXIT: ratchet out of the lot"]
-    E --> L["LAPS: lane law, pillar ladder, 12 corners"]
-    L -->|"parallel, no pillar"| A["APPROACH: stop mark from the front wall"]
-    L -->|"park window missed"| D["DONE: motor 0, servo 90"]
-    A --> P["PARK: reverse on IMU-closed arcs"]
-    P --> D
+    S["Power on in the start section"] --> R["Read 3 sonars, BNO055 heading, Pixy2 blocks"]
+    R --> Q{"Red or green pillar within 900 mm?"}
+    Q -->|"yes"| P["Pillar ladder: red on the car's left, green on its right; side-wall veto"]
+    Q -->|"no, wall ahead under 48 cm"| C["Proportional corner turn with U-turn guard"]
+    Q -->|"no"| W["Wall PD law with a 5 degree scan weave"]
+    P --> K{"3 laps on the BNO055?"}
+    C --> K
+    W --> K
+    K -->|"no"| R
+    K -->|"yes"| D["Stop"]
 ```
 
-We start in the lot for 7 points (item 1.8.1, p.21). The shorter side reading picks the outer wall and the direction, and the car ratchets out until its heading is 50° out. On the laps, the nearest red or green Pixy2 block within 900 mm sets the servo from a six-step ladder: 40 to 78 passes a red pillar on its right, 102 to 140 passes a green pillar on its left. With no pillar in view the Open law drives. In laps 2 and 3 the lane set-point shifts by 20 cm toward the side the lap-1 pillar map needs. If the front reads 15 cm or less and the heading has not moved 3° in 0.7 s, the car reverses at opposite lock.
+The build we race drives three laps from the start section. The nearest red or green Pixy2 block within 900 mm sets the steering. Its distance comes from its size, because a pillar is 50 × 100 mm (d = 13683 / width px or 28574 / height px), and the front sonar refines it when the pillar is ahead. The servo follows an x-ladder: 40, 60 or 78 keeps a red pillar on the car's left, 140, 120 or 102 keeps a green pillar on its right. A pillar nearer than 550 mm takes the wheel at once, and the chosen colour holds unless the other one is 250 mm nearer. The side sonars can only refuse a turn into a wall closer than 16 cm. With no pillar in view the wall law drives with a small scan weave so the 60° camera sees pillars near the walls. Corners use a front avoid that grows from 48 to 18 cm, a U-turn guard, and a PWM 55 kick whenever the motor crawls. The BNO055 stops the car after three laps.
 
 ### Parking
 
-After 12 corners, parallel and with no pillar in view, the car stops at a front-wall range of 820 mm (lot on the right) or 1,520 mm (lot on the left). Those marks come from our measurements of 1.0 m and 1.7 m from that wall to the downstream limiter. The car measures its real step length, solves an entry angle between 36° and 64°, and reverses in on arcs closed on the IMU heading. Each move is checked first against a model of the lot with a 12 mm margin.
+The race build does not park. Our v20 development build adds the lot exit and a front-wall park on IMU-closed arcs; it is kept at the tag [`v2.0-asia-final`](https://github.com/BllueWave/WRO-Future-Engineers-2026/tree/v2.0-asia-final/src/Obstacle_Challenge), and [Software and strategy](docs/03-software-and-strategy.md#the-front-wall-park) describes it with its simulation results.
 
 ### Code modules and the parts they use
 
-| Module | Functions | Parts |
+| Module (Obstacle build we race) | Where in the code | Parts |
 |---|---|---|
-| Start and fault codes | `waitStart()`, `signalServo()` | Start switch on A2, servo |
 | Sensing and motor output | `getStableDistance()`, `runMotor()` | 3 × HC-SR04, Cytron MD13S and motor |
-| Heading and corner count | `readYaw()`, `lapsCount()` | BNO055 |
-| Lap law: lane, corners, pillars, map, recovery | `lapStep()` | HC-SR04s, Pixy2, servo, MD13S |
-| Pillar range, limiter rejection | `signDistance()`, `looksLikeBarrier()` | Pixy2 |
-| Outer wall and lot exit | `parkPickSide()`, `startTick()` | Side HC-SR04s, servo, MD13S, BNO055 |
-| Approach and park | `approachStep()`, `parkRun()`, `parkArcTo()`, `parkStep()`, `bayClear()` | Front and wall-side HC-SR04, BNO055, servo, MD13S |
+| Heading and lap count | `lapsCount()` | BNO055 |
+| Pillar choice and range | block loop in `loop()`, `signDistance()` | Pixy2, front HC-SR04 |
+| Pillar steering | x-ladder, fast entry, side-wall veto | Pixy2, side HC-SR04s, servo |
+| Corners and recovery | front avoid, U-turn guard | Front and side HC-SR04s, BNO055, servo |
+| Lane keeping | PD law with scan weave | Side HC-SR04s, servo |
+| Crawl restart | stiction kick | MD13S and motor |
 
 State diagrams, flowcharts and constants: [Software and strategy](docs/03-software-and-strategy.md) and [`src/README.md`](src/README.md).
 

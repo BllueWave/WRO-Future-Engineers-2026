@@ -16,6 +16,24 @@ The Open sketch has 283 lines. The Obstacle build we race is in [`src/`](../src/
 | The car waits for the A2 start input (rule 9.11) | `#define PRACTICE 0` at [Open line 36](../src/Open_Challenge/Open_Challenge.ino#L36) and [Obstacle line 62](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L62) |
 | The corner vote took Open from 21/40 to 37/40 (simulation) | [Simulation results](05-build-test-reproduce.md#simulation-results) |
 
+## The Obstacle build we race
+
+[`src/Obstacle_Challenge/Obstacle_Challenge.ino`](../src/Obstacle_Challenge/Obstacle_Challenge.ino) is the code on the car for the Obstacle round: the national-round `obstacle_kuwait` with fixes 1-12, tested on our mat on 15 September 2026. The sections further down, from [State machine](#state-machine) to [Park results](#park-results-simulation), describe the v20 development build at the tag `v2.0-asia-final`, which adds the lot exit and the park.
+
+| Law | What it does | Code |
+|---|---|---|
+| Nearest-pillar lock | Every red or green block is ranged; the nearest within 900 mm wins, and the locked colour holds unless the other is 250 mm nearer | [lines 287-326](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L287-L326) |
+| Pillar range | A 50 × 100 mm pillar: d = 13683 / width px, 28574 / height px, the smaller wins; the front sonar replaces it when the pillar is ahead and the two agree within 400 mm | [lines 65-74](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L65-L74), [331-338](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L331-L338), [546-552](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L546-L552) |
+| x-ladder | Red: servo 40 / 60 / 78 as the pillar moves left in the image; green: 140 / 120 / 102 | [lines 137-148](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L137-L148), [340-348](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L340-L348) |
+| Fast entry | A pillar nearer than 550 mm skips the 280 ms mode debounce | [lines 76-82](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L76-L82), [362-376](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L362-L376) |
+| Last-moment commit | Front sonar under 25 cm in pillar mode: full lock in the direction the camera chose | [lines 402-407](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L402-L407) |
+| Side-wall veto | A side sonar under 16 cm cancels a turn toward that wall; it never picks a direction | [lines 409-416](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L409-L416) |
+| Corner turn | Front under 48 cm: servo grows from 25 % to full lock at 18 cm toward the longer side | [lines 84-88](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L84-L88), [422-455](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L422-L455) |
+| U-turn guard | Past 100° inside one avoid, straighten for 400 ms, then turn again with a fresh budget | [lines 49-54](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L49-L54), [439-450](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L439-L450) |
+| Lane law and scan weave | PD on left minus right; when centred with no pillar, a 5° sine weave sweeps the camera | [lines 90-98](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L90-L98), [459-480](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L459-L480) |
+| Crawl restart | Any speed below 30 gets PWM 55 for 70 ms, repeated every 500 ms | [lines 42-47](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L42-L47), [490-503](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L490-L503) |
+| Lap count | BNO055 heading summed from the real starting heading; stop after three laps | [lines 271-278](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L271-L278), [570-598](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L570-L598) |
+
 ## Structure
 
 Both sketches are single `.ino` files with no local libraries, because we upload from the Arduino IDE ([build and upload](05-build-test-reproduce.md#build-and-upload)). Each is one `loop()` that runs top to bottom:
