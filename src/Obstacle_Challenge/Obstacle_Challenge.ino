@@ -1,4 +1,4 @@
-// Blue Wave - WRO Future Engineers 2026 - OBSTACLE - Arduino Uno - v20
+// Blue Wave - WRO Future Engineers 2026 - OBSTACLE - Arduino Uno - v20b
 // ===========================================================================
 // WHAT THIS IS
 //   The driving law that the real car proved on the mat, unchanged where it
@@ -10,7 +10,7 @@
 //        next corner if the park window is missed (never a lap 4);
 //     3. the DOCTOR'S PARK: stop at a front-wall distance in the outer lane,
 //        then IMU-closed arcs and measured steps into the lot;
-//     4. a start on the A2 switch (rule 9.10), or 3 s after power-up (PRACTICE);
+//     4. a start on the A2 switch (rule 9.11), or 3 s after power-up (PRACTICE);
 //     5. [DIR] a corner whose two 40-deg sonars read the same front wall turns the
 //        way this round turns (lot side, then the corners driven), not always right;
 //     6. [STUCK] nose against a wall for 0.7 s: back out 0.45 s, wheels reversed;
@@ -50,15 +50,15 @@
 // ===== Pins [PROVEN] =====
 const int TRIG_LEFT = 4,  ECHO_LEFT = 5;
 const int TRIG_RIGHT = 2, ECHO_RIGHT = 9;
-const int TRIG_FRONT = 6, ECHO_FRONT = 7;
+const int TRIG_FRONT = A0, ECHO_FRONT = 7;   // not D13: Pixy2 SPI clock
 const int SERVO_PIN = 10;
 const int PWM_PIN = 3, DIR_PIN = 8;    // Cytron MD13S, DIR HIGH = forward
 const int START_PIN = A2;              // start switch to GND, internal pull-up
 
-// ===== Start [RULE 9.10] =====
+// ===== Start [RULE 9.11] =====
 // The round starts on ANY debounced change of A2 (push button or toggle).
-// PRACTICE 1 also starts 3 s after power-up (the team's tested code did this and never
-// needed A2).  With a start button wired to A2, set PRACTICE 0 for the official round.
+// PRACTICE 1 also starts 3 s after power-up, for bench tests only.  Rule 9.11: the car
+// must wait for the start switch, so every official round runs with PRACTICE 0.
 #define PRACTICE 0
 const unsigned long AUTO_START_MS = PRACTICE ? 3000 : 0;
 

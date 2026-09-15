@@ -2,10 +2,10 @@
 
 `src/` holds the two sketches our car runs on its Arduino Uno, one per challenge. Both use the same pins and the same wall-balance steering law. The reasoning behind the laws is in [docs/03-software-and-strategy.md](../docs/03-software-and-strategy.md); test results and the simulator's limits are in [docs/05-build-test-reproduce.md](../docs/05-build-test-reproduce.md).
 
-- [`Open_Challenge/Open_Challenge.ino`](Open_Challenge/Open_Challenge.ino): 283 lines, working name `open_v20`, built on `open_kuwait` (named in its header).
-- [`Obstacle_Challenge/Obstacle_Challenge.ino`](Obstacle_Challenge/Obstacle_Challenge.ino): 1,103 lines, working name `obstacle_v20`, built on the 6 September 2026 build, which is `obstacle_kuwait` plus FIX 15, 16 and 17.
+- [`Open_Challenge/Open_Challenge.ino`](Open_Challenge/Open_Challenge.ino): 283 lines, working name `open_v20b`, built on `open_kuwait` (named in its header).
+- [`Obstacle_Challenge/Obstacle_Challenge.ino`](Obstacle_Challenge/Obstacle_Challenge.ino): 1,103 lines, working name `obstacle_v20b`, built on the 6 September 2026 build, which is `obstacle_kuwait` plus FIX 15, 16 and 17.
 
-These files differ from our development copies in one line each: `#define PRACTICE 0` ([Open line 36](Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](Obstacle_Challenge/Obstacle_Challenge.ino#L62)). With 0 the car waits for the start switch after power-up, as rule 9.11 requires. With 1 it also starts by itself 3 s after power-up, which we use only on the practice mat.
+`v20b` is v20 with the front sonar trigger on A0. These files differ from our development copies in `#define PRACTICE 0`, in comment wording, and in a compile-time check the development copies add, which refuses any sonar pin on D11-D13 (the Pixy2's SPI lines): `#define PRACTICE 0` ([Open line 36](Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](Obstacle_Challenge/Obstacle_Challenge.ino#L62)). With 0 the car waits for the start switch after power-up, as rule 9.11 requires. With 1 it also starts by itself 3 s after power-up, which we use only on the practice mat.
 
 ## Build and upload
 
@@ -54,7 +54,7 @@ The pins are the same in both sketches ([Open lines 30-35](Open_Challenge/Open_C
 |---|---|---|---|
 | HC-SR04, left front corner | TRIG / ECHO | D4 / D5 | `sonarLeft` (NewPing, 400 cm limit) |
 | HC-SR04, right front corner | TRIG / ECHO | D2 / D9 | `sonarRight` |
-| HC-SR04, nose | TRIG / ECHO | D6 / D7 | `sonarFront` |
+| HC-SR04, nose | TRIG / ECHO | A0 / D7 | `sonarFront` |
 | Steering servo | Signal | D10 | `steeringServo` |
 | Cytron MD13S motor driver | PWM / DIR | D3 / D8, DIR HIGH = forward | `runMotor()` |
 | Start switch, other side to GND | Input with internal pull-up | A2 | `waitStart()` |

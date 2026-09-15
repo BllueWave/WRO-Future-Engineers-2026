@@ -1,6 +1,6 @@
-// Blue Wave - WRO Future Engineers 2026 - OPEN - Arduino Uno - v20
+// Blue Wave - WRO Future Engineers 2026 - OPEN - Arduino Uno - v20b
 // ===========================================================================
-// BASE: open_kuwait (won the national round: 3 laps in ~23 s at PWM 30).
+// BASE: open_kuwait (3 laps in ~23 s at PWM 30 on our practice mat).
 // Its L-R balance law and 48 cm corner are unchanged.  v20 adds only:
 //   [MAP]   lap 1 is driven exactly like kuwait and RECORDS, per straight, how calm
 //           the steering was.  In laps 2-3 a straight that was calm in lap 1 is run
@@ -8,11 +8,11 @@
 //           back at the proven PWM 30 well before the proven 48 cm corner.  Nothing
 //           is dead-reckoned: no distance, no speed model, no early turn.
 //   [DIR]   at the 48 cm trigger both 40-deg sonars see the SAME front wall, so kuwait's
-//           per-frame L-R (tie = right) is a coin toss and can flip mid-corner.  The turn is
-//           decided once, from the L-R of the last ~10 loops before the trigger (the inner
-//           side opens first); a tie takes the way this round's corners have turned.
+//           per-frame L-R (tie = right) could flip mid-corner.  Each frame takes the longer
+//           side; a tie takes the way this round's corners have turned, then the L-R of the
+//           last ~10 loops before the trigger (the inner side opens first), then right.
 //   [LAPS]  twelve counted corners, then on to the middle of the start straight.
-//   [START] waits for a change on the A2 switch (rule 9.10), or AUTO_START_MS.
+//   [START] waits for a change on the A2 switch (rule 9.11), or AUTO_START_MS.
 // Why open_final hit walls: it used the 40-deg side sonars as 90-deg distances, fired
 // corners on side SILENCE, and ran 2.2x the proven speed on a guessed brake model.
 // None of that is here.
@@ -29,7 +29,7 @@
 
 const int TRIG_LEFT = 4,  ECHO_LEFT = 5;
 const int TRIG_RIGHT = 2, ECHO_RIGHT = 9;
-const int TRIG_FRONT = 6, ECHO_FRONT = 7;
+const int TRIG_FRONT = A0, ECHO_FRONT = 7;   // not D13: Pixy2 SPI clock
 const int SERVO_PIN = 10;
 const int PWM_PIN = 3, DIR_PIN = 8;
 const int START_PIN = A2;
