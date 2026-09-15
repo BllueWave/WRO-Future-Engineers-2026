@@ -32,15 +32,16 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 
 | Item | Value |
 |---|---|
-| Size | About 200 × 125 mm (rule limit 300 × 200 × 300 mm, 1.5 kg, rules 11.1 and 11.2) |
-| Chassis | WLtoys 1:28-class RC chassis, four wheels, Ackermann front axle |
+| Size | 200 × 125 mm, about 129 mm high (rule limit 300 × 200 × 300 mm, rules 11.1 and 11.2) |
+| Mass | About 360 g (limit 1.5 kg) |
+| Chassis | WLtoys 284131, 1:28, four-wheel drive through a propshaft, Ackermann front axle; wheelbase about 97 mm, track about 70 mm, wheels about 28 mm |
 | Controller | Arduino Uno R3: ATmega328P, 32,256 B flash, 2,048 B RAM |
-| Drive | One brushed DC motor on a Cytron MD13S driver (PWM on D3, direction on D8), race setting PWM 30 |
+| Drive | One 130-size brushed DC motor on a Cytron MD13S driver (PWM on D3, direction on D8), race setting PWM 30 |
 | Steering | Servo on D10; 30-160 while driving, 10 and 170 when parking |
 | Distance | 3 × HC-SR04: one straight ahead, one on each nose corner at about 40° from the axis |
 | Heading | BNO055 IMU on I2C (A4, A5) |
 | Camera | Pixy2 on SPI (ICSP header): signature 1 red pillar, 2 green pillar, 3 magenta limiter |
-| Power | Two batteries: one feeds the Cytron MD13S for the drive motor; the other feeds the Uno's VIN through the main power switch |
+| Power | Two 2S LiPo 7.4 V 400 mAh packs: one feeds the Cytron MD13S for the drive motor; the other feeds the Uno's VIN through the main power switch |
 | Start | Waits for the start switch on A2 after power-on (rules 9.10, 9.11) |
 | Speed at PWM 30 | About 1 m/s |
 | Code | Open: 283 lines, 15,136 B flash. Obstacle: 1,103 lines, 29,604 B flash |
@@ -171,5 +172,11 @@ Serial checks at 115200 baud and the bench check: [Build, test and reproduce](do
     <td align="center" width="230"><b>Shinu Mathew</b><br><sub>Coach</sub></td>
   </tr>
 </table>
+
+<p align="center">
+  <img src="docs/team_photos/team_action_1.jpg" height="260" alt="Work session: the car on the table with laptops">
+  <img src="docs/team_photos/team_action_2.jpg" height="260" alt="Work session: testing the car at the field">
+  <img src="docs/team_photos/team_action_3.jpg" height="260" alt="Work session: tuning the car on the mat">
+</p>
 
 <p align="center"><sub>Blue Wave · Kuwait · WRO Future Engineers 2026</sub></p>

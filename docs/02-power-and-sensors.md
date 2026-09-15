@@ -40,16 +40,38 @@ Battery 1 has no switch in its line, so the MD13S has power whenever battery 1 i
 
 ### Current budget
 
-Everything in this budget runs from battery 2 through the Uno's on-board regulator. The drive motor is not in it, because it has its own battery.
+**Battery 2: the Uno and everything on its 5 V rail**
 
-| Load | Supply | Current | Basis |
-|---|---|---|---|
-| Arduino Uno logic | Battery 2, Uno regulator | about 50 mA | Estimate for an Uno R3 board: ATmega328P, USB-serial chip and power LED |
-| Pixy2 | Uno 5 V through ICSP | about 140 mA | Pixy2 datasheet, typical |
-| 3 × HC-SR04 | Uno 5 V | about 15 mA each while pinging | HC-SR04 datasheet, working current |
-| **Uno, Pixy2 and three sonars** | **Battery 2, Uno regulator** | **about 235 mA** | Sum of the rows above |
+| Load | Current | Basis |
+|---|---|---|
+| Arduino Uno logic | about 50 mA | Estimate for an Uno R3 board: ATmega328P, USB-serial chip and power LED |
+| Pixy2 | about 140 mA | Pixy2 datasheet, typical |
+| 3 × HC-SR04 | about 45 mA | 15 mA each, HC-SR04 datasheet |
+| BNO055 | about 12 mA | Bosch datasheet, fusion mode |
+| Steering servo | about 10 mA holding, 150-250 mA moving, about 650 mA stalled | 9 g class micro servo |
+| **Average in a round** | **about 350 mA** | Servo moving about a third of the time |
+| **Peak** | **about 900 mA** | Servo stalled at full lock |
 
-The Pixy2 is about 60 % of the 235 mA that the Uno's regulator carries.
+**Battery 1: the drive motor only**
+
+| Load | Current | Basis |
+|---|---|---|
+| Cruise at PWM 30 | about 0.5 A | Estimate for a 130 motor at 12 % duty on 7.4 V |
+| PWM 55 kick, 70 ms | about 1.5-2 A | Estimate |
+| Motor stalled against a wall | about 3 A | 130 motor at 7.4 V |
+| Cytron MD13S rating | 13 A continuous, 30 A peak | MD13S datasheet |
+
+**Run time and margins**
+
+| Item | Value | Basis |
+|---|---|---|
+| Battery 1, 2S LiPo 400 mAh at 0.5 A | about 40 min of driving | 90 % of the capacity used |
+| Battery 2, 2S LiPo 400 mAh at 350 mA | about 60 min | 90 % of the capacity used |
+| One round | at most 3 min | Rules |
+| Motor driver headroom | more than 4 × the stall current | 13 A against 3 A |
+| Uno regulator heat at 350 mA | about 0.8 W at 7.4 V, 1.2 W on a full 8.4 V pack | (V in − 5 V) × I |
+
+The Uno's 5 V regulator is the tightest point of the supply: the Pixy2 is 40 % of its average load, and a servo stall adds up to 650 mA for as long as the wheels are forced. Steering is limited to servo 30-160 while driving, which keeps the linkage off its end stops. If the regulator ever runs hot, the fix is a separate 5 V regulator for the servo on battery 2.
 
 ### When a battery runs down
 

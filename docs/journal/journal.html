@@ -1708,6 +1708,11 @@ table.crit { font-size: 8.3pt; }
   </div>
   <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md#wiring">Build, test and reproduce: wiring</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/src/README.md#pin-map">src/README.md: pin map</a></p>
   <figure>
+    <img src="../diagrams/dimensions.png" alt="Dimension drawing: side view with length 200 mm, wheelbase about 97 mm, wheel diameter about 28 mm, height about 129 mm, body about 110 mm; front view with width 125 mm and track about 70 mm; mass about 360 g">
+    <figcaption><b>Dimensions.</b> Length and width measured on the car; the other values are read from the photos scaled to those two measurements. Mass is the estimate from the mass budget in <code>docs/01-mobility.md</code>.</figcaption>
+  </figure>
+
+  <figure>
     <img src="../../Schemes/wiring_schematic.png" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor">
     <figcaption><b>Wiring schematic.</b> Every signal, supply and ground wire of the car on one sheet. A hop marks two wires that cross without connecting; a dot marks a junction. Editable source: <code>Schemes/wiring_schematic_source.svg</code>.</figcaption>
   </figure>

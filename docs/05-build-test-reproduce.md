@@ -22,14 +22,14 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 |---|---|---|---|
 | 1 | Arduino Uno R3 (ATmega328P, 16 MHz) | Runs one challenge sketch at a time | USB for upload and serial |
 | 1 | Cytron MD13S motor driver | Drives the motor from PWM and direction | PWM D3, DIR D8; power input from battery 1 |
-| 1 | Brushed DC drive motor | Propulsion through the chassis gearbox | MD13S output |
-| 1 | Hobby steering servo | Ackermann steering | Signal D10 |
-| 1 | WLtoys 1:28-class RC chassis with wheels, gearbox and steering linkage | Frame and drivetrain | - |
+| 1 | 130-size brushed DC motor, the chassis's own | Four-wheel drive through a 17:29 first stage and a propshaft | MD13S output |
+| 1 | 9 g class micro servo, 3-wire | Ackermann steering | Signal D10, 5 V from the Uno |
+| 1 | WLtoys 284131 1:28 4WD chassis with wheels, gearbox, differentials and steering linkage | Frame and drivetrain | - |
 | 3 | HC-SR04 ultrasonic sensor | Front, left and right distance | A0/D7, D4/D5, D2/D9 |
 | 1 | Pixy2 camera | Pillar colour, bearing and range | ICSP header (SPI) |
 | 1 | BNO055 IMU breakout | Heading | A4 (SDA), A5 (SCL) |
-| 1 | Battery 1: 2S LiPo, 7.4 V nominal | Powers only the drive motor | Straight to the MD13S power input; see [power tree](02-power-and-sensors.md#power) |
-| 1 | Battery 2 | Powers the Uno; the Uno's regulator makes 5 V for the sensors and the Pixy2 | Main power switch, then the Uno's VIN |
+| 1 | Battery 1: 2S LiPo, 7.4 V nominal, 400 mAh | Powers only the drive motor | Straight to the MD13S power input; see [power tree](02-power-and-sensors.md#power) |
+| 1 | Battery 2: 2S LiPo, 7.4 V nominal, 400 mAh | Powers the Uno; the Uno's regulator makes 5 V for the sensors and the Pixy2 | Main power switch, then the Uno's VIN |
 | 1 | Main power switch | Rule 9.10: one switch turns the car on | Between battery 2 and the Uno's VIN |
 | 1 | Start switch or push button | Rule 9.11: one start button | A2 to GND |
 | 1 set | Printed body and sensor brackets | Mounting | [`Models/BlueWave_main_body_v2.3mf`](../Models/BlueWave_main_body_v2.3mf): main body, two ultrasonic brackets, one ultrasonic and Pixy2 bracket, one Pixy2 bracket |

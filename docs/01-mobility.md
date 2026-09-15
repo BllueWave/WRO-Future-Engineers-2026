@@ -26,12 +26,41 @@ We picked a ready-made 1:28-class RC chassis for three reasons.
 
 ## Mass and dimensions
 
-| Quantity | Value | Source |
+<p align="center">
+  <img src="diagrams/dimensions.png" width="100%" alt="Dimension drawing of the car: side view with overall length 200 mm, wheelbase about 97 mm, wheel diameter about 28 mm, height about 129 mm to the top of the Pixy2 and about 110 mm to the top of the body, sonar height about 45 mm; front view with width 125 mm and track about 70 mm">
+</p>
+
+| Quantity | Value | Basis |
 |---|---|---|
 | Length × width | 200 × 125 mm | Measured on the car, 14 Sep 2026 |
+| Height to the top of the Pixy2 | about 129 mm | Side photo scaled to the measured 200 mm length |
+| Height to the top of the body | about 110 mm | Side photo scaled to the measured 200 mm length |
+| Wheelbase | about 97 mm | Side photo scaled to the measured 200 mm length |
+| Track | about 70 mm | Stock 284131 width over the tyres (80 mm) less one tyre width |
+| Wheel diameter | about 28 mm | Side photo scaled to the measured 200 mm length |
+| Sonar centre above the floor | about 45 mm | Side photo; walls and pillars are 100 mm high, so every sonar sees them |
+| Mass | about 360 g, 24 % of the 1.5 kg limit | [Mass budget](#mass-budget) |
 | Rear axle to nose | 168 mm in the park code | `CAR_NOSE_MM`, [line 129](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L129), fitted to the real lot exit in our simulator |
 | Rear-axle turning radius at full lock | 170 mm in the park code | `R_PARK_MM`, [line 127](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) |
 | Rule envelope | 300 × 200 × 300 mm, 1.5 kg | Rules 11.1 and 11.2 (p.23) |
+
+### Mass budget
+
+| Part | Mass | Basis |
+|---|---|---|
+| WLtoys 284131 rolling chassis with its 130 motor and gearbox | about 125 g | Stock car 181 g with body, battery and receiver (manufacturer), less those parts |
+| Printed body and four brackets, PETG | about 75 g | 69 cm³ of material in our 3MF × 1.27 g/cm³ × 0.85 print fill |
+| Arduino Uno R3 | about 25 g | Board |
+| Cytron MD13S | about 20 g | Board with terminal blocks |
+| 3 × HC-SR04 | about 26 g | 8.5 g each |
+| Pixy2 | about 10 g | Pixy2 datasheet |
+| BNO055 breakout | about 3 g | Board |
+| Steering servo, 9 g class | about 9 g | Servo class |
+| Battery 1 and battery 2, 2S LiPo 400 mAh | about 50 g | About 25 g per pack |
+| Wires, switches, screws | about 20 g | Estimate |
+| **Total** | **about 360 g** | |
+
+The heavy parts, the chassis, both batteries and the boards, sit low between the axles. Only the Pixy2 and its bracket are high, and they weigh about 15 g.
 
 <p align="center">
   <img src="diagrams/sensor_layout.png" width="760" alt="Top view of the 200 by 125 mm car outline with the front HC-SR04 on the nose, the two side HC-SR04 on the slanted nose corners about 40 degrees from the axis, and the Pixy2 60-degree view">
@@ -47,8 +76,9 @@ The end clearance is always (1.5 L - L) / 2 = 0.25 L. Because the lot scales wit
 
 | Part | What it is | Source |
 |---|---|---|
-| Chassis | WLtoys 1:28-class RC chassis: four wheels, gearbox, Ackermann steering linkage | Team notes, parts photo `docs/components.jpg` |
-| Drive | One brushed DC motor through the chassis gearbox | Team notes |
+| Chassis | WLtoys 284131, 1:28, four-wheel drive: one motor, a propshaft to the front and rear differentials, Ackermann front steering | Sticker on the chassis plate in the [parts photo](components.jpg); manufacturer page |
+| Drive motor | 130-size brushed DC motor, the chassis's own | Manufacturer page |
+| Gearing | 17-tooth pinion on a 29-tooth spur (1.71 : 1), then the differentials | Published review of the 284131 |
 | Driver | Cytron MD13S, sign-magnitude: speed on PWM D3, direction on D8, DIR HIGH = forward | [Obstacle_Challenge.ino line 55](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
 
 <p align="center">
@@ -63,6 +93,21 @@ The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5,
 The MD13S needs exactly one PWM line and one digital line for one motor. A driver that takes speed on two PWM inputs would have needed a second PWM pin that we did not have.
 
 `analogWrite` is 8-bit, so our race setting PWM 30 is 30 / 255 = 11.8 % duty.
+
+### Torque and speed (estimate)
+
+| Step | Value |
+|---|---|
+| Mass | about 0.36 kg |
+| Rolling resistance on the mat, coefficient about 0.04 | 0.36 × 9.81 × 0.04 ≈ 0.14 N |
+| Reach 1 m/s in 0.5 s | 0.36 × 2 ≈ 0.72 N |
+| Force needed at the tyres | ≈ 0.86 N |
+| Wheel torque at a 14 mm radius | ≈ 12 mN·m, shared by four wheels |
+| Power at 1 m/s | ≈ 0.9 W |
+
+A 130 motor on 7.4 V gives several watts, and a published test of the stock 284131 measured about 22 km/h (6 m/s). Our race speed is 1 m/s, so the drive has several times the force the round needs. What limits this car is low duty: at PWM 15 (6 % duty) the average motor voltage cannot overcome static friction, which the break-away test below shows and the PWM 55 kick fixes.
+
+In a corner at PWM 25 (about 0.8 m/s) on the 170 mm park radius, the side acceleration is v²/R ≈ 3.8 m/s². With a 70 mm track and the centre of mass about 45 mm high, the car would tip only above g × 35 / 45 ≈ 7.6 m/s², twice that value.
 
 ### Break-away and the stiction kick
 
