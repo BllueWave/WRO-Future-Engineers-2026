@@ -1,0 +1,632 @@
+<title>Blue Wave Arena</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef2f7; --scene: #dfe6ef; --panel: rgba(255,255,255,0.93); --text: #0f172a;
+    --muted: #475569; --border: rgba(15,23,42,0.14); --accent: #0369a1; --accent-ink: #ffffff;
+    --chip: rgba(15,23,42,0.05); --shadow: 0 10px 30px rgba(15,23,42,0.16); --ok: #15803d; --warn: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #090d16; --scene: #070b14; --panel: rgba(13,21,38,0.92); --text: #f1f5f9;
+      --muted: #94a3b8; --border: rgba(255,255,255,0.12); --accent: #38bdf8; --accent-ink: #04121f;
+      --chip: rgba(255,255,255,0.06); --shadow: 0 16px 40px rgba(0,0,0,0.6); --ok: #4ade80; --warn: #fbbf24;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #090d16; --scene: #070b14; --panel: rgba(13,21,38,0.92); --text: #f1f5f9;
+    --muted: #94a3b8; --border: rgba(255,255,255,0.12); --accent: #38bdf8; --accent-ink: #04121f;
+    --chip: rgba(255,255,255,0.06); --shadow: 0 16px 40px rgba(0,0,0,0.6); --ok: #4ade80; --warn: #fbbf24;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; overflow: hidden; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Roboto, sans-serif; }
+  #stage { position: fixed; inset: 0; }
+  #stage canvas { display: block; }
+  #hud { position: absolute; top: 16px; right: 16px; width: min(380px, calc(100% - 32px));
+    max-height: calc(100% - 132px); overflow: auto; background: var(--panel); backdrop-filter: blur(14px);
+    border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; direction: rtl;
+    font-size: 12.5px; line-height: 1.6; box-shadow: var(--shadow); }
+  #hud h1 { font-size: 15px; margin: 0 0 2px; color: var(--accent); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  #hud h2 { font-size: 12px; margin: 12px 0 4px; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+  .sub { color: var(--muted); font-size: 11.5px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .btn { background: var(--chip); color: var(--text); border: 1px solid var(--border); padding: 6px 12px;
+    border-radius: 18px; cursor: pointer; font: inherit; font-size: 12px; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+  input[type=number] { width: 110px; font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--chip); color: var(--text); direction: ltr; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  td { padding: 3px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.v { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.p { color: var(--muted); white-space: nowrap; direction: ltr; text-align: left; }
+  ol.log { margin: 4px 0 0; padding-inline-start: 18px; }
+  ol.log li { margin-bottom: 2px; }
+  .ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+  .chip { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: middle; margin-inline-end: 4px; border: 1px solid var(--border); }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; font-size: 11.5px; }
+  .ok { color: var(--ok); font-weight: 600; } .warn { color: var(--warn); }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; margin-top: 10px; }
+  #toolbar { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 6px; max-width: calc(100% - 32px); background: var(--panel); backdrop-filter: blur(14px);
+    padding: 8px 10px; border-radius: 22px; border: 1px solid var(--border); box-shadow: var(--shadow); direction: rtl; }
+  #toggleHud { display: none; }
+  #err { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; }
+  @media (max-width: 640px) {
+    #hud { max-height: calc(100% - 150px); font-size: 12px; }
+    #hud.collapsed > :not(h1) { display: none; }
+    #toggleHud { display: inline-block; }
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<div id="stage"></div>
+
+<div id="hud">
+  <h1><span>BLUE WAVE · WRO 2026 Future Engineers</span><button class="btn" id="toggleHud">▾</button></h1>
+  <div class="sub">حلبة مطابقة لكتاب القواعد 2026 — كل رقم مع رقم الصفحة. السيارة <span class="ltr">200 × 125 mm</span>.</div>
+
+  <h2>التحدي</h2>
+  <div class="seg" id="segChallenge">
+    <button class="btn" data-v="open">Open Challenge</button>
+    <button class="btn" data-v="obstacle">Obstacle Challenge</button>
+  </div>
+
+  <h2>القرعة (إجراء القواعد، ص12 و ص13–16)</h2>
+  <div class="row">
+    <button class="btn active" id="btnDraw">قرعة جديدة</button>
+    <label class="sub">seed <input type="number" id="seed" min="0" step="1"></label>
+  </div>
+
+  <h2>اتجاه القيادة (9.3 ص17)</h2>
+  <div class="seg" id="segDir">
+    <button class="btn" data-v="draw">حسب القرعة</button>
+    <button class="btn" data-v="cw">CW مع عقارب الساعة</button>
+    <button class="btn" data-v="ccw">CCW عكس عقارب الساعة</button>
+  </div>
+
+  <div id="openCorrBox">
+    <h2>ممرات Open (ص11–12)</h2>
+    <div class="seg" id="segCorr">
+      <button class="btn" data-v="1000">كلها 1000 — مربع 1000×1000 بالنص</button>
+      <button class="btn" data-v="600">كلها 600 — مربع 1800×1800 بالنص</button>
+      <button class="btn" data-v="draw">حسب القرعة</button>
+    </div>
+    <div class="sub">في القرعة الرسمية كل مستقيم يُرمى له 1000 أو 600 بشكل مستقل، فتصير الكتلة الداخلية مستطيلاً وتبتعد عن المنتصف. هذا مطابق للقواعد (ص11، الملحق B).</div>
+  </div>
+
+  <div id="obsStartBox">
+    <h2>بداية الروبوت في Obstacle (ص16)</h2>
+    <div class="seg" id="segStart">
+      <button class="btn" data-v="lot">داخل الموقف (نقاط إضافية)</button>
+      <button class="btn" data-v="zone">المنطقة الوسطى فوق الموقف</button>
+    </div>
+  </div>
+
+  <h2>خطوات القرعة</h2>
+  <ol class="log" id="log"></ol>
+
+  <h2>قياسات هذا التوزيع</h2>
+  <table id="meas"></table>
+
+  <h2>الألوان</h2>
+  <div class="legend">
+    <div><span class="chip" style="background:#ee2737"></span>أحمر RGB(238,39,55): ابق يمين</div>
+    <div><span class="chip" style="background:#44d62c"></span>أخضر RGB(68,214,44): ابق يسار</div>
+    <div><span class="chip" style="background:#ff00ff"></span>حاجز الموقف RGB(255,0,255)</div>
+    <div><span class="chip" style="background:#1f7fd6;opacity:.45"></span>منطقة البداية (طبقة شرح)</div>
+    <div><span class="chip" style="background:#f58220"></span>خط برتقالي CMYK(0,60,100,0)</div>
+    <div><span class="chip" style="background:#1f4fa8"></span>خط أزرق CMYK(100,80,0,0)</div>
+    <div><span class="chip" style="background:#7c3aed"></span>أبعاد (ليست مطبوعة)</div>
+    <div><span class="chip" style="background:#2563eb"></span>سيارة الفريق 200×125</div>
+  </div>
+
+  <details>
+    <summary>مرجع الأرقام (صفحة لكل رقم)</summary>
+    <table id="spec"></table>
+  </details>
+</div>
+
+<div id="toolbar">
+  <button class="btn active" id="btnPersp">منظور 3D</button>
+  <button class="btn" id="btnTop">علوي Top</button>
+  <button class="btn active" id="btnWalls">الجدران</button>
+  <button class="btn active" id="btnDims">الأبعاد</button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  if (typeof THREE === 'undefined' || !THREE.OrbitControls) {
+    document.getElementById('stage').innerHTML = '<div id="err">تعذر تحميل three.js — تحقق من الاتصال.</div>';
+    return;
+  }
+
+  // ======================================================================
+  // 1. RULEBOOK NUMBERS (mm). Page numbers refer to the 2026 General Rules PDF.
+  // ======================================================================
+  const FIELD = 3000;          // p.26 13.1  racetrack inner size 3000 x 3000 (+/-5)
+  const MAT = 3200;            // p.26 13.1  game mat 3200 x 3200 (+/-5)
+  const WALL_H = 100;          // p.26 13.3 / 13.5
+  const WALL_T = 10;           // p.26 13.7 NOT defined; 10 mm = Intl Final BOM (sim2/arena.py)
+  const LINE_W = 20;           // p.26 13.9 orange / blue lines 20 mm
+  const SEAT = 50;             // p.26 13.13
+  const CIRCLE_D = 85;         // p.26 13.15
+  const PILLAR = [50, 50, 100];      // p.28 13.19
+  const LIMITER = [200, 20, 100];    // p.28 13.25, p.8
+  const LOT_DEPTH = 200;       // p.8 "width of the parking lot is always 20 cm"
+  const CAR = { L: 200, W: 125, H: 70 };   // team car footprint; height is display only
+  const LOT_LEN = 1.5 * CAR.L; // p.8 "1,5 * length of the robot" = 300
+  const SEAT_ROWS = { i: 400, o: 600 };    // p.27 Fig.11 chain 400|200|400 from interior wall
+  const BANDS = [[0, 400], [400, 600], [600, 1000]];
+  const COL = { red: '#ee2737', green: '#44d62c', magenta: '#ff00ff',
+    orange: '#f58220', blue: '#1f4fa8', grey30: '#b3b3b3', lime: '#ccff00', dim: '#7c3aed', overlay: '#1f7fd6' };
+
+  // Straight-section frames on the PRINTED mat (nominal 1000 mm corridor).
+  // lat: from interior wall outward. al: along the section, running COUNTER-CLOCKWISE.
+  // s = 0 is the CCW-entry boundary, s = 1000 the CCW-exit boundary (the "right" end in Fig. 4/8d).
+  const FRAME = {
+    E: { lat: [1, 0],  al: [0, 1],  o: [500, -500] },
+    N: { lat: [0, 1],  al: [-1, 0], o: [500, 500] },
+    W: { lat: [-1, 0], al: [0, -1], o: [-500, 500] },
+    S: { lat: [0, -1], al: [1, 0],  o: [-500, -500] }
+  };
+  const CW = ['N', 'E', 'S', 'W'];
+  const OPP = { N: 'S', S: 'N', E: 'W', W: 'E' };
+  const TOSS = { HH: 'N', HT: 'E', TH: 'W', TT: 'S' };   // p.16 Fig. 8d (same layout as Fig. 7a/8b)
+  const NAME = { N: 'N (شمال)', E: 'E (شرق)', S: 'S (جنوب)', W: 'W (غرب)' };
+  function P(sec, s, d) { const f = FRAME[sec]; return [f.o[0] + f.al[0] * s + f.lat[0] * d, f.o[1] + f.al[1] * s + f.lat[1] * d]; }
+  function cwFrom(sec) { const i = CW.indexOf(sec); return [0, 1, 2, 3].map(k => CW[(i + k) % 4]); }
+
+  // 36 cards, p.15 Fig. 8c, as extracted in sim2/arena.py: [column 0..2, row i|o, colour]
+  const CARDS = {1:[[0,'i','g']],2:[[0,'i','r']],3:[[1,'i','g']],4:[[1,'i','r']],5:[[2,'i','g']],6:[[2,'i','r']],
+    7:[[0,'o','g']],8:[[0,'o','r']],9:[[1,'o','g']],10:[[1,'o','r']],11:[[2,'i','g']],12:[[2,'i','r']],
+    13:[[0,'o','g'],[2,'i','g']],14:[[0,'o','g'],[2,'i','r']],15:[[0,'o','r'],[2,'i','g']],16:[[0,'o','g'],[2,'i','r']],17:[[0,'o','r'],[2,'i','g']],18:[[0,'o','r'],[2,'i','r']],
+    19:[[0,'i','g'],[2,'o','g']],20:[[0,'i','g'],[2,'o','r']],21:[[0,'i','r'],[2,'o','g']],22:[[0,'i','g'],[2,'o','r']],23:[[0,'i','r'],[2,'o','g']],24:[[0,'i','r'],[2,'o','r']],
+    25:[[0,'i','g'],[2,'i','g']],26:[[0,'i','g'],[2,'i','r']],27:[[0,'i','r'],[2,'i','g']],28:[[0,'i','g'],[2,'i','r']],29:[[0,'i','r'],[2,'i','g']],30:[[0,'i','r'],[2,'i','r']],
+    31:[[0,'o','g'],[2,'o','g']],32:[[0,'o','g'],[2,'o','r']],33:[[0,'o','r'],[2,'o','g']],34:[[0,'o','g'],[2,'o','r']],35:[[0,'o','r'],[2,'o','g']],36:[[0,'o','r'],[2,'o','r']]};
+
+  // Die face -> zone, p.13 Fig. 7c (drawn for the E section, north up):
+  // 1-2-3 = interior / middle / outer band on the CCW-exit half, 4-5-6 on the CCW-entry half.
+  function zoneOf(face) {
+    const half = face <= 3 ? [500, 1000] : [0, 500];
+    const band = BANDS[(face - 1) % 3];
+    return { s0: half[0], s1: half[1], d0: band[0], d1: band[1] };
+  }
+
+  // ======================================================================
+  // 2. RANDOMISER — the rulebook's own procedure
+  // ======================================================================
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  function drawLayout(seed, challenge, fixedCorr) {
+    const rng = mulberry32(seed);
+    const coin = () => rng() < 0.5 ? 'H' : 'T';
+    const log = [];
+    const dirToss = coin();
+    const dirDrawn = dirToss === 'H' ? 'ccw' : 'cw';
+    log.push(`اتجاه القيادة: رمية <span class="ltr">${dirToss}</span> → <b class="ltr">${dirDrawn.toUpperCase()}</b> <span class="sub">(9.3 ص17 يقول «عشوائي» فقط؛ العملة طريقتنا)</span>`);
+    const L = { challenge, seed, dirDrawn, log, corridor: {}, signs: [], start: null, face: null, cards: {}, moved: 0 };
+
+    if (challenge === 'open') {
+      const t = coin() + coin();
+      L.start = TOSS[t];
+      log.push(`خطوة 1: رميتان <span class="ltr">${t[0]}-${t[1]}</span> → قسم البداية <b>${NAME[L.start]}</b> (شكل 7a ص12)`);
+      const parts = cwFrom(L.start).map(sec => { const c = coin(); L.corridor[sec] = fixedCorr || (c === 'H' ? 1000 : 600); return `${sec}=${c}(${L.corridor[sec]})`; });
+      if (fixedCorr) log.push(`خطوة 2: الممرات مثبتة يدوياً على <b class="ltr">${fixedCorr}</b> mm من الجهات الأربع → كتلة داخلية مربعة بالنص (القرعة الرسمية ترمي لكل مستقيم)`);
+      else log.push(`خطوة 2: أربع رميات مع عقارب الساعة بدءاً من قسم البداية، H عريض 1000 / T ضيق 600: <span class="ltr">${parts.join(' · ')}</span> (ص11–12)`);
+      const rolls = [];
+      for (let k = 0; k < 60; k++) {
+        const f = 1 + Math.floor(rng() * 6); rolls.push(f);
+        if (zoneOf(f).d0 >= 1000 - L.corridor[L.start]) { L.face = f; break; }
+      }
+      log.push(`خطوة 3: النرد <span class="ltr">${rolls.join(' → ')}</span>${rolls.length > 1 ? ' (إعادة لأن المنطقة داخل الجدار)' : ''} → منطقة <b>${L.face}</b> (شكل 7c ص13)`);
+    } else {
+      CW.forEach(s => L.corridor[s] = 1000);   // p.13: always 1000 mm (+/-10)
+      const t1 = coin() + coin();
+      const single = TOSS[t1];
+      const colT = coin();
+      const colour = colT === 'H' ? 'g' : 'r';
+      log.push(`خطوة 1: رميتان <span class="ltr">${t1[0]}-${t1[1]}</span> → قسم العمود المفرد <b>${NAME[single]}</b> (شكل 8b ص14)`);
+      log.push(`خطوة 2: رمية <span class="ltr">${colT}</span> → ${colour === 'g' ? 'أخضر' : 'أحمر'} (H أخضر / T أحمر، ص14)`);
+      const deck = []; for (let c = 1; c <= 36; c++) if (c !== (colour === 'g' ? 9 : 10)) deck.push(c);
+      for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+      const per = {}; per[single] = [[1, 'o', colour]];
+      const drawn = [];
+      cwFrom(single).slice(1).forEach(sec => { const c = deck.pop(); L.cards[sec] = c; per[sec] = CARDS[c].map(e => e.slice()); drawn.push(`${sec}: #${c}`); });
+      log.push(`خطوة 3: حذف البطاقة ${colour === 'g' ? 9 : 10}، ثم سحب بدون إرجاع مع عقارب الساعة: <span class="ltr">${drawn.join(' · ')}</span> (شكل 8c ص15)`);
+      const t2 = coin() + coin();
+      L.start = TOSS[t2];
+      per[L.start].forEach(e => { if (e[1] === 'o') { e[1] = 'i'; L.moved++; } });
+      log.push(`خطوة 4: رميتان <span class="ltr">${t2[0]}-${t2[1]}</span> → قسم البداية والموقف <b>${NAME[L.start]}</b>${L.moved ? `؛ نُقل ${L.moved} عمود للصف الأقرب للجدار الداخلي` : ''} (شكل 8d/8e ص16)`);
+      Object.keys(per).forEach(sec => per[sec].forEach(([col, row, c]) => {
+        L.signs.push({ sec, col, row, colour: c === 'g' ? 'green' : 'red', p: P(sec, 500 * col, SEAT_ROWS[row]) });
+      }));
+    }
+    const c = L.corridor;
+    L.inner = { xmin: -1500 + c.W, xmax: 1500 - c.E, ymin: -1500 + c.S, ymax: 1500 - c.N };
+    return L;
+  }
+
+  // ======================================================================
+  // 3. SCENE
+  // ======================================================================
+  const stage = document.getElementById('stage');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.05, 60);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.appendChild(renderer.domElement);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.06; controls.maxPolarAngle = Math.PI / 2 - 0.02;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.72));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.85);
+  sun.position.set(3.5, 8, 4); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { near: 0.5, far: 15, left: -2.2, right: 2.2, top: 2.2, bottom: -2.2 });
+  sun.shadow.bias = -0.0002;
+  scene.add(sun);
+
+  const fx = x => x / 1000, fz = y => -y / 1000;          // field mm (+y north) -> three (north = -Z)
+
+  function applyTheme() {
+    const v = getComputedStyle(document.documentElement).getPropertyValue('--scene').trim();
+    try { scene.background = new THREE.Color(v || '#dfe6ef'); } catch (e) { scene.background = new THREE.Color('#dfe6ef'); }
+  }
+  applyTheme();
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
+  new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // ---- mat texture ----
+  const TEX = Math.min(4096, renderer.capabilities.maxTextureSize || 4096);
+  const S = TEX / MAT;
+  const canvas = document.createElement('canvas'); canvas.width = canvas.height = TEX;
+  const ctx = canvas.getContext('2d');
+  const X = x => (x + MAT / 2) * S, Y = y => (MAT / 2 - y) * S;
+  const m2p = v => v * S;                                   // mat-mm from the top-left corner (logo code)
+  const lw = mm => Math.max(mm * S, 2);                      // thin print lines kept >= 2 px so they stay visible
+
+  const matTex = new THREE.CanvasTexture(canvas);
+  matTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const mat = new THREE.Mesh(new THREE.PlaneGeometry(MAT / 1000, MAT / 1000),
+    new THREE.MeshStandardMaterial({ map: matTex, roughness: 0.9, metalness: 0.02 }));
+  mat.rotation.x = -Math.PI / 2; mat.receiveShadow = true; scene.add(mat);
+
+  function drawLogo() {   // the team's centre art (800 x 800 mm, Fig. 11 p.27), kept from the original design
+    ctx.save();
+    const cx = m2p(1600), cy = m2p(1600);
+    const g = ctx.createRadialGradient(cx, cy, m2p(50), cx, cy, m2p(500));
+    g.addColorStop(0, '#0c1527'); g.addColorStop(1, '#020617');
+    ctx.fillStyle = g; ctx.fillRect(m2p(1200), m2p(1200), m2p(800), m2p(800));
+    ctx.lineWidth = m2p(12); ctx.strokeStyle = '#38bdf8'; ctx.strokeRect(m2p(1200), m2p(1200), m2p(800), m2p(800));
+    function wave(yOff, amp, color, alpha) {
+      ctx.save(); ctx.beginPath(); ctx.moveTo(m2p(1200), cy + m2p(yOff));
+      ctx.bezierCurveTo(cx - m2p(200), cy + m2p(yOff - amp), cx - m2p(100), cy + m2p(yOff + amp), cx, cy + m2p(yOff));
+      ctx.bezierCurveTo(cx + m2p(100), cy + m2p(yOff - amp), cx + m2p(200), cy + m2p(yOff + amp), m2p(2000), cy + m2p(yOff));
+      ctx.lineTo(m2p(2000), m2p(2000)); ctx.lineTo(m2p(1200), m2p(2000)); ctx.closePath();
+      ctx.globalAlpha = alpha; ctx.fillStyle = color; ctx.fill(); ctx.restore();
+    }
+    wave(130, 70, '#0369a1', 0.5); wave(170, 90, '#0284c7', 0.65); wave(210, 80, '#38bdf8', 0.85);
+    ctx.save(); ctx.beginPath();
+    ctx.moveTo(cx - m2p(150), cy - m2p(80));
+    ctx.bezierCurveTo(cx - m2p(70), cy - m2p(200), cx + m2p(60), cy - m2p(140), cx + m2p(130), cy - m2p(40));
+    ctx.bezierCurveTo(cx + m2p(60), cy - m2p(80), cx - m2p(30), cy - m2p(100), cx - m2p(150), cy - m2p(80));
+    ctx.fillStyle = '#38bdf8'; ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = m2p(25); ctx.fill(); ctx.restore();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff'; ctx.font = `900 ${m2p(80)}px -apple-system, sans-serif`; ctx.fillText('BLUE WAVE', cx, cy + m2p(15));
+    ctx.fillStyle = '#7dd3fc'; ctx.font = `bold ${m2p(34)}px monospace`; ctx.fillText('FUTURE ENGINEERS 2026', cx, cy + m2p(75));
+    ctx.fillStyle = '#94a3b8'; ctx.font = `bold ${m2p(22)}px monospace`; ctx.fillText('AUTONOMOUS RACING', cx, cy + m2p(115));
+    ctx.restore();
+  }
+
+  function seg(p1, p2) { ctx.beginPath(); ctx.moveTo(X(p1[0]), Y(p1[1])); ctx.lineTo(X(p2[0]), Y(p2[1])); ctx.stroke(); }
+
+  function label(x, y, text, color, bg) {
+    ctx.save();
+    ctx.font = `700 ${Math.round(40 * S)}px -apple-system, Segoe UI, sans-serif`;
+    const w = ctx.measureText(text).width, h = 52 * S;
+    ctx.fillStyle = bg || 'rgba(255,255,255,0.92)';
+    ctx.fillRect(X(x) - w / 2 - 10 * S, Y(y) - h / 2, w + 20 * S, h);
+    ctx.fillStyle = color || COL.dim; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, X(x), Y(y) + 2 * S);
+    ctx.restore();
+  }
+
+  function dim(p1, p2, text) {
+    const x1 = X(p1[0]), y1 = Y(p1[1]), x2 = X(p2[0]), y2 = Y(p2[1]);
+    const a = Math.atan2(y2 - y1, x2 - x1), h = 34 * S;
+    ctx.save(); ctx.strokeStyle = COL.dim; ctx.fillStyle = COL.dim; ctx.lineWidth = Math.max(4 * S, 3);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    [[x1, y1, a], [x2, y2, a + Math.PI]].forEach(([x, y, b]) => {
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.lineTo(x + h * Math.cos(b + 0.4), y + h * Math.sin(b + 0.4));
+      ctx.lineTo(x + h * Math.cos(b - 0.4), y + h * Math.sin(b - 0.4)); ctx.closePath(); ctx.fill();
+    });
+    ctx.restore();
+    label((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2, text);
+  }
+
+  function paintMat(L, st) {
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#0b1430'; ctx.fillRect(0, 0, TEX, TEX);                 // mat border (Fig. 11)
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(X(-1500), Y(1500), FIELD * S, FIELD * S);   // 13.2 track is white
+    drawLogo();
+
+    // Start zone dashed lines + seat-row lines, printed at the NOMINAL 1000 mm corridor (13.10, Fig. 3 p.7)
+    // printed 1 mm CMYK(0,0,0,30); drawn 4 mm and darker so the zone grid stays visible in the full-field view
+    ctx.strokeStyle = '#a1a1aa'; ctx.lineWidth = Math.max(m2p(4), 4); ctx.setLineDash([m2p(28), m2p(18)]);
+    CW.forEach(sec => {
+      [0, 500, 1000].forEach(s => seg(P(sec, s, 0), P(sec, s, 1000)));
+      [400, 600].forEach(d => seg(P(sec, 0, d), P(sec, 1000, d)));
+    });
+    ctx.setLineDash([]);
+
+    // Corner lines (13.9 p.26; 30 deg geometry Fig. 11 p.27). From each interior corner:
+    // NE & SW: orange steep (to the N/S wall), blue shallow; NW & SE: the reverse. CW meets orange first.
+    ctx.lineCap = 'butt'; ctx.lineWidth = LINE_W * S;
+    [[1, 1], [1, -1], [-1, -1], [-1, 1]].forEach(([sx, sy]) => {
+      const c = [500 * sx, 500 * sy], r = 1000 / Math.sin(Math.PI / 3);
+      const steep = [c[0] + sx * r * Math.cos(Math.PI / 3), c[1] + sy * r * Math.sin(Math.PI / 3)];
+      const shallow = [c[0] + sx * r * Math.cos(Math.PI / 6), c[1] + sy * r * Math.sin(Math.PI / 6)];
+      const steepOrange = sx * sy > 0;
+      ctx.strokeStyle = steepOrange ? COL.orange : COL.blue; seg(c, steep);
+      ctx.strokeStyle = steepOrange ? COL.blue : COL.orange; seg(c, shallow);
+    });
+
+    // 24 seats: 50 x 50 squares (13.12/13.13), 85 mm circles (13.14/13.15); columns at s = 0/500/1000.
+    // Drawn in grey and heavier than the printed 0.5-1 mm lines so every seat reads clearly from across the field.
+    CW.forEach(sec => [0, 1, 2].forEach(col => ['i', 'o'].forEach(row => {
+      const p = P(sec, 500 * col, SEAT_ROWS[row]), cx = X(p[0]), cy = Y(p[1]);
+      // contrast chosen to survive the texture being scaled down ~7x in the full-field view
+      ctx.fillStyle = '#d4d4d8';
+      ctx.beginPath(); ctx.arc(cx, cy, m2p(CIRCLE_D / 2), 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#71717a'; ctx.lineWidth = Math.max(m2p(6), 6);
+      ctx.beginPath(); ctx.arc(cx, cy, m2p(CIRCLE_D / 2 - 3), 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = '#fafafa'; ctx.fillRect(cx - m2p(25), cy - m2p(25), m2p(50), m2p(50));
+      ctx.strokeStyle = '#52525b'; ctx.lineWidth = Math.max(m2p(3), 3);
+      ctx.strokeRect(cx - m2p(25), cy - m2p(25), m2p(50), m2p(50));
+    })));
+
+    // The seats that carry a pillar in this draw: circle tinted in the pillar's colour, so positions read from the top view.
+    (L.signs || []).forEach(sg => {
+      const cx = X(sg.p[0]), cy = Y(sg.p[1]), c = sg.colour === 'red' ? '238,39,55' : '68,214,44';
+      ctx.fillStyle = `rgba(${c},0.35)`;
+      ctx.beginPath(); ctx.arc(cx, cy, m2p(CIRCLE_D / 2), 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = `rgb(${c})`; ctx.lineWidth = Math.max(m2p(8), 8);
+      ctx.beginPath(); ctx.arc(cx, cy, m2p(CIRCLE_D / 2 - 4), 0, Math.PI * 2); ctx.stroke();
+    });
+
+    // ---- overlays (not printed): start zone, driving arrows, dimensions ----
+    const sec = L.start;
+    const z = L.zone;
+    if (z) {
+      const a = P(sec, z.s0, z.d0), b = P(sec, z.s1, z.d1);
+      ctx.fillStyle = 'rgba(31,127,214,0.16)';
+      ctx.fillRect(Math.min(X(a[0]), X(b[0])), Math.min(Y(a[1]), Y(b[1])), Math.abs(X(b[0]) - X(a[0])), Math.abs(Y(b[1]) - Y(a[1])));
+      ctx.strokeStyle = COL.overlay; ctx.lineWidth = lw(4); ctx.setLineDash([m2p(30), m2p(18)]);
+      ctx.strokeRect(Math.min(X(a[0]), X(b[0])), Math.min(Y(a[1]), Y(b[1])), Math.abs(X(b[0]) - X(a[0])), Math.abs(Y(b[1]) - Y(a[1])));
+      ctx.setLineDash([]);
+    }
+    const dir = L.dir === 'ccw' ? 1 : -1;
+    CW.forEach(s2 => {
+      const dc = 1000 - L.corridor[s2] / 2;          // centreline of the real corridor
+      const a = P(s2, 500 - dir * 110, dc), b = P(s2, 500 + dir * 110, dc);
+      ctx.strokeStyle = 'rgba(31,127,214,0.55)'; ctx.fillStyle = 'rgba(31,127,214,0.55)'; ctx.lineWidth = m2p(16);
+      seg(a, [a[0] + (b[0] - a[0]) * 0.7, a[1] + (b[1] - a[1]) * 0.7]);
+      const ang = Math.atan2(Y(b[1]) - Y(a[1]), X(b[0]) - X(a[0])), hh = m2p(60);
+      ctx.beginPath(); ctx.moveTo(X(b[0]), Y(b[1]));
+      ctx.lineTo(X(b[0]) - hh * Math.cos(ang - 0.5), Y(b[1]) - hh * Math.sin(ang - 0.5));
+      ctx.lineTo(X(b[0]) - hh * Math.cos(ang + 0.5), Y(b[1]) - hh * Math.sin(ang + 0.5)); ctx.closePath(); ctx.fill();
+    });
+
+    if (st.dims) {
+      label(0, 1550, 'track 3000 × 3000 mm (13.1)', '#ffffff', 'rgba(11,20,48,0.9)');
+      label(0, -1550, 'mat 3200 × 3200 mm · walls 100 mm high', '#ffffff', 'rgba(11,20,48,0.9)');
+      CW.forEach(s2 => { const c = L.corridor[s2]; dim(P(s2, 150, 1000 - c), P(s2, 150, 1000), `${c}`); });
+      const q = OPP[sec];
+      dim(P(q, 280, 0), P(q, 280, 400), '400');
+      dim(P(q, 280, 400), P(q, 280, 600), '200');
+      dim(P(q, 280, 600), P(q, 280, 1000), '400');
+      dim(P(q, 0, 940), P(q, 1000, 940), 'section 1000');
+      dim(P(q, 500, 800), P(q, 1000, 800), 'zone 500');
+      const sp = P(q, 1000, 600), lp = P(q, 840, 700);
+      label(lp[0], lp[1], 'seat 50×50 · Ø85');
+      ['30°', '30°', '30°'].forEach((t, k) => {
+        const an = (15 + 30 * k) * Math.PI / 180; label(500 + 330 * Math.cos(an), 500 + 330 * Math.sin(an), t);
+      });
+      label(1180, 1260, 'line 20 mm');
+      if (z) { const zc = P(sec, (z.s0 + z.s1) / 2, (z.d0 + z.d1) / 2 + 70); label(zc[0], zc[1], `zone ${L.face}: ${z.d1 - z.d0}×500`, COL.overlay); }
+      if (L.challenge === 'obstacle') {
+        dim(P(sec, 700, 760), P(sec, 1000, 760), '300 = 1.5×200');
+        dim(P(sec, 640, 800), P(sec, 640, 1000), '200');
+      }
+      void sp;
+    }
+    matTex.needsUpdate = true;
+  }
+
+  // ---- 3D objects ----
+  const dyn = new THREE.Group(); scene.add(dyn);
+  const wallsGroup = new THREE.Group(); scene.add(wallsGroup);
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0x0b0f17, roughness: 0.55, metalness: 0.05 });
+  // a little self-light so the 50 x 50 x 100 pillars stay vivid in shadow and in the dark theme (size and position unchanged)
+  const redMat = new THREE.MeshStandardMaterial({ color: COL.red, roughness: 0.35, emissive: COL.red, emissiveIntensity: 0.22 });
+  const greenMat = new THREE.MeshStandardMaterial({ color: COL.green, roughness: 0.35, emissive: COL.green, emissiveIntensity: 0.22 });
+  const magMat = new THREE.MeshStandardMaterial({ color: COL.magenta, roughness: 0.3 });
+  const carMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.4, transparent: true, opacity: 0.85 });
+  const noseMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.4 });
+
+  function clear(group) { while (group.children.length) { const o = group.children.pop(); o.traverse(n => { if (n.geometry) n.geometry.dispose(); }); } }
+  function box(g, w, h, d, material, x, y, z, yaw) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+    m.position.set(x, y, z); if (yaw) m.rotation.y = yaw; m.castShadow = true; m.receiveShadow = true; g.add(m); return m;
+  }
+
+  function build3D(L) {
+    clear(dyn); clear(wallsGroup);
+    const H = WALL_H / 1000, t = WALL_T / 1000, half = FIELD / 2000;
+    // exterior walls: inner faces exactly on the 3000 mm square, thickness outside it
+    box(wallsGroup, 2 * half + 2 * t, H, t, wallMat, 0, H / 2, -(half + t / 2));
+    box(wallsGroup, 2 * half + 2 * t, H, t, wallMat, 0, H / 2, half + t / 2);
+    box(wallsGroup, t, H, 2 * half, wallMat, half + t / 2, H / 2, 0);
+    box(wallsGroup, t, H, 2 * half, wallMat, -(half + t / 2), H / 2, 0);
+    // interior block: corridor faces on the drawn corridor widths, thickness inside the block
+    const r = L.inner, w = (r.xmax - r.xmin) / 1000, d = (r.ymax - r.ymin) / 1000, cx = (r.xmin + r.xmax) / 2000, cy = (r.ymin + r.ymax) / 2000;
+    box(wallsGroup, w, H, t, wallMat, cx, H / 2, fz(r.ymax) + t / 2);
+    box(wallsGroup, w, H, t, wallMat, cx, H / 2, fz(r.ymin) - t / 2);
+    box(wallsGroup, t, H, d - 2 * t, wallMat, fx(r.xmax) - t / 2, H / 2, -cy);
+    box(wallsGroup, t, H, d - 2 * t, wallMat, fx(r.xmin) + t / 2, H / 2, -cy);
+
+    L.signs.forEach(sg => box(dyn, PILLAR[0] / 1000, PILLAR[2] / 1000, PILLAR[1] / 1000, sg.colour === 'red' ? redMat : greenMat, fx(sg.p[0]), PILLAR[2] / 2000, fz(sg.p[1])));
+
+    const f = FRAME[L.start];
+    const latYaw = Math.atan2(f.lat[1], f.lat[0]);
+    if (L.challenge === 'obstacle') {
+      // p.8 Fig. 4: right limiter just outside the dotted boundary at the CCW-exit end; clear gap 1.5 x L between faces
+      L.limiters = [1000 + LIMITER[1] / 2, 1000 - LOT_LEN - LIMITER[1] / 2].map(s => P(L.start, s, 1000 - LIMITER[0] / 2));
+      L.limiters.forEach(p => box(dyn, LIMITER[0] / 1000, LIMITER[2] / 1000, LIMITER[1] / 1000, magMat, fx(p[0]), LIMITER[2] / 2000, fz(p[1]), latYaw));
+    }
+    // team car, oriented per 9.8 (front toward the next corner in the driving direction)
+    const hv = L.dir === 'ccw' ? f.al : [-f.al[0], -f.al[1]];
+    const yaw = Math.atan2(hv[1], hv[0]);
+    L.carYaw = yaw;
+    const g = new THREE.Group();
+    box(g, CAR.L / 1000, CAR.H / 1000, CAR.W / 1000, carMat, 0, CAR.H / 2000, 0);
+    box(g, 0.03, 0.012, CAR.W / 1000 * 0.8, noseMat, CAR.L / 2000 - 0.015, CAR.H / 1000 + 0.006, 0);
+    g.position.set(fx(L.car[0]), 0, fz(L.car[1])); g.rotation.y = yaw; dyn.add(g);
+  }
+
+  // ======================================================================
+  // 4. STATE / UI
+  // ======================================================================
+  const state = { challenge: 'obstacle', seed: Math.floor(Math.random() * 1e6), dir: 'draw', start: 'lot', corr: '1000', dims: true, walls: true };
+  try { const saved = JSON.parse(localStorage.getItem('bw-arena') || 'null'); if (saved) Object.assign(state, saved); } catch (e) {}
+  let L = null;
+
+  function compute() {
+    L = drawLayout(state.seed, state.challenge, state.challenge === 'open' && state.corr !== 'draw' ? Number(state.corr) : 0);
+    L.dir = state.dir === 'draw' ? L.dirDrawn : state.dir;
+    if (L.challenge === 'obstacle') {
+      if (state.start === 'lot') { L.face = null; L.zone = null; L.car = P(L.start, 1000 - LOT_LEN / 2, 1000 - LOT_DEPTH / 2);
+        L.log.push('البداية: داخل الموقف (ص16 — نقاط إضافية فقط إن أكمل لفة كاملة)');
+      } else { L.face = 2; L.zone = zoneOf(2); L.car = P(L.start, 750, 500);
+        L.log.push('البداية: المنطقة الوسطى فوق الموقف (ص16) = المنطقة 2 بترقيم شكل 7c');
+      }
+    } else {
+      L.zone = zoneOf(L.face);
+      L.car = P(L.start, (L.zone.s0 + L.zone.s1) / 2, (L.zone.d0 + L.zone.d1) / 2);
+    }
+    if (state.dir !== 'draw') L.log.push(`تم تجاوز الاتجاه يدوياً → <b class="ltr">${L.dir.toUpperCase()}</b>`);
+  }
+
+  function renderHud() {
+    document.getElementById('log').innerHTML = L.log.map(s => `<li>${s}</li>`).join('');
+    const c = L.corridor, r = L.inner;
+    const rows = [
+      ['الممرات N / E / S / W', `${c.N} / ${c.E} / ${c.S} / ${c.W} mm`, L.challenge === 'open' ? 'p.11' : 'p.13'],
+      ['الكتلة الداخلية', `${r.xmax - r.xmin} × ${r.ymax - r.ymin} mm`, 'p.26 13.16'],
+      ['اتجاه القيادة', L.dir.toUpperCase() + (L.dir === 'cw' ? ' — يقابل البرتقالي أولاً' : ' — يقابل الأزرق أولاً'), 'p.17 9.3'],
+      ['قسم البداية', L.start, L.challenge === 'open' ? 'p.12' : 'p.16']
+    ];
+    if (L.zone) {
+      const zw = L.zone.d1 - L.zone.d0;
+      rows.push(['منطقة البداية', `#${L.face}: ${zw} × 500 mm`, 'p.13 Fig.7c']);
+      const fits = CAR.W <= zw && CAR.L <= 500;
+      rows.push(['السيارة داخل المنطقة بالكامل', fits ? `<span class="ok">نعم</span> 200×125 ⊂ ${zw}×500` : '<span class="warn">لا</span>', 'p.17 9.7']);
+    }
+    if (L.challenge === 'obstacle') {
+      const red = L.signs.filter(s => s.colour === 'red').length, green = L.signs.length - red;
+      rows.push(['الأعمدة', `${L.signs.length} (أحمر ${red} / أخضر ${green})`, 'p.28 13.20']);
+      rows.push(['البطاقات', Object.keys(L.cards).map(k => `${k}#${L.cards[k]}`).join(' · '), 'p.15']);
+      rows.push(['الموقف', `${LOT_LEN} × ${LOT_DEPTH} mm (1.5 × 200)`, 'p.8']);
+      rows.push(['خلوص الموقف', `${(LOT_LEN - CAR.L) / 2} mm أمام وخلف · ${LOT_DEPTH - CAR.W} mm جانباً`, 'p.8']);
+    }
+    rows.push(['وضع السيارة (x, y)', `${Math.round(L.car[0])}, ${Math.round(L.car[1])} mm · ${Math.round(L.carYaw * 180 / Math.PI)}°`, 'مركز، +y شمال']);
+    document.getElementById('meas').innerHTML = rows.map(([a, b, p]) => `<tr><td>${a}</td><td class="v">${b}</td><td class="p">${p}</td></tr>`).join('');
+
+    document.querySelectorAll('#segChallenge .btn').forEach(b => b.classList.toggle('active', b.dataset.v === state.challenge));
+    document.querySelectorAll('#segDir .btn').forEach(b => b.classList.toggle('active', b.dataset.v === state.dir));
+    document.querySelectorAll('#segStart .btn').forEach(b => b.classList.toggle('active', b.dataset.v === state.start));
+    document.getElementById('obsStartBox').hidden = state.challenge !== 'obstacle';
+    document.getElementById('openCorrBox').hidden = state.challenge !== 'open';
+    document.querySelectorAll('#segCorr .btn').forEach(b => b.classList.toggle('active', b.dataset.v === state.corr));
+    document.getElementById('seed').value = state.seed;
+    document.getElementById('btnDims').classList.toggle('active', state.dims);
+    document.getElementById('btnWalls').classList.toggle('active', state.walls);
+  }
+
+  const SPEC_ROWS = [
+    ['حجم الحلبة الداخلي', '3000 × 3000 ±5', 'p.26 13.1'],
+    ['حجم المات', '3200 × 3200 ±5', 'p.26 13.1'],
+    ['لون المسار', 'white', 'p.26 13.2'],
+    ['ارتفاع الجدران الخارجية والداخلية', '100', 'p.26 13.3, 13.5'],
+    ['سماكة الجدران', 'غير محددة — مرسومة 10', 'p.26 13.7'],
+    ['الممر في Open', '1000 أو 600 (±100 دولي)', 'p.11'],
+    ['الممر في Obstacle', '1000 دائماً (±10 دولي)', 'p.13'],
+    ['خطوط الزوايا', '20 mm · 30° / 60°', 'p.26 13.9 · p.27 Fig.11'],
+    ['خطوط المناطق المتقطعة', '1 mm · CMYK(0,0,0,30) — مرسومة أعرض للوضوح', 'p.26 13.10'],
+    ['منطقة البداية', '200 × 500 (13.11) · الشريطان الآخران 400×500 بالرسم', 'p.26 · p.13 Fig.7c'],
+    ['ترقيم النرد', '1 أعلى يسار … 6 أسفل يمين', 'p.12–13'],
+    ['مقعد العمود', '50 × 50 · خط 1 mm', 'p.26 13.12–13.13'],
+    ['دائرة التقييم', 'Ø85 · خط 0.5 mm · CMYK(20,0,100,0) — مرسومة رمادية وأعرض للوضوح', 'p.26 13.14–13.15'],
+    ['صفوف المقاعد من الجدار الداخلي', '400 / 600', 'p.27 Fig.11'],
+    ['أعمدة المقاعد على طول القسم', '0 / 500 / 1000 (4 T + 2 X)', 'p.7 Fig.3 · p.27'],
+    ['العمود', '50 × 50 × 100', 'p.28 13.19'],
+    ['أحمر / أخضر', 'RGB(238,39,55) / RGB(68,214,44)', 'p.28 13.21–13.22'],
+    ['عدد الأعمدة', 'حتى 7 من كل لون', 'p.28 13.20'],
+    ['حاجز الموقف', '200 × 20 × 100 · RGB(255,0,255)', 'p.28 13.25, 13.27 · p.8'],
+    ['الموقف', 'عمق 200 · طول 1.5 × طول الروبوت = 300', 'p.8 Fig.4'],
+    ['الحاجز الأيمن', 'بجانب الخط المنقط مباشرة', 'p.8'],
+    ['المعنى', 'أحمر = يمين · أخضر = يسار', 'p.6'],
+    ['نقل الأعمدة في قسم الموقف', 'للصف الأقرب للجدار الداخلي', 'p.16 Fig.8e'],
+    ['استنتاج (غير مكتوب)', 'مكان العمود المفرد = العمود الأوسط، الصف الخارجي (بطاقتا 9/10)', 'sim2/arena.py'],
+    ['استنتاج (غير مكتوب)', 'ترقيم النرد في بقية الأقسام = تدوير شكل 7c', 'p.13']
+  ];
+  document.getElementById('spec').innerHTML = SPEC_ROWS.map(([a, b, p]) => `<tr><td>${a}</td><td class="v">${b}</td><td class="p">${p}</td></tr>`).join('');
+
+  function save() { try { localStorage.setItem('bw-arena', JSON.stringify(state)); } catch (e) {} }
+  function rebuild() { compute(); paintMat(L, state); build3D(L); wallsGroup.visible = state.walls; renderHud(); save(); }
+
+  document.querySelectorAll('#segChallenge .btn').forEach(b => b.onclick = () => { state.challenge = b.dataset.v; rebuild(); });
+  document.querySelectorAll('#segDir .btn').forEach(b => b.onclick = () => { state.dir = b.dataset.v; rebuild(); });
+  document.querySelectorAll('#segStart .btn').forEach(b => b.onclick = () => { state.start = b.dataset.v; rebuild(); });
+  document.querySelectorAll('#segCorr .btn').forEach(b => b.onclick = () => { state.corr = b.dataset.v; rebuild(); });
+  document.getElementById('btnDraw').onclick = () => { state.seed = Math.floor(Math.random() * 1e6); state.dir = 'draw'; rebuild(); };
+  document.getElementById('seed').onchange = e => { const v = parseInt(e.target.value, 10); if (!isNaN(v) && v >= 0) { state.seed = v; rebuild(); } };
+  document.getElementById('btnDims').onclick = () => { state.dims = !state.dims; rebuild(); };
+  document.getElementById('btnWalls').onclick = () => { state.walls = !state.walls; wallsGroup.visible = state.walls; renderHud(); save(); };
+  document.getElementById('toggleHud').onclick = () => document.getElementById('hud').classList.toggle('collapsed');
+
+  const btnPersp = document.getElementById('btnPersp'), btnTop = document.getElementById('btnTop');
+  let view = 'persp';
+  function fitDist() { const a = Math.min(camera.aspect, 1); return 3.5 / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * a); }
+  function setView(v) {
+    view = v; btnPersp.classList.toggle('active', v === 'persp'); btnTop.classList.toggle('active', v === 'top');
+    controls.target.set(0, 0, 0);
+    const d = fitDist();
+    if (v === 'top') camera.position.set(0, d, 0.001); else camera.position.set(0, d * 0.72, d * 0.62);
+    controls.update();
+  }
+  btnPersp.onclick = () => setView('persp');
+  btnTop.onclick = () => setView('top');
+  if (innerWidth <= 640) document.getElementById('hud').classList.add('collapsed');
+
+  addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight);
+    setView(view);
+  });
+
+  rebuild();
+  setView('persp');
+  (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+})();
+</script>
