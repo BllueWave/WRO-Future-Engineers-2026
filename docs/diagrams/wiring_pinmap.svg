@@ -140,7 +140,7 @@
   <!-- ===== Header view ===== -->
   <line x1="32" y1="586" x2="968" y2="586" stroke="#d0d7de" stroke-width="1"/>
   <text class="h2" x="32" y="614">Where these pins sit on the Uno R3</text>
-  <text class="sub" x="32" y="634">Top view, USB connector on the left, spacing not to scale. Filled pins are wired by the v20 sketches.</text>
+  <text class="sub" x="32" y="634">Top view, USB connector on the left, spacing not to scale. Filled pins are used by both sketches.</text>
 
   <rect x="100" y="648" width="830" height="148" rx="8" fill="#f6f8fa" stroke="#8c959f" stroke-width="1.5"/>
   <rect x="78" y="664" width="52" height="40" rx="3" fill="#eaeef2" stroke="#8c959f" stroke-width="1.5"/>
