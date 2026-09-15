@@ -177,6 +177,7 @@ Serial checks at 115200 baud and the bench check: [Build, test and reproduce](do
   <img src="docs/team_photos/team_action_1.jpg" height="260" alt="Work session: the car on the table with laptops">
   <img src="docs/team_photos/team_action_2.jpg" height="260" alt="Work session: testing the car at the field">
   <img src="docs/team_photos/team_action_3.jpg" height="260" alt="Work session: tuning the car on the mat">
+  <img src="docs/team_photos/team_action_4.jpg" height="260" alt="Work session: wiring the car at the bench">
 </p>
 
 <p align="center"><sub>Blue Wave · Kuwait · WRO Future Engineers 2026</sub></p>
