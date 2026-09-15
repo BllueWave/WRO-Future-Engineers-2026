@@ -130,7 +130,7 @@ State diagrams, flowcharts and constants: [Software and strategy](docs/03-softwa
 
 Simulation results compare code versions against each other; full test records are in [Build, test and reproduce](docs/05-build-test-reproduce.md).
 
-Videos: [Open Challenge](https://youtube.com/shorts/_rmwh_EwI1A) and [Obstacle Challenge](https://youtube.com/shorts/2quu5O000I0). More in [`videos/`](videos/).
+Videos: [Open Challenge](https://www.youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/2quu5O000I0). More in [`videos/`](videos/).
 
 ## Repository map
 
