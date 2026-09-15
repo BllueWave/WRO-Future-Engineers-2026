@@ -4,10 +4,10 @@
 
 <h1 align="center">Blue Wave</h1>
 
-<p align="center"><b>WRO Future Engineers 2026</b><br>Kuwait national round: 1st place, 64 points<br>Next: WRO 2026 Asia final, India</p>
+<p align="center"><b>WRO Future Engineers 2026</b><br>Kuwait national round: 1st place, 61 points<br>Next: WRO 2026 Asia final, India</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Kuwait%20national%20round-1st%20place%20%C2%B7%2064%20pts-0b6e4f" height="22" alt="Kuwait national round: 1st place, 64 points">
+  <img src="https://img.shields.io/badge/Kuwait%20national%20round-1st%20place%20%C2%B7%2061%20pts-0b6e4f" height="22" alt="Kuwait national round: 1st place, 61 points">
   <img src="https://img.shields.io/badge/controller-Arduino%20Uno%20R3-00979D" height="22" alt="Controller: Arduino Uno R3">
   <img src="https://img.shields.io/badge/sensors-3%C3%97%20HC--SR04%20%C2%B7%20BNO055%20%C2%B7%20Pixy2-1f4fa8" height="22" alt="Sensors: 3 HC-SR04, BNO055, Pixy2">
 </p>
@@ -23,6 +23,8 @@ Our car is a 1:28-class RC chassis, about 200 × 125 mm, with Ackermann steering
 | 3. Software and obstacle strategy | [Software architecture and obstacle strategy](docs/03-software-and-strategy.md) | Module maps, Open flowchart, Obstacle state machine, pillar ladder, front-wall park, edge cases, where every constant comes from |
 | 4. Systems thinking and decisions | [Systems thinking and engineering decisions](docs/04-engineering-decisions.md) | Why we chose each part, constraints, decision log, version history, risks |
 | 5. Reproducibility | [Build, test and reproduce](docs/05-build-test-reproduce.md) | Parts list, library versions, flash sizes, bench check, test results, how to repeat each number |
+
+Engineering journal: [Blue_Wave_Engineering_Journal.pdf](docs/journal/Blue_Wave_Engineering_Journal.pdf)
 
 Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp-content/uploads/WRO-2026-Future-Engineers-Self-Driving-Cars-General-Rules.pdf) (p.44-54).
 
@@ -58,8 +60,12 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 </p>
 
 <p align="center">
+  <a href="Schemes/README.md"><img src="Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
+</p>
+
+<p align="center">
   <img src="docs/diagrams/sensor_layout.png" width="49%" alt="Sensor layout: front sonar at 0 degrees, side sonars at about 40 degrees on the nose corners, Pixy2 60 degree field of view, on a 200 by 125 mm outline">
-  <img src="docs/diagrams/wiring_pinmap.png" width="49%" alt="Wiring pin map: sonars on D6/D7, D4/D5 and D2/D9, servo on D10, motor PWM D3 and direction D8, start switch A2, BNO055 on A4/A5, Pixy2 on the ICSP header">
+  <img src="docs/diagrams/wiring_pinmap.png" width="49%" alt="Wiring pin map: sonars on A0/D7, D4/D5 and D2/D9, servo on D10, motor PWM D3 and direction D8, start switch A2, BNO055 on A4/A5, Pixy2 on the ICSP header">
 </p>
 
 ## Why these parts
@@ -117,7 +123,7 @@ State diagrams, flowcharts and constants: [Software and strategy](docs/03-softwa
 
 | Event | Result |
 |---|---|
-| WRO Future Engineers 2026, Kuwait national round, June 2026 | **1st place, 64 points** |
+| WRO Future Engineers 2026, Kuwait national round, June 2026 | **1st place, 61 points** |
 | Open Challenge on our practice mat, PWM 30 | Three laps in about 23 s |
 | Open sketch in simulation, all 32 corridor and direction combinations, 320 runs | 287 runs scored 30/30 |
 
@@ -137,7 +143,7 @@ Videos: [Open Challenge](https://youtube.com/shorts/_rmwh_EwI1A) and [Obstacle C
 │   └── team_photos/    work sessions
 ├── src/                the two competition sketches
 ├── Models/             3D print project: body and sensor brackets
-├── Schemes/            wiring
+├── Schemes/            wiring schematic, source SVG, June drawing archive
 ├── Vehicle_Photos/     photos of the car
 └── videos/             challenge videos
 ```
