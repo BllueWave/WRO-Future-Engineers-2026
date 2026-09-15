@@ -1,6 +1,7 @@
 <title>Blue Wave Arena</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <style>
   :root {
     --bg: #eef2f7; --scene: #dfe6ef; --panel: rgba(255,255,255,0.93); --text: #0f172a;
@@ -27,7 +28,7 @@
   #stage canvas { display: block; }
   #hud { position: absolute; top: 16px; right: 16px; width: min(380px, calc(100% - 32px));
     max-height: calc(100% - 132px); overflow: auto; background: var(--panel); backdrop-filter: blur(14px);
-    border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; direction: rtl;
+    border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; direction: ltr;
     font-size: 12.5px; line-height: 1.6; box-shadow: var(--shadow); }
   #hud h1 { font-size: 15px; margin: 0 0 2px; color: var(--accent); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
   #hud h2 { font-size: 12px; margin: 12px 0 4px; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
@@ -52,7 +53,7 @@
   details summary { cursor: pointer; color: var(--muted); font-size: 12px; margin-top: 10px; }
   #toolbar { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap;
     justify-content: center; gap: 6px; max-width: calc(100% - 32px); background: var(--panel); backdrop-filter: blur(14px);
-    padding: 8px 10px; border-radius: 22px; border: 1px solid var(--border); box-shadow: var(--shadow); direction: rtl; }
+    padding: 8px 10px; border-radius: 22px; border: 1px solid var(--border); box-shadow: var(--shadow); direction: ltr; }
   #toggleHud { display: none; }
   #err { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; }
   @media (max-width: 640px) {
@@ -68,81 +69,81 @@
 
 <div id="hud">
   <h1><span>BLUE WAVE · WRO 2026 Future Engineers</span><button class="btn" id="toggleHud">▾</button></h1>
-  <div class="sub">حلبة مطابقة لكتاب القواعد 2026 — كل رقم مع رقم الصفحة. السيارة <span class="ltr">200 × 125 mm</span>.</div>
+  <div class="sub">Field drawn to the 2026 rulebook; every number carries its page. Car <span class="ltr">200 × 125 mm</span>.</div>
 
-  <h2>التحدي</h2>
+  <h2>Challenge</h2>
   <div class="seg" id="segChallenge">
     <button class="btn" data-v="open">Open Challenge</button>
     <button class="btn" data-v="obstacle">Obstacle Challenge</button>
   </div>
 
-  <h2>القرعة (إجراء القواعد، ص12 و ص13–16)</h2>
+  <h2>Draw (rulebook procedure, p.12 and p.13–16)</h2>
   <div class="row">
-    <button class="btn active" id="btnDraw">قرعة جديدة</button>
+    <button class="btn active" id="btnDraw">New draw</button>
     <label class="sub">seed <input type="number" id="seed" min="0" step="1"></label>
   </div>
 
-  <h2>اتجاه القيادة (9.3 ص17)</h2>
+  <h2>Driving direction (9.3, p.17)</h2>
   <div class="seg" id="segDir">
-    <button class="btn" data-v="draw">حسب القرعة</button>
-    <button class="btn" data-v="cw">CW مع عقارب الساعة</button>
-    <button class="btn" data-v="ccw">CCW عكس عقارب الساعة</button>
+    <button class="btn" data-v="draw">From the draw</button>
+    <button class="btn" data-v="cw">CW clockwise</button>
+    <button class="btn" data-v="ccw">CCW counter-clockwise</button>
   </div>
 
   <div id="openCorrBox">
-    <h2>ممرات Open (ص11–12)</h2>
+    <h2>Open corridors (p.11–12)</h2>
     <div class="seg" id="segCorr">
-      <button class="btn" data-v="1000">كلها 1000 — مربع 1000×1000 بالنص</button>
-      <button class="btn" data-v="600">كلها 600 — مربع 1800×1800 بالنص</button>
-      <button class="btn" data-v="draw">حسب القرعة</button>
+      <button class="btn" data-v="1000">All 1000: centred 1000×1000 block</button>
+      <button class="btn" data-v="600">All 600: centred 1800×1800 block</button>
+      <button class="btn" data-v="draw">From the draw</button>
     </div>
-    <div class="sub">في القرعة الرسمية كل مستقيم يُرمى له 1000 أو 600 بشكل مستقل، فتصير الكتلة الداخلية مستطيلاً وتبتعد عن المنتصف. هذا مطابق للقواعد (ص11، الملحق B).</div>
+    <div class="sub">In the official draw each straight gets its own toss for 1000 or 600, so the inner block becomes a rectangle and moves off centre. This matches the rules (p.11, Appendix B).</div>
   </div>
 
   <div id="obsStartBox">
-    <h2>بداية الروبوت في Obstacle (ص16)</h2>
+    <h2>Robot start in Obstacle (p.16)</h2>
     <div class="seg" id="segStart">
-      <button class="btn" data-v="lot">داخل الموقف (نقاط إضافية)</button>
-      <button class="btn" data-v="zone">المنطقة الوسطى فوق الموقف</button>
+      <button class="btn" data-v="lot">Inside the parking lot (bonus points)</button>
+      <button class="btn" data-v="zone">Middle zone next to the lot</button>
     </div>
   </div>
 
-  <h2>خطوات القرعة</h2>
+  <h2>Draw steps</h2>
   <ol class="log" id="log"></ol>
 
-  <h2>قياسات هذا التوزيع</h2>
+  <h2>Measurements for this layout</h2>
   <table id="meas"></table>
 
-  <h2>الألوان</h2>
+  <h2>Colours</h2>
   <div class="legend">
-    <div><span class="chip" style="background:#ee2737"></span>أحمر RGB(238,39,55): ابق يمين</div>
-    <div><span class="chip" style="background:#44d62c"></span>أخضر RGB(68,214,44): ابق يسار</div>
-    <div><span class="chip" style="background:#ff00ff"></span>حاجز الموقف RGB(255,0,255)</div>
-    <div><span class="chip" style="background:#1f7fd6;opacity:.45"></span>منطقة البداية (طبقة شرح)</div>
-    <div><span class="chip" style="background:#f58220"></span>خط برتقالي CMYK(0,60,100,0)</div>
-    <div><span class="chip" style="background:#1f4fa8"></span>خط أزرق CMYK(100,80,0,0)</div>
-    <div><span class="chip" style="background:#7c3aed"></span>أبعاد (ليست مطبوعة)</div>
-    <div><span class="chip" style="background:#2563eb"></span>سيارة الفريق 200×125</div>
+    <div><span class="chip" style="background:#ee2737"></span>Red RGB(238,39,55): keep right</div>
+    <div><span class="chip" style="background:#44d62c"></span>Green RGB(68,214,44): keep left</div>
+    <div><span class="chip" style="background:#ff00ff"></span>Parking limiter RGB(255,0,255)</div>
+    <div><span class="chip" style="background:#1f7fd6;opacity:.45"></span>Start zone (overlay)</div>
+    <div><span class="chip" style="background:#f58220"></span>Orange line CMYK(0,60,100,0)</div>
+    <div><span class="chip" style="background:#1f4fa8"></span>Blue line CMYK(100,80,0,0)</div>
+    <div><span class="chip" style="background:#7c3aed"></span>Dimensions (not printed)</div>
+    <div><span class="chip" style="background:#2563eb"></span>Team car 200×125</div>
   </div>
 
   <details>
-    <summary>مرجع الأرقام (صفحة لكل رقم)</summary>
+    <summary>Dimension reference (page for every number)</summary>
     <table id="spec"></table>
   </details>
 </div>
 
 <div id="toolbar">
-  <button class="btn active" id="btnPersp">منظور 3D</button>
-  <button class="btn" id="btnTop">علوي Top</button>
-  <button class="btn active" id="btnWalls">الجدران</button>
-  <button class="btn active" id="btnDims">الأبعاد</button>
+  <button class="btn active" id="btnPersp">3D view</button>
+  <button class="btn" id="btnTop">Top view</button>
+  <button class="btn active" id="btnWalls">Walls</button>
+  <button class="btn active" id="btnDims">Dimensions</button>
 </div>
 
 <script>
 (function () {
   'use strict';
   if (typeof THREE === 'undefined' || !THREE.OrbitControls) {
-    document.getElementById('stage').innerHTML = '<div id="err">تعذر تحميل three.js — تحقق من الاتصال.</div>';
+    document.getElementById('stage').innerHTML = '<div id="err">three.js did not load. Check the internet connection.</div>';
     return;
   }
 
@@ -178,7 +179,7 @@
   const CW = ['N', 'E', 'S', 'W'];
   const OPP = { N: 'S', S: 'N', E: 'W', W: 'E' };
   const TOSS = { HH: 'N', HT: 'E', TH: 'W', TT: 'S' };   // p.16 Fig. 8d (same layout as Fig. 7a/8b)
-  const NAME = { N: 'N (شمال)', E: 'E (شرق)', S: 'S (جنوب)', W: 'W (غرب)' };
+  const NAME = { N: 'N (north)', E: 'E (east)', S: 'S (south)', W: 'W (west)' };
   function P(sec, s, d) { const f = FRAME[sec]; return [f.o[0] + f.al[0] * s + f.lat[0] * d, f.o[1] + f.al[1] * s + f.lat[1] * d]; }
   function cwFrom(sec) { const i = CW.indexOf(sec); return [0, 1, 2, 3].map(k => CW[(i + k) % 4]); }
 
@@ -210,40 +211,40 @@
     const log = [];
     const dirToss = coin();
     const dirDrawn = dirToss === 'H' ? 'ccw' : 'cw';
-    log.push(`اتجاه القيادة: رمية <span class="ltr">${dirToss}</span> → <b class="ltr">${dirDrawn.toUpperCase()}</b> <span class="sub">(9.3 ص17 يقول «عشوائي» فقط؛ العملة طريقتنا)</span>`);
+    log.push(`Driving direction: toss <span class="ltr">${dirToss}</span> → <b class="ltr">${dirDrawn.toUpperCase()}</b> <span class="sub">(9.3, p.17 only says "random"; the coin is our method)</span>`);
     const L = { challenge, seed, dirDrawn, log, corridor: {}, signs: [], start: null, face: null, cards: {}, moved: 0 };
 
     if (challenge === 'open') {
       const t = coin() + coin();
       L.start = TOSS[t];
-      log.push(`خطوة 1: رميتان <span class="ltr">${t[0]}-${t[1]}</span> → قسم البداية <b>${NAME[L.start]}</b> (شكل 7a ص12)`);
+      log.push(`Step 1: two tosses <span class="ltr">${t[0]}-${t[1]}</span> → start section <b>${NAME[L.start]}</b> (Fig. 7a, p.12)`);
       const parts = cwFrom(L.start).map(sec => { const c = coin(); L.corridor[sec] = fixedCorr || (c === 'H' ? 1000 : 600); return `${sec}=${c}(${L.corridor[sec]})`; });
-      if (fixedCorr) log.push(`خطوة 2: الممرات مثبتة يدوياً على <b class="ltr">${fixedCorr}</b> mm من الجهات الأربع → كتلة داخلية مربعة بالنص (القرعة الرسمية ترمي لكل مستقيم)`);
-      else log.push(`خطوة 2: أربع رميات مع عقارب الساعة بدءاً من قسم البداية، H عريض 1000 / T ضيق 600: <span class="ltr">${parts.join(' · ')}</span> (ص11–12)`);
+      if (fixedCorr) log.push(`Step 2: corridors fixed by hand at <b class="ltr">${fixedCorr}</b> mm on all four sides → square inner block in the centre (the official draw tosses for each straight)`);
+      else log.push(`Step 2: four tosses clockwise from the start section, H wide 1000 / T narrow 600: <span class="ltr">${parts.join(' · ')}</span> (p.11–12)`);
       const rolls = [];
       for (let k = 0; k < 60; k++) {
         const f = 1 + Math.floor(rng() * 6); rolls.push(f);
         if (zoneOf(f).d0 >= 1000 - L.corridor[L.start]) { L.face = f; break; }
       }
-      log.push(`خطوة 3: النرد <span class="ltr">${rolls.join(' → ')}</span>${rolls.length > 1 ? ' (إعادة لأن المنطقة داخل الجدار)' : ''} → منطقة <b>${L.face}</b> (شكل 7c ص13)`);
+      log.push(`Step 3: die <span class="ltr">${rolls.join(' → ')}</span>${rolls.length > 1 ? ' (rolled again: the zone was inside the wall)' : ''} → zone <b>${L.face}</b> (Fig. 7c, p.13)`);
     } else {
       CW.forEach(s => L.corridor[s] = 1000);   // p.13: always 1000 mm (+/-10)
       const t1 = coin() + coin();
       const single = TOSS[t1];
       const colT = coin();
       const colour = colT === 'H' ? 'g' : 'r';
-      log.push(`خطوة 1: رميتان <span class="ltr">${t1[0]}-${t1[1]}</span> → قسم العمود المفرد <b>${NAME[single]}</b> (شكل 8b ص14)`);
-      log.push(`خطوة 2: رمية <span class="ltr">${colT}</span> → ${colour === 'g' ? 'أخضر' : 'أحمر'} (H أخضر / T أحمر، ص14)`);
+      log.push(`Step 1: two tosses <span class="ltr">${t1[0]}-${t1[1]}</span> → single-pillar section <b>${NAME[single]}</b> (Fig. 8b, p.14)`);
+      log.push(`Step 2: toss <span class="ltr">${colT}</span> → ${colour === 'g' ? 'green' : 'red'} (H green / T red, p.14)`);
       const deck = []; for (let c = 1; c <= 36; c++) if (c !== (colour === 'g' ? 9 : 10)) deck.push(c);
       for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
       const per = {}; per[single] = [[1, 'o', colour]];
       const drawn = [];
       cwFrom(single).slice(1).forEach(sec => { const c = deck.pop(); L.cards[sec] = c; per[sec] = CARDS[c].map(e => e.slice()); drawn.push(`${sec}: #${c}`); });
-      log.push(`خطوة 3: حذف البطاقة ${colour === 'g' ? 9 : 10}، ثم سحب بدون إرجاع مع عقارب الساعة: <span class="ltr">${drawn.join(' · ')}</span> (شكل 8c ص15)`);
+      log.push(`Step 3: remove card ${colour === 'g' ? 9 : 10}, then draw clockwise without returning cards: <span class="ltr">${drawn.join(' · ')}</span> (Fig. 8c, p.15)`);
       const t2 = coin() + coin();
       L.start = TOSS[t2];
       per[L.start].forEach(e => { if (e[1] === 'o') { e[1] = 'i'; L.moved++; } });
-      log.push(`خطوة 4: رميتان <span class="ltr">${t2[0]}-${t2[1]}</span> → قسم البداية والموقف <b>${NAME[L.start]}</b>${L.moved ? `؛ نُقل ${L.moved} عمود للصف الأقرب للجدار الداخلي` : ''} (شكل 8d/8e ص16)`);
+      log.push(`Step 4: two tosses <span class="ltr">${t2[0]}-${t2[1]}</span> → start and parking section <b>${NAME[L.start]}</b>${L.moved ? `; ${L.moved} pillar${L.moved > 1 ? 's' : ''} moved to the row nearer the inner wall` : ''} (Fig. 8d/8e, p.16)`);
       Object.keys(per).forEach(sec => per[sec].forEach(([col, row, c]) => {
         L.signs.push({ sec, col, row, colour: c === 'g' ? 'green' : 'red', p: P(sec, 500 * col, SEAT_ROWS[row]) });
       }));
@@ -517,40 +518,40 @@
     L.dir = state.dir === 'draw' ? L.dirDrawn : state.dir;
     if (L.challenge === 'obstacle') {
       if (state.start === 'lot') { L.face = null; L.zone = null; L.car = P(L.start, 1000 - LOT_LEN / 2, 1000 - LOT_DEPTH / 2);
-        L.log.push('البداية: داخل الموقف (ص16 — نقاط إضافية فقط إن أكمل لفة كاملة)');
+        L.log.push('Start: inside the parking lot (p.16; bonus points only if the car completes a full lap)');
       } else { L.face = 2; L.zone = zoneOf(2); L.car = P(L.start, 750, 500);
-        L.log.push('البداية: المنطقة الوسطى فوق الموقف (ص16) = المنطقة 2 بترقيم شكل 7c');
+        L.log.push('Start: middle zone next to the lot (p.16) = zone 2 in the Fig. 7c numbering');
       }
     } else {
       L.zone = zoneOf(L.face);
       L.car = P(L.start, (L.zone.s0 + L.zone.s1) / 2, (L.zone.d0 + L.zone.d1) / 2);
     }
-    if (state.dir !== 'draw') L.log.push(`تم تجاوز الاتجاه يدوياً → <b class="ltr">${L.dir.toUpperCase()}</b>`);
+    if (state.dir !== 'draw') L.log.push(`Direction set by hand → <b class="ltr">${L.dir.toUpperCase()}</b>`);
   }
 
   function renderHud() {
     document.getElementById('log').innerHTML = L.log.map(s => `<li>${s}</li>`).join('');
     const c = L.corridor, r = L.inner;
     const rows = [
-      ['الممرات N / E / S / W', `${c.N} / ${c.E} / ${c.S} / ${c.W} mm`, L.challenge === 'open' ? 'p.11' : 'p.13'],
-      ['الكتلة الداخلية', `${r.xmax - r.xmin} × ${r.ymax - r.ymin} mm`, 'p.26 13.16'],
-      ['اتجاه القيادة', L.dir.toUpperCase() + (L.dir === 'cw' ? ' — يقابل البرتقالي أولاً' : ' — يقابل الأزرق أولاً'), 'p.17 9.3'],
-      ['قسم البداية', L.start, L.challenge === 'open' ? 'p.12' : 'p.16']
+      ['Corridors N / E / S / W', `${c.N} / ${c.E} / ${c.S} / ${c.W} mm`, L.challenge === 'open' ? 'p.11' : 'p.13'],
+      ['Inner block', `${r.xmax - r.xmin} × ${r.ymax - r.ymin} mm`, 'p.27 13.16'],
+      ['Driving direction', L.dir.toUpperCase() + (L.dir === 'cw' ? ' — orange line first' : ' — blue line first'), 'p.17 9.3'],
+      ['Start section', L.start, L.challenge === 'open' ? 'p.12' : 'p.16']
     ];
     if (L.zone) {
       const zw = L.zone.d1 - L.zone.d0;
-      rows.push(['منطقة البداية', `#${L.face}: ${zw} × 500 mm`, 'p.13 Fig.7c']);
+      rows.push(['Start zone', `#${L.face}: ${zw} × 500 mm`, 'p.13 Fig.7c']);
       const fits = CAR.W <= zw && CAR.L <= 500;
-      rows.push(['السيارة داخل المنطقة بالكامل', fits ? `<span class="ok">نعم</span> 200×125 ⊂ ${zw}×500` : '<span class="warn">لا</span>', 'p.17 9.7']);
+      rows.push(['Car fully inside the zone', fits ? `<span class="ok">yes</span> 200×125 ⊂ ${zw}×500` : '<span class="warn">no</span>', 'p.17 9.7']);
     }
     if (L.challenge === 'obstacle') {
       const red = L.signs.filter(s => s.colour === 'red').length, green = L.signs.length - red;
-      rows.push(['الأعمدة', `${L.signs.length} (أحمر ${red} / أخضر ${green})`, 'p.28 13.20']);
-      rows.push(['البطاقات', Object.keys(L.cards).map(k => `${k}#${L.cards[k]}`).join(' · '), 'p.15']);
-      rows.push(['الموقف', `${LOT_LEN} × ${LOT_DEPTH} mm (1.5 × 200)`, 'p.8']);
-      rows.push(['خلوص الموقف', `${(LOT_LEN - CAR.L) / 2} mm أمام وخلف · ${LOT_DEPTH - CAR.W} mm جانباً`, 'p.8']);
+      rows.push(['Pillars', `${L.signs.length} (red ${red} / green ${green})`, 'p.28 13.20']);
+      rows.push(['Cards', Object.keys(L.cards).map(k => `${k}#${L.cards[k]}`).join(' · '), 'p.15']);
+      rows.push(['Parking lot', `${LOT_LEN} × ${LOT_DEPTH} mm (1.5 × 200)`, 'p.8']);
+      rows.push(['Lot clearance', `${(LOT_LEN - CAR.L) / 2} mm each end · ${LOT_DEPTH - CAR.W} mm across`, 'p.8']);
     }
-    rows.push(['وضع السيارة (x, y)', `${Math.round(L.car[0])}, ${Math.round(L.car[1])} mm · ${Math.round(L.carYaw * 180 / Math.PI)}°`, 'مركز، +y شمال']);
+    rows.push(['Car pose (x, y)', `${Math.round(L.car[0])}, ${Math.round(L.car[1])} mm · ${Math.round(L.carYaw * 180 / Math.PI)}°`, 'centre, +y north']);
     document.getElementById('meas').innerHTML = rows.map(([a, b, p]) => `<tr><td>${a}</td><td class="v">${b}</td><td class="p">${p}</td></tr>`).join('');
 
     document.querySelectorAll('#segChallenge .btn').forEach(b => b.classList.toggle('active', b.dataset.v === state.challenge));
@@ -565,31 +566,31 @@
   }
 
   const SPEC_ROWS = [
-    ['حجم الحلبة الداخلي', '3000 × 3000 ±5', 'p.26 13.1'],
-    ['حجم المات', '3200 × 3200 ±5', 'p.26 13.1'],
-    ['لون المسار', 'white', 'p.26 13.2'],
-    ['ارتفاع الجدران الخارجية والداخلية', '100', 'p.26 13.3, 13.5'],
-    ['سماكة الجدران', 'غير محددة — مرسومة 10', 'p.26 13.7'],
-    ['الممر في Open', '1000 أو 600 (±100 دولي)', 'p.11'],
-    ['الممر في Obstacle', '1000 دائماً (±10 دولي)', 'p.13'],
-    ['خطوط الزوايا', '20 mm · 30° / 60°', 'p.26 13.9 · p.27 Fig.11'],
-    ['خطوط المناطق المتقطعة', '1 mm · CMYK(0,0,0,30) — مرسومة أعرض للوضوح', 'p.26 13.10'],
-    ['منطقة البداية', '200 × 500 (13.11) · الشريطان الآخران 400×500 بالرسم', 'p.26 · p.13 Fig.7c'],
-    ['ترقيم النرد', '1 أعلى يسار … 6 أسفل يمين', 'p.12–13'],
-    ['مقعد العمود', '50 × 50 · خط 1 mm', 'p.26 13.12–13.13'],
-    ['دائرة التقييم', 'Ø85 · خط 0.5 mm · CMYK(20,0,100,0) — مرسومة رمادية وأعرض للوضوح', 'p.26 13.14–13.15'],
-    ['صفوف المقاعد من الجدار الداخلي', '400 / 600', 'p.27 Fig.11'],
-    ['أعمدة المقاعد على طول القسم', '0 / 500 / 1000 (4 T + 2 X)', 'p.7 Fig.3 · p.27'],
-    ['العمود', '50 × 50 × 100', 'p.28 13.19'],
-    ['أحمر / أخضر', 'RGB(238,39,55) / RGB(68,214,44)', 'p.28 13.21–13.22'],
-    ['عدد الأعمدة', 'حتى 7 من كل لون', 'p.28 13.20'],
-    ['حاجز الموقف', '200 × 20 × 100 · RGB(255,0,255)', 'p.28 13.25, 13.27 · p.8'],
-    ['الموقف', 'عمق 200 · طول 1.5 × طول الروبوت = 300', 'p.8 Fig.4'],
-    ['الحاجز الأيمن', 'بجانب الخط المنقط مباشرة', 'p.8'],
-    ['المعنى', 'أحمر = يمين · أخضر = يسار', 'p.6'],
-    ['نقل الأعمدة في قسم الموقف', 'للصف الأقرب للجدار الداخلي', 'p.16 Fig.8e'],
-    ['استنتاج (غير مكتوب)', 'مكان العمود المفرد = العمود الأوسط، الصف الخارجي (بطاقتا 9/10)', 'sim2/arena.py'],
-    ['استنتاج (غير مكتوب)', 'ترقيم النرد في بقية الأقسام = تدوير شكل 7c', 'p.13']
+    ['Racetrack inner size', '3000 × 3000 ±5', 'p.26 13.1'],
+    ['Game mat', '3200 × 3200 ±5', 'p.26 13.1'],
+    ['Track colour', 'white', 'p.26 13.2'],
+    ['Exterior and interior wall height', '100', 'p.26 13.3, 13.5'],
+    ['Wall thickness', 'not defined; drawn 10', 'p.26 13.7'],
+    ['Open corridor', '1000 or 600 (±100 Intl Final)', 'p.11'],
+    ['Obstacle corridor', 'always 1000 (±10 Intl Final)', 'p.13'],
+    ['Corner lines', '20 mm · 30° / 60°', 'p.26 13.9 · p.27 Fig.11'],
+    ['Dashed zone lines', '1 mm · CMYK(0,0,0,30); drawn wider', 'p.26 13.10'],
+    ['Start zone', '200 × 500 (13.11) · other two bands 400×500 in the figure', 'p.26 · p.13 Fig.7c'],
+    ['Die numbering', '1 top left … 6 bottom right', 'p.12–13'],
+    ['Pillar seat', '50 × 50 · 1 mm line', 'p.26 13.12–13.13'],
+    ['Evaluation circle', 'Ø85 · 0.5 mm line · CMYK(20,0,100,0); drawn grey, wider', 'p.26 13.14–13.15'],
+    ['Seat rows from the inner wall', '400 / 600', 'p.27 Fig.11'],
+    ['Seat columns along the section', '0 / 500 / 1000 (4 T + 2 X)', 'p.7 Fig.3 · p.27'],
+    ['Pillar', '50 × 50 × 100', 'p.28 13.19'],
+    ['Red / green', 'RGB(238,39,55) / RGB(68,214,44)', 'p.28 13.21–13.22'],
+    ['Pillar count', 'up to 7 of each colour', 'p.28 13.20'],
+    ['Parking limiter', '200 × 20 × 100 · RGB(255,0,255)', 'p.28 13.25, 13.27 · p.8'],
+    ['Parking lot', 'depth 200 · length 1.5 × robot length = 300', 'p.8 Fig.4'],
+    ['Right limiter', 'directly next to the dotted line', 'p.8'],
+    ['Meaning', 'red = keep right · green = keep left', 'p.6'],
+    ['Pillars in the parking section', 'move to the row nearer the inner wall', 'p.16 Fig.8e'],
+    ['Inference (not in the rules text)', 'single pillar seat = middle column, outer row (cards 9/10)', 'sim2/arena.py'],
+    ['Inference (not in the rules text)', 'die numbering in the other sections = Fig. 7c rotated', 'p.13']
   ];
   document.getElementById('spec').innerHTML = SPEC_ROWS.map(([a, b, p]) => `<tr><td>${a}</td><td class="v">${b}</td><td class="p">${p}</td></tr>`).join('');
 

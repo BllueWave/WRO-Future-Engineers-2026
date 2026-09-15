@@ -2,13 +2,15 @@
 
 `index.html` in this folder is an interactive three.js model of the WRO 2026 Future Engineers field. We use it to look at a legal random draw from any angle before we test a strategy on the mat, and to check how our 200 × 125 mm car fits the start zone and the 300 mm parking lot. It draws the field. It does not simulate driving and it does not score a run.
 
+<img src="arena_top.png" alt="Top view of the arena page: an Obstacle Challenge draw with seven pillars, the parking lot in the north straight and the control panel on the right" width="760">
+
+*Top view of an Obstacle Challenge draw, seed 7: counter-clockwise, parking lot in the north straight, 4 red and 3 green pillars. To rebuild it, choose Obstacle Challenge, type 7 in the seed box and press Top view.*
+
 **Open it online:** https://blluewave.github.io/WRO-Future-Engineers-2026/docs/arena/
 
-> **GitHub Pages must be enabled by the team before that link works.** In the repository go to *Settings > Pages > Build and deployment*, choose *Deploy from a branch*, branch `main`, folder `/ (root)`, and save. If the folder is set to `/docs` instead, the address becomes `https://blluewave.github.io/WRO-Future-Engineers-2026/arena/`.
+The link works when GitHub Pages serves this repository from the `main` branch and the root folder (*Settings > Pages > Deploy from a branch*). With the `/docs` folder selected instead, the address is `https://blluewave.github.io/WRO-Future-Engineers-2026/arena/`.
 
 **Open it locally:** open `docs/arena/index.html` in a desktop browser. The page loads three.js r128 from `cdnjs.cloudflare.com` and OrbitControls from `cdn.jsdelivr.net`, so it needs an internet connection. It remembers the last settings in the browser's local storage.
-
-TODO(team): the control panel labels on the page are still in Arabic. Rule 7 (p.9) asks for all GitHub content in English for the international competition, so translate the labels before the scored commit.
 
 ## What the page does
 
@@ -84,5 +86,5 @@ With our car the lot leaves (300 - 200) / 2 = 50 mm at each end when the car is 
 
 ## Related
 
-- The main [README](../../README.md), section 8, explains how this page fits with our simulator and the Webots replays.
+- [Arena page](../05-build-test-reproduce.md#arena-page) in Build, test and reproduce explains how this page fits with our simulator and the Webots replays.
 - The rulebook: https://wro-association.org/wp-content/uploads/WRO-2026-Future-Engineers-Self-Driving-Cars-General-Rules.pdf
