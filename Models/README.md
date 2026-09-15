@@ -1,26 +1,40 @@
-# Red body files (not the competing car)
+# 3D models
 
-**The files in this folder do not describe the orange car that competes at the WRO 2026 Asia final.** They belong to a different design with a red body, which earlier versions of this repository called "Tracer". The competing car is documented in the main [README](../README.md).
+[`BlueWave_main_body_v2.3mf`](BlueWave_main_body_v2.3mf) is our print project for the body shell and the sensor brackets, version 2. It is a Bambu Studio 02.01.01.52 project saved on 20 November 2025, with five parts on one plate.
 
-TODO(team): confirm the authorship and origin of both files below before the scored commit, and keep them only if they are the team's own work (rule 3.7, p.4 of the 2026 rules). If the orange car has printed parts of its own, add their files here with a short description of each.
+<img src="BlueWave_main_body_v2_plate.png" width="360" alt="Plate preview from the project file: the body shell and its sensor brackets in red PETG">
 
-## Files
+*Plate preview stored in the project file.*
 
-| File | What it contains |
+## Parts in the file
+
+Sizes are the bounding boxes of the meshes stored in the file, in each part's own axes.
+
+| Part name in the file | Copies | Bounding box (mm) | Triangles | Part |
+|---|---|---|---|---|
+| `wro main body v2.step` | 1 | 79.0 × 123.0 × 58.0 | 52,418 | Body shell |
+| `us bracket wro v2.step` | 2 | 32.7 × 47.4 × 19.0 | 7,256 each | Ultrasonic sensor bracket |
+| `us brackeetXpixy v2.step` | 1 | 49.3 × 15.3 × 23.5 | 8,344 | Ultrasonic sensor and Pixy2 bracket |
+| `pixy bracket wro.step` | 1 | 49.3 × 6.7 × 29.7 | 3,008 | Pixy2 bracket |
+
+The two ultrasonic brackets and the combined bracket give three ultrasonic mounts, the same count as the HC-SR04 sensors on the car. Where each sensor points is in [docs/02-power-and-sensors.md](../docs/02-power-and-sensors.md).
+
+## Print settings
+
+These are the values saved in `Metadata/project_settings.config`. Supports are the only setting we changed from the Bambu preset.
+
+| Setting | Value |
 |---|---|
-| [`WRO_AUMers_main_body_3D_Design_v2.3mf`](WRO_AUMers_main_body_3D_Design_v2.3mf) | A Bambu Studio print project (BambuStudio 02.01.01.52, created 2025-11-20) with five objects: `wro main body v2.step`, two `us bracket wro v2.step`, `us brackeetXpixy v2.step` and `pixy bracket wro.step` |
-| [`tracer_exploded_view.png`](tracer_exploded_view.png) | An illustration of the red body with labelled parts. It is not a CAD export, and several labels do not match any real part |
+| Printer | Bambu Lab X1 Carbon, 0.4 mm nozzle |
+| Process preset | 0.24mm Draft @BBL X1C |
+| Layer height | 0.24 mm, first layer 0.20 mm |
+| Walls | 2 loops, 4 top and 3 bottom shell layers |
+| Sparse infill | 15 %, grid pattern |
+| Supports | On, tree (auto), 35° overhang threshold |
+| Build plate | Textured PEI, auto brim 5 mm |
+| Filament | Generic PETG, 1.75 mm, colour #F72323 |
+| Temperatures | Nozzle 255 °C, plate 70 °C |
 
-## Print settings stored in the project file
+## Opening the file
 
-The earlier version of this page said "Fusion 360" and "PLA, 20 % infill, 0.2 mm layers". The settings saved inside the `.3mf` are different:
-
-| Setting | Value in the file |
-|---|---|
-| Printer profile | Bambu Lab X1 Carbon |
-| Process | 0.24 mm Draft |
-| Layer height | 0.24 mm |
-| Sparse infill | 15 % |
-| Filament | Generic PETG, colour #F72323 (red) |
-
-The CAD program used to create the `.step` parts is not recorded in the file (TODO). Judges may not have Bambu Studio, so STEP or STL exports of any part we keep should be added next to the project file.
+Bambu Studio 02.01.01.52 or newer opens the project with the plate and the settings above. A `.3mf` is a zip archive with the meshes in `3D/Objects/object_1.model` to `object_4.model`, so any 3MF reader opens the geometry; only Bambu Studio reads the print settings. The saved filament colour is red, and the car we race has an orange body ([Mobility](../docs/01-mobility.md#what-changed-since-june)).
