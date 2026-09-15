@@ -178,13 +178,7 @@ Serial checks at 115200 baud and the bench check: [Build, test and reproduce](do
 
 ## Team
 
-<table align="center">
-  <tr>
-    <td align="center" width="230"><b>Fawaz Alasousi</b><br><sub>Team member</sub></td>
-    <td align="center" width="230"><b>Dawood AlEneezi</b><br><sub>Team member</sub></td>
-    <td align="center" width="230"><b>Shinu Mathew</b><br><sub>Coach</sub></td>
-  </tr>
-</table>
+<p align="center"><img src="docs/images/team_cards.png" width="900" alt="Blue Wave team: Fawaz Alasousi and Dawood AlEneezi, team members; Shinu Mathew, coach"></p>
 
 <p align="center">
   <img src="docs/team_photos/team_action_1.jpg" height="260" alt="Work session: the car on the table with laptops">
