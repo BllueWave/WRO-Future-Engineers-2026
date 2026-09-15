@@ -10,6 +10,7 @@ Each decision names the alternative we tried and the number that decided it.
 | Claim | Where to check |
 |---|---|
 | Each main part has a reason and a trade-off | [Why we chose these parts](#why-we-chose-these-parts) |
+| The motor has its own battery, so its current dips never reach the Uno's supply | [Power supply](02-power-and-sensors.md#supply); [diagrams/power_tree.png](diagrams/power_tree.png) |
 | Ten reverted versions (8-17) led to our named-mechanism rule | [Version history](#version-history) |
 | The corner vote: 37/40 against 21/40 (simulation) | [Decision log](#decision-log); corner code at [Open_Challenge.ino lines 228-232](../src/Open_Challenge/Open_Challenge.ino#L228-L232) |
 | The 6 September build never parked because its lap total was zeroed 50 degrees rotated | Fix at [Obstacle_Challenge.ino line 409](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L409) |
@@ -26,16 +27,17 @@ Each decision names the alternative we tried and the number that decided it.
 | 3 × HC-SR04 ultrasonic sensors | Each one uses two digital pins and reads the distance in whole centimetres up to 400 cm through NewPing, whatever the light. The front unit faces the wall ahead square on, which is what the 48 cm corner trigger, the Open finish and the park stop mark use. | Echoes return poorly at oblique angles: in a 1000 mm corridor the inner 40-degree unit often hears nothing, and the car rides 250-300 mm off the outer wall (simulation). A ping with no echo can wait about 23 ms. Nothing nearer than about 34 mm reads, so inside the parking bay the car steers on the IMU heading. |
 | Pixy2 camera | It finds the trained colour signatures (1 red, 2 green, 3 magenta) on its own processor and sends only block records over SPI: signature, x, width and height. A block's x gives the pillar's bearing and its size gives the range. | A 60-degree horizontal view: after a corner the first pillar can sit outside it until the car is close (simulation). The signatures are trained again under each venue's light in practice time. |
 | BNO055 IMU | It fuses its sensors on its own chip and sends one heading over I2C (A4, A5). That heading counts the 12 corners, ends the lot exit at 50 degrees, drives the U-turn guard and closes every park arc. | In the default NDOF mode the magnetometer is part of the fusion, so a magnetic field can move the heading; the corner count keeps 20 degrees of margin for that. A failed I2C read can show as a heading of exactly 0.0, so the code keeps the previous heading and resets a stuck bus after 25 ms. |
+| Two batteries | Battery 1 connects straight to the Cytron MD13S power input and feeds only the drive motor. Battery 2 goes through the main power switch to the Uno's VIN, and the Uno's regulator makes 5 V for the sensors and the Pixy2. The motor's current dips on battery 1, including the 70 ms kick at PWM 55, never reach the Uno's supply. | Two packs to charge and check before every round. A flat battery 2 resets the Uno even when battery 1 is full. Battery 1 has no switch in its line, so the MD13S has power whenever battery 1 is connected. |
 
 ## System map
 
 <p align="center">
-  <img src="diagrams/system_overview.png" width="760" alt="System overview: three HC-SR04 sonars, the Pixy2 camera, the BNO055 IMU and the start switch feed the Arduino Uno R3, which drives the Cytron MD13S and drive motor and the steering servo, all powered by the 2S LiPo">
+  <img src="diagrams/system_overview.png" width="760" alt="System overview: three HC-SR04 sonars, the Pixy2 camera, the BNO055 IMU and the start switch feed the Arduino Uno R3, which drives the Cytron MD13S and drive motor and the steering servo; battery 1 feeds the MD13S, and battery 2 feeds the Uno's VIN through the main power switch">
 </p>
 
 ### One Obstacle round across the subsystems
 
-1. Power on. `setup()` centres the servo, holds the motor at 0, tries the BNO055 three times and starts the Pixy2. One servo wiggle means every part answered.
+1. Power on. The main switch connects battery 2 to the Uno's VIN. `setup()` centres the servo, holds the motor at 0, tries the BNO055 three times and starts the Pixy2. One servo wiggle means every part answered.
 2. WAIT. The three sonars and the IMU print every 400 ms. A change on A2 starts the round.
 3. Side pick. The side sonars average for 500 ms. The shorter side is the outer wall, which seeds the software's turn direction.
 4. EXIT. The servo alternates full locks, the MD13S drives 200 ms legs at PWM 18, and the BNO055 ends the exit at 50 degrees. The exit rotation goes into the lap total.
@@ -50,8 +52,9 @@ Each decision names the alternative we tried and the number that decided it.
 | Chain | What happens | What we did |
 |---|---|---|
 | Sonar angle → lost-echo copy → camera view | The inner 40-degree unit goes silent in a 1000 mm corridor, the copy makes the lane error zero, the car rides 250-300 mm off the outer wall, and the next pillar sits outside the 60-degree view (simulation) | Obstacle: our next change plans the lane after each corner ([what failed](#what-failed)) |
-| Servo library → PWM pins → motor driver | The Servo library's Timer1 removes PWM from D9 and D10; sonars and SPI use D5, D6, D11 | D3 is the one PWM pin left, so a PWM plus direction driver (MD13S) |
-| Motor break-away → slow moves → battery | PWM 15 does not start the car; park and exit moves are slow | Kicks at PWM 55; park steps measured before use; arcs closed on the IMU |
+| Servo library → PWM pins → motor driver | The Servo library's Timer1 removes PWM from D9 and D10; sonars and SPI used D5, D6, D11 when we chose the driver | D3 was the one PWM pin left, so a PWM plus direction driver (MD13S) |
+| Motor break-away → slow moves → battery 1 charge | PWM 15 does not start the car; park and exit moves are slow, and their speed depends on the charge of battery 1 | Kicks at PWM 55; park steps measured before use; arcs closed on the IMU |
+| Motor current → battery → Uno supply | Each motor start, including the PWM 55 kick, pulls a current dip from its battery | The motor has battery 1 to itself, so the dip never reaches battery 2, the Uno's VIN, the sensors or the Pixy2 |
 | IMU heading → lap logic → lot exit | The exit leaves the car about 50 degrees rotated | Turn total never reset; exit rotation seeded (fix 26) |
 | Flash → features → debug text | 91 % of flash used by the Obstacle sketch | A new feature must fit, or replace debug print text |
 
@@ -79,6 +82,7 @@ Each decision names the alternative we tried and the number that decided it.
 | Lane law on left minus right with the 40-degree side sonars | Laws tuned for 90-degree flank sonars | The flank-sonar laws drove into the walls on the real car; the left-minus-right law keeps the lane with the same sonars | Mat |
 | Corner direction from a vote of counted corners | Per-frame left minus right with a right-turn default | 37/40 against 21/40 successful Open rounds | Simulation |
 | Keep the corner trigger on the front sonar | An early corner cue from raw side readings | 22/30 fell to 5/30 | Simulation |
+| Front sonar trigger on A0 | D13, where the front trigger went when it left D6 | The ATmega328P drives D13 as the SPI clock while the Pixy2 link is on, so a trigger written to D13 never reaches the sensor | Datasheet; same-seed simulator runs of v20 and v20b are identical |
 | Turn total never reset, corner counted at 70 of 90 degrees | Lap closed at every 360 degrees, total zeroed after the exit | The 6 September build never parked; 360-degree closes sometimes closed lap 3 at corner 13 in simulation | Mat and simulation |
 | PWM 30, with 38 only on calm straights | PWM 37 for the whole Open round | About 20 s but 28/40, against 34/40 at PWM 30 | Simulation |
 | Avoid at PWM 25 plus a 70 ms kick at PWM 55 | Avoid at PWM 15 | PWM 15 does not start the car from rest, 18 creeps, 25 always moves it | Mat |
@@ -100,7 +104,7 @@ This table comes from our firmware folders and dated notes. The work between the
 
 | When | Version | Problem found | Change | Result |
 |---|---|---|---|---|
-| June 2026 | National-round code | - | - | 1st place, 64 points, Kuwait national round |
+| June 2026 | National-round code | - | - | 1st place, 61 points, Kuwait national round |
 | Before Sep 2026 | Fixes in `obstacle_kuwait` | Pillar area overflowed a 16-bit `int` (`area=-9646`) | Area as `long` | Kept in v20 |
 | Before Sep 2026 | Same | Wrong-side passes; our fix notes give the likely cause, signature 1 trained on red while the code treated 1 as green | Code reads red as 1, green as 2 | Kept in v20 |
 | Before Sep 2026 | Same | `blocks[0]` is the largest blob, not the nearest pillar | Every block ranged; nearest within 900 mm steers | Kept in v20 |
@@ -115,6 +119,7 @@ This table comes from our firmware folders and dated notes. The work between the
 | 15 Sep 2026 | `open_v20` | Corner direction a coin toss; lap 3 sometimes closed at corner 13 (simulation) | Corner vote; 12 counted corners, then a front-range stop | 37/40 against 21/40 in simulation |
 | 15 Sep 2026 | `obstacle_v20` | 6 September build never reached its park, had no start input, turned right on every tie, ended its round on a nose-on contact | Front-wall park with a solved entry angle, lap-1 map, corner vote, stuck recovery, A2 start | Exit 119/120, three laps 12/120 in simulation |
 | 15 Sep 2026 | `src/` | Rule 9.11 | `open_v20` and `obstacle_v20` committed as `Open_Challenge.ino` and `Obstacle_Challenge.ino` with `PRACTICE 0`, nothing else changed | Compiles with the Arduino IDE compiler |
+| 15 Sep 2026 | v20b | The front trigger left D6 for D13, which is the Pixy2 SPI clock | Front trigger on A0; the development copies refuse any sonar pin on D11-D13 | Same-seed simulator runs identical to v20: Open 32 of 32, Obstacle 24 of 24 |
 
 ## What failed
 
@@ -166,9 +171,10 @@ The simulator is harsher than the real car. `open_kuwait` completes 55 % of simu
 | Park window missed | Car would start lap 4 | Stops at the next corner in the start section |
 | Obstacle v20 drives worse than our earlier build in practice | Wrong direction or pillar hits | Test-day rule: if it drives the wrong way or hits pillars twice in practice, we switch to the earlier build |
 | Pixy2 range constants off for our lens | Pillars engage at the wrong distance | Width check in PixyMon: a pillar 500 mm straight ahead reads about 27 px wide |
-| Battery charge changes speed | Timed moves behave differently on a flat battery | Arcs closed on the IMU, steps measured before use |
+| Battery 1 charge changes speed | Timed moves behave differently on a flat motor battery | Arcs closed on the IMU, steps measured before use; battery 1 voltage written down before every session |
+| Battery 2 runs flat | The Uno resets mid-round; `setup()` sets the motor to 0 and waits for a new start input | Battery 2 voltage written down before every session ([bench check](05-build-test-reproduce.md#ten-minute-bench-check) step 10) |
 | Flash near the limit | A new feature does not fit | Size checked with the IDE compiler before upload |
-| Battery negative through the Uno header | Heat, burnt parts | Motor current kept off the Uno; 5 V to GND checked with power off after a fault |
+| Motor battery negative through the Uno header | Heat, burnt parts | Motor current kept on battery 1 and off the Uno header; 5 V to GND checked with power off after a fault |
 
 ## v20 status
 
@@ -187,6 +193,6 @@ Each candidate names the mechanism it addresses before we write any code.
 |---|---|---|
 | BNO055 in IMUPLUS mode, `bno.begin(OPERATION_MODE_IMUPLUS)` | A magnetic field moving the NDOF heading and counting a phantom corner | Heading drift over 3 minutes standing, and 12-corner counts, in both modes |
 | Corner-exit lane plan for Obstacle, from the lap-1 map or the camera during the turn | Outer-wall drift puts the first pillar outside the camera view | 60 lot-start seeds against v20, then practice runs |
-| Rear-facing HC-SR04 on two free pins (TRIG and ECHO from A0, A1, A3) | The park's reverse leg is dead-reckoned into a 37 mm window | Park-only runs in simulation, then on the mat |
+| Rear-facing HC-SR04 on two free pins (TRIG and ECHO from D6, A1, A3) | The park's reverse leg is dead-reckoned into a 37 mm window | Park-only runs in simulation, then on the mat |
 
 <sub>[Back to the README](../README.md) · Previous: [Software and strategy](03-software-and-strategy.md) · Next: [Build, test and reproduce](05-build-test-reproduce.md)</sub>

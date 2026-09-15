@@ -1,0 +1,1823 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Wave Engineering Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #002a62;
+  --navy-2: #0b3d7a;
+  --blue: #3a7fb8;
+  --cyan: #78c6e6;
+  --ice: #eaf4fa;
+  --mist: #f3f6f9;
+  --ink: #17202c;
+  --muted: #56647a;
+  --rule: #d3dce6;
+  --paper: #ffffff;
+  --cream: #f5f4ea;
+  --sans: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --display: "Michroma", "Bahnschrift", "Segoe UI", Arial, sans-serif;
+  --mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+
+/* ---------- page setup ---------- */
+@page {
+  size: A4;
+  margin: 17mm 17mm 19mm 17mm;
+  @bottom-left {
+    content: "Blue Wave  \00B7  Engineering Journal  \00B7  WRO Future Engineers 2026";
+    font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+    font-size: 7.5pt;
+    color: #56647a;
+    vertical-align: middle;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #002a62;
+    vertical-align: middle;
+  }
+}
+@page cover {
+  margin: 0;
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 9.7pt;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--paper);
+  font-variant-numeric: lining-nums;
+}
+a { color: var(--navy-2); text-decoration: none; }
+a.ext { border-bottom: 0.5pt solid var(--cyan); }
+p { margin: 0 0 6pt; orphans: 3; widows: 3; }
+ul, ol { margin: 0 0 7pt; padding-left: 14pt; }
+li { margin: 0 0 2.5pt; }
+strong { font-weight: 700; color: #0e1a2a; }
+code {
+  font-family: var(--mono);
+  font-size: 0.84em;
+  color: var(--navy-2);
+  background: #edf3f9;
+  padding: 0 2pt;
+  border-radius: 2pt;
+  white-space: nowrap;
+}
+
+/* ---------- cover ---------- */
+.cover {
+  page: cover;
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(160deg, #003272 0%, #002a62 45%, #001c45 100%);
+  padding: 20mm 20mm 18mm 20mm;
+  display: flex;
+  flex-direction: column;
+}
+.cover .arcs { position: absolute; top: -40mm; right: -60mm; width: 190mm; height: 190mm; }
+.cover .kicker {
+  position: relative;
+  font-family: var(--display);
+  font-size: 7.5pt;
+  letter-spacing: 0.28em;
+  color: var(--cyan);
+}
+.cover .logo-tile {
+  position: relative;
+  margin-top: 16mm;
+  width: 84mm;
+  border-radius: 5mm;
+  overflow: hidden;
+  box-shadow: 0 2mm 8mm rgba(0, 10, 30, 0.35);
+}
+.cover .logo-tile img { display: block; width: 100%; }
+.cover h1 {
+  position: relative;
+  margin: 17mm 0 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 33pt;
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+.cover .team-line {
+  position: relative;
+  margin-top: 5mm;
+  font-size: 13pt;
+  color: #cfe6f4;
+}
+.cover .spacer { flex: 1; }
+.cover .result {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 8mm;
+  align-items: end;
+  border-top: 0.8pt solid rgba(120, 198, 230, 0.55);
+  padding-top: 7mm;
+}
+.cover .result .place {
+  font-family: var(--display);
+  font-size: 30pt;
+  line-height: 1;
+  color: var(--cyan);
+}
+.cover .result .place small { font-size: 12pt; position: relative; top: -15pt; margin-left: 1pt; }
+.cover .result .what { font-size: 11.5pt; line-height: 1.35; color: #e6f2fa; padding-bottom: 1mm; }
+.cover .result .what b { color: #fff; font-weight: 700; }
+.cover .people {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6mm;
+  margin-top: 9mm;
+  border-top: 0.8pt solid rgba(120, 198, 230, 0.55);
+  padding-top: 6mm;
+}
+.cover .people .name { font-size: 12.5pt; font-weight: 700; color: #fff; }
+.cover .people .role { font-size: 8.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); }
+.cover .foot {
+  position: relative;
+  margin-top: 10mm;
+  font-size: 8.5pt;
+  color: #9fc3dc;
+}
+
+/* ---------- chapters ---------- */
+.chapter { break-before: page; }
+.chapter-head {
+  display: grid;
+  grid-template-columns: 22mm 1fr;
+  gap: 0 4mm;
+  align-items: start;
+  border-bottom: 1.6pt solid var(--navy);
+  padding-bottom: 5mm;
+  margin-bottom: 6mm;
+}
+.chapter-head .num {
+  font-family: var(--display);
+  font-size: 30pt;
+  line-height: 1;
+  color: var(--cyan);
+  padding-top: 1mm;
+}
+.chapter-head h2 {
+  margin: 0;
+  font-size: 23pt;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--navy);
+}
+.chapter-head .lead { margin: 3mm 0 0; font-size: 11pt; line-height: 1.4; color: var(--muted); }
+.sources { font-size: 8pt; color: var(--muted); margin: -3mm 0 5mm; }
+.sources a { color: var(--navy-2); border-bottom: 0.5pt solid var(--cyan); }
+
+h3 {
+  font-size: 13.5pt;
+  line-height: 1.2;
+  color: var(--navy);
+  margin: 13pt 0 5pt;
+  break-after: avoid;
+}
+h3 .sn { font-family: var(--display); font-size: 9pt; color: var(--blue); margin-right: 5pt; letter-spacing: 0.04em; vertical-align: 1.5pt; }
+h4 {
+  font-size: 10.5pt;
+  color: var(--navy-2);
+  margin: 9pt 0 3pt;
+  break-after: avoid;
+}
+h3 + p, h4 + p { break-before: avoid; }
+.lead-in { break-after: avoid; }
+
+/* ---------- tables ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+  line-height: 1.35;
+  margin: 4pt 0 10pt;
+}
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th {
+  background: var(--navy);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  padding: 3.5pt 5pt;
+  vertical-align: bottom;
+}
+td { padding: 3.2pt 5pt; border-bottom: 0.6pt solid var(--rule); vertical-align: top; }
+tbody tr:nth-child(even) td { background: var(--mist); }
+td.n, th.n { text-align: right; white-space: nowrap; }
+td.nw { white-space: nowrap; }
+table { break-inside: avoid; }
+tr.total td { font-weight: 700; border-top: 1pt solid var(--navy); background: var(--ice) !important; }
+
+/* ---------- tags ---------- */
+.tag {
+  display: inline-block;
+  font-size: 6.6pt;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.6pt 3.5pt 0.4pt;
+  border-radius: 2pt;
+  line-height: 1.4;
+  vertical-align: 1pt;
+  white-space: nowrap;
+}
+.tag.mat { background: var(--navy); color: #fff; }
+.tag.sim { background: #d9eef8; color: #0a4a78; box-shadow: inset 0 0 0 0.6pt #8ccbe7; }
+.tag.build { background: #e8ebf0; color: #3a4656; }
+.tag.rule { background: #fff; color: var(--navy); box-shadow: inset 0 0 0 0.7pt var(--navy); }
+.tag.code { background: #eef3e9; color: #3c5a24; box-shadow: inset 0 0 0 0.6pt #b8cfa4; }
+.tag.team { background: #fff4e0; color: #7a4b00; box-shadow: inset 0 0 0 0.6pt #e7c27c; }
+
+/* ---------- boxes ---------- */
+.note {
+  background: var(--ice);
+  border-left: 2.4pt solid var(--blue);
+  padding: 5pt 8pt;
+  margin: 6pt 0 10pt;
+  break-inside: avoid;
+}
+.note p:last-child { margin-bottom: 0; }
+.sim-note {
+  background: #eef7fc;
+  border: 0.7pt solid #9fd2ea;
+  border-radius: 3pt;
+  padding: 5pt 8pt;
+  margin: 4pt 0 9pt;
+  font-size: 9pt;
+  break-inside: avoid;
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 7mm; }
+.grid2 > div { break-inside: avoid; }
+
+/* hardware decision cards */
+.decision {
+  border: 0.7pt solid var(--rule);
+  border-radius: 3pt;
+  margin: 5pt 0 9pt;
+  break-inside: avoid;
+}
+.decision .dh {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--mist);
+  border-bottom: 0.7pt solid var(--rule);
+  padding: 4pt 8pt;
+}
+.decision .dh b { font-size: 10.5pt; color: var(--navy); }
+.decision .dh span { font-size: 8pt; color: var(--muted); }
+.decision .db { display: grid; grid-template-columns: 1fr 1fr; }
+.decision .db > div { padding: 5pt 8pt 4pt; }
+.decision .db > div + div { border-left: 0.7pt solid var(--rule); }
+.decision .lbl {
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 2pt;
+}
+.decision .db > div.tr .lbl { color: #9a5b00; }
+.decision ul { margin: 0; padding-left: 11pt; }
+.decision li { margin-bottom: 2pt; }
+
+/* figures */
+figure { margin: 6pt 0 11pt; break-inside: avoid; }
+figure img { display: block; width: 100%; border: 0.6pt solid var(--rule); border-radius: 3pt; }
+figure svg { display: block; width: 100%; height: auto; }
+figcaption { font-size: 8pt; line-height: 1.35; color: var(--muted); margin-top: 4pt; }
+figcaption b { color: var(--navy); font-weight: 700; }
+body { counter-reset: fig; }
+figure { counter-increment: fig; }
+figcaption b::before { content: "Figure " counter(fig) ". "; }
+figure.side { display: grid; grid-template-columns: 46mm 1fr; gap: 0 6mm; align-items: center; }
+figure.side img { border: 0.6pt solid var(--rule); }
+figure.side figcaption { margin: 0; }
+
+table.glance { font-size: 8.2pt; margin-top: 0; }
+table.glance th { font-size: 8.5pt; letter-spacing: 0.04em; }
+table.glance td.k { font-weight: 700; color: var(--navy); white-space: nowrap; width: 15mm; }
+table.glance tbody tr:nth-child(even) td { background: #fff; }
+table.glance tbody tr td { background: var(--mist); }
+
+/* photo spread */
+.photos { display: grid; gap: 2.2mm; margin-bottom: 1mm; }
+.photos .prow { display: flex; justify-content: center; gap: 2.2mm; }
+.photos .ph { position: relative; }
+.photos .ph img { display: block; width: auto; border: none; border-radius: 2.5pt; }
+.photos .r1 img { height: 55mm; }
+.photos .r2 img { height: 59mm; }
+.photos .ph span {
+  position: absolute;
+  left: 2mm;
+  top: 2mm;
+  background: rgba(0, 42, 98, 0.88);
+  color: #fff;
+  font-size: 6.8pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 1pt 4pt;
+  border-radius: 2pt;
+}
+
+/* timeline */
+.timeline { margin: 4pt 0 8pt; }
+.tl {
+  display: grid;
+  grid-template-columns: 25mm 1fr;
+  gap: 0 5mm;
+  break-inside: avoid;
+}
+.tl .when {
+  text-align: right;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--navy);
+  padding: 5pt 0 0;
+  line-height: 1.25;
+}
+.tl .body {
+  position: relative;
+  border-left: 1.4pt solid var(--cyan);
+  padding: 4pt 0 8pt 9pt;
+}
+.tl .body::before {
+  content: "";
+  position: absolute;
+  left: -4.2pt;
+  top: 7pt;
+  width: 7pt;
+  height: 7pt;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.4pt solid var(--navy);
+}
+.tl.event .body::before { background: var(--navy); }
+.tl .ver { font-weight: 700; color: #0e1a2a; font-size: 10pt; }
+.tl .rows { display: grid; grid-template-columns: 17mm 1fr; gap: 1pt 3mm; font-size: 8.8pt; margin-top: 2pt; }
+.tl .rows .k { color: var(--muted); font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 1.2pt; }
+.phase {
+  font-family: var(--display);
+  font-size: 7.5pt;
+  letter-spacing: 0.18em;
+  color: var(--blue);
+  margin: 9pt 0 3pt 30mm;
+  break-after: avoid;
+}
+
+/* problem cards */
+.problem {
+  border: 0.7pt solid var(--rule);
+  border-left: 3pt solid var(--navy);
+  border-radius: 2pt;
+  padding: 5pt 8pt 5pt 9pt;
+  margin: 0 0 6pt;
+  break-inside: avoid;
+}
+.problem .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 6pt; margin-bottom: 2pt; }
+.problem .ph b { font-size: 10pt; color: var(--navy); }
+.problem .pr { display: grid; grid-template-columns: 27mm 1fr; gap: 1pt 3mm; font-size: 8.9pt; }
+.problem .pr .k { color: var(--muted); font-size: 7.2pt; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1.3pt; white-space: nowrap; }
+.problem.sim { border-left-color: var(--cyan); }
+
+/* chips / steps */
+.steps { display: flex; flex-wrap: wrap; gap: 4pt; margin: 4pt 0 9pt; break-inside: avoid; }
+.steps .st {
+  flex: 1 1 0;
+  min-width: 26mm;
+  background: var(--ice);
+  border-top: 2pt solid var(--blue);
+  padding: 4pt 5pt;
+  font-size: 8.2pt;
+  line-height: 1.3;
+}
+.steps .st b { display: block; color: var(--navy); font-size: 9pt; margin-bottom: 1pt; }
+
+/* contents */
+.toc { margin: 2mm 0 0; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 0 8mm; align-items: start; }
+.toc > div > a:first-child { margin-top: 0; }
+.toc > div > a {
+  display: flex;
+  align-items: baseline;
+  color: var(--ink);
+  padding: 2.2pt 0;
+}
+.toc > div > a .t { flex: 0 1 auto; }
+.toc > div > a .dots { flex: 1 1 auto; border-bottom: 0.8pt dotted #a9b6c4; margin: 0 4pt; transform: translateY(-2.5pt); }
+.toc > div > a .pg { flex: 0 0 auto; font-weight: 700; color: var(--navy); min-width: 6mm; text-align: right; }
+.toc > div > a.l1 { font-size: 10pt; font-weight: 700; color: var(--navy); margin-top: 5pt; }
+.toc > div > a.l1 .no { font-family: var(--display); font-size: 8.5pt; color: var(--blue); width: 9mm; display: inline-block; text-indent: 0; }
+.toc > div > a.l1 .t { padding-left: 9mm; text-indent: -9mm; }
+.toc > div > a.l2 { font-size: 9pt; padding-left: 9mm; color: #2a3646; padding-top: 1.4pt; padding-bottom: 1.4pt; }
+.crit-h { margin: 14pt 0 3pt; }
+table.crit { font-size: 8.3pt; }
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8mm; }
+.legend-table td:first-child { width: 24mm; }
+
+.checklist { list-style: none; padding: 0; }
+.checklist li { position: relative; padding-left: 13pt; margin-bottom: 3.5pt; }
+.checklist li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2.5pt;
+  width: 7pt;
+  height: 7pt;
+  border: 1pt solid var(--navy);
+  border-radius: 1.5pt;
+}
+.small { font-size: 8.3pt; color: var(--muted); }
+.pagebreak { break-before: page; }
+.avoid { break-inside: avoid; }
+
+/* ---------- screen view ---------- */
+@media screen {
+  body { background: #dfe5ec; padding: 10mm 0; }
+  .cover, main > .chapter, main > .front {
+    width: 210mm;
+    margin: 0 auto 8mm;
+    background: #fff;
+    box-shadow: 0 1mm 5mm rgba(0, 20, 50, 0.15);
+  }
+  main > .chapter, main > .front { padding: 17mm; }
+  .cover { margin-bottom: 8mm; }
+}
+</style>
+</head>
+<body>
+
+<!-- =================================================================== COVER -->
+<section class="cover" id="cover">
+  <svg class="arcs" viewBox="0 0 200 200" aria-hidden="true">
+    <g fill="none" stroke="#78c6e6">
+      <circle cx="100" cy="100" r="98" stroke-opacity="0.10" stroke-width="0.6"/>
+      <circle cx="100" cy="100" r="86" stroke-opacity="0.13" stroke-width="0.6"/>
+      <circle cx="100" cy="100" r="74" stroke-opacity="0.16" stroke-width="0.6"/>
+      <circle cx="100" cy="100" r="62" stroke-opacity="0.20" stroke-width="0.6"/>
+      <circle cx="100" cy="100" r="50" stroke-opacity="0.26" stroke-width="1.6"/>
+    </g>
+  </svg>
+  <div class="kicker">WRO FUTURE ENGINEERS 2026</div>
+  <div class="logo-tile"><img src="../logo.png" alt="Blue Wave robotics team logo"></div>
+  <h1>Engineering<br>Journal</h1>
+  <div class="team-line">Blue Wave &middot; Kuwait</div>
+  <div class="spacer"></div>
+  <div class="result">
+    <div class="place">1<small>st</small></div>
+    <div class="what"><b>1st place with 61 points</b> at the WRO Future Engineers 2026 Kuwait national round.<br>Next: the WRO 2026 Asia final in India.</div>
+  </div>
+  <div class="people">
+    <div><div class="role">Team member</div><div class="name">Fawaz Alasousi</div></div>
+    <div><div class="role">Team member</div><div class="name">Dawood AlEneezi</div></div>
+    <div><div class="role">Coach</div><div class="name">Shinu Mathew</div></div>
+  </div>
+  <div class="foot">This journal covers our car and the finals sketches <b>open_v20</b> and <b>obstacle_v20</b>, finished on 15 September 2026.</div>
+</section>
+
+<main>
+
+<!-- =================================================================== CONTENTS -->
+<section class="chapter front" id="contents">
+  <div class="chapter-head">
+    <div class="num">&nbsp;</div>
+    <div>
+      <h2>About this journal</h2>
+      <p class="lead">Our engineering record for the WRO 2026 Asia final: what we built, why, how we tested it, and what went wrong on the way.</p>
+    </div>
+  </div>
+
+  <div class="about">
+    <div>
+      <p>We built this journal from the pages in our repository: the five criterion pages in <code>docs/</code>, <code>src/README.md</code>, <code>Models/README.md</code> and <code>Vehicle_Photos/README.md</code>. The numbers, dates and results here are the ones those pages give, and each chapter names the pages it draws on.</p>
+      <p>The repository is <a class="ext" href="https://github.com/BllueWave/WRO-Future-Engineers-2026">github.com/BllueWave/WRO-Future-Engineers-2026</a>. The two competition sketches are <code>src/Open_Challenge/Open_Challenge.ino</code> (283 lines) and <code>src/Obstacle_Challenge/Obstacle_Challenge.ino</code> (1,103 lines).</p>
+      <p>Rule numbers and page numbers such as <em>rule 11.1 (p.23)</em> refer to the WRO Future Engineers 2026 rules.</p>
+    </div>
+    <div>
+      <table class="keep legend-table">
+        <thead><tr><th>Label</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag mat">Mat</span></td><td>Seen on our real car, on a practice mat or at the national round.</td></tr>
+          <tr><td><span class="tag sim">Simulation</span></td><td>From <code>real2</code>, our simulator. It is harsher than the real car, so we use its numbers only to compare code versions.</td></tr>
+          <tr><td><span class="tag build">Build</span></td><td>Compiler output from the Arduino IDE toolchain.</td></tr>
+          <tr><td><span class="tag rule">Rule</span></td><td>A requirement in the 2026 rules.</td></tr>
+          <tr><td><span class="tag team">Team</span></td><td>Measured or recorded by the team on the car.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>Contents</h3>
+  <nav class="toc">
+   <div>
+    <a class="l1" href="#s1"><span class="t"><span class="no">01</span>Goals and constraints</span><span class="dots"></span><span class="pg" data-for="s1">3</span></a>
+    <a class="l2" href="#s1-tasks"><span class="t">What the car has to do</span><span class="dots"></span><span class="pg" data-for="s1-tasks">3</span></a>
+    <a class="l2" href="#s1-rules"><span class="t">Rules that shaped the design</span><span class="dots"></span><span class="pg" data-for="s1-rules">4</span></a>
+    <a class="l2" href="#s1-limits"><span class="t">Limits from our own parts</span><span class="dots"></span><span class="pg" data-for="s1-limits">4</span></a>
+
+    <a class="l1" href="#s2"><span class="t"><span class="no">02</span>Hardware decisions</span><span class="dots"></span><span class="pg" data-for="s2">5</span></a>
+    <a class="l2" href="#s2-chassis"><span class="t">Chassis, drive and steering</span><span class="dots"></span><span class="pg" data-for="s2-chassis">6</span></a>
+    <a class="l2" href="#s2-controller"><span class="t">Controller and motor driver</span><span class="dots"></span><span class="pg" data-for="s2-controller">7</span></a>
+    <a class="l2" href="#s2-sonar"><span class="t">Distance sensors and their placement</span><span class="dots"></span><span class="pg" data-for="s2-sonar">8</span></a>
+    <a class="l2" href="#s2-camera"><span class="t">Camera</span><span class="dots"></span><span class="pg" data-for="s2-camera">9</span></a>
+    <a class="l2" href="#s2-imu"><span class="t">IMU</span><span class="dots"></span><span class="pg" data-for="s2-imu">10</span></a>
+    <a class="l2" href="#s2-power"><span class="t">Two batteries</span><span class="dots"></span><span class="pg" data-for="s2-power">10</span></a>
+    <a class="l2" href="#s2-body"><span class="t">Printed body and brackets</span><span class="dots"></span><span class="pg" data-for="s2-body">12</span></a>
+
+    <a class="l1" href="#s3"><span class="t"><span class="no">03</span>Software development by version</span><span class="dots"></span><span class="pg" data-for="s3">13</span></a>
+    <a class="l2" href="#s3-history"><span class="t">Version history</span><span class="dots"></span><span class="pg" data-for="s3-history">13</span></a>
+    <a class="l2" href="#s3-open"><span class="t">What open_v20 does</span><span class="dots"></span><span class="pg" data-for="s3-open">16</span></a>
+    <a class="l2" href="#s3-obstacle"><span class="t">What obstacle_v20 does</span><span class="dots"></span><span class="pg" data-for="s3-obstacle">16</span></a>
+    <a class="l2" href="#s3-park"><span class="t">The front-wall park</span><span class="dots"></span><span class="pg" data-for="s3-park">17</span></a>
+
+   </div>
+   <div>
+    <a class="l1" href="#s4"><span class="t"><span class="no">04</span>Testing method and results</span><span class="dots"></span><span class="pg" data-for="s4">18</span></a>
+    <a class="l2" href="#s4-method"><span class="t">How we test</span><span class="dots"></span><span class="pg" data-for="s4-method">18</span></a>
+    <a class="l2" href="#s4-mat"><span class="t">Results on the mat</span><span class="dots"></span><span class="pg" data-for="s4-mat">19</span></a>
+    <a class="l2" href="#s4-sim"><span class="t">Results in simulation</span><span class="dots"></span><span class="pg" data-for="s4-sim">19</span></a>
+
+    <a class="l1" href="#s5"><span class="t"><span class="no">05</span>Problems we met and how we fixed them</span><span class="dots"></span><span class="pg" data-for="s5">21</span></a>
+
+    <a class="l1" href="#s6"><span class="t"><span class="no">06</span>Current state and next changes</span><span class="dots"></span><span class="pg" data-for="s6">24</span></a>
+
+    <a class="l1" href="#a1"><span class="t"><span class="no">A</span>Appendix: pin map and system overview</span><span class="dots"></span><span class="pg" data-for="a1">26</span></a>
+    <a class="l1" href="#a2"><span class="t"><span class="no">B</span>Appendix: parts list and software versions</span><span class="dots"></span><span class="pg" data-for="a2">28</span></a>
+    <h4 class="crit-h">Appendix C criteria in this journal</h4>
+    <table class="crit">
+      <thead><tr><th>Criterion and repository page</th><th>Chapters</th></tr></thead>
+      <tbody>
+          <tr><td><a class="ext" href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/01-mobility.md">1. Mobility</a></td><td>Chapters 1 and 2</td></tr>
+          <tr><td><a class="ext" href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/02-power-and-sensors.md">2. Power and sensors</a></td><td>Chapter 2, Appendix A</td></tr>
+          <tr><td><a class="ext" href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/03-software-and-strategy.md">3. Software and obstacle strategy</a></td><td>Chapter 3</td></tr>
+          <tr><td><a class="ext" href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md">4. Systems thinking and decisions</a></td><td>Chapters 2, 3, 5 and 6</td></tr>
+          <tr><td><a class="ext" href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md">5. Reproducibility</a></td><td>Chapter 4, Appendix B</td></tr>
+      </tbody>
+    </table>
+   </div>
+  </nav>
+</section>
+
+<!-- =================================================================== 1 GOALS -->
+<section class="chapter" id="s1">
+  <div class="chapter-head">
+    <div class="num">01</div>
+    <div>
+      <h2>Goals and constraints</h2>
+      <p class="lead">The rules fixed the size of the car, how it steers, how it starts and what its sensors have to see. Our own parts added limits of their own: flash, RAM, pins and the camera's view.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/01-mobility.md">Mobility</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#constraints">Engineering decisions: constraints</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/03-software-and-strategy.md">Software and strategy</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/arena/README.md">Arena page</a></p>
+
+  <h3 id="s1-tasks"><span class="sn">1.1</span>What the car has to do</h3>
+  <div class="grid2">
+    <div>
+      <h4>Open Challenge</h4>
+      <p>Three laps of the track with no pillars, then a stop in the start section. The corridors are 600 or 1000 mm wide (p.11), drawn at random before the round. Our full score for a round is three laps and a stop in the start section, 30 of 30. Three laps with a stop outside the start section give 27 points.</p>
+    </div>
+    <div>
+      <h4>Obstacle Challenge</h4>
+      <p>We start inside the parking lot for 7 points (item 1.8.1, p.21), drive three laps in 1000 mm corridors past red and green pillars, then park. Red means keep to the right of the lane and green to the left (p.6). A full parallel park gives 15 points and a partial one 7 (items 1.8.2 and 1.8.3, p.21).</p>
+    </div>
+  </div>
+  <p>The field sets the geometry the sensors work in: walls 100 mm high, pillars 50 &times; 50 &times; 100 mm, and a racetrack 3000 &times; 3000 mm inside the walls. We built a model of the field to the 2026 rulebook, so we could look at a legal random draw before testing a strategy on the mat.</p>
+
+  <figure>
+    <img src="../arena/arena_top.png" alt="Top view of the arena page: an Obstacle Challenge draw with seven pillars, the parking lot in the north straight and the control panel on the right">
+    <figcaption><b>Our arena page, drawn to the 2026 rulebook.</b> An Obstacle Challenge draw, seed 7: counter-clockwise, parking lot in the north straight, 4 red and 3 green pillars. The page draws the field and checks our 200 &times; 125 mm footprint against the start zone and the 300 mm lot. It does not simulate driving and it is not a test result.</figcaption>
+  </figure>
+
+  <h3 id="s1-rules"><span class="sn">1.2</span>Rules that shaped the design</h3>
+  <table>
+    <thead><tr><th style="width:22%">Rule</th><th style="width:33%">What it asks</th><th>What we built</th></tr></thead>
+    <tbody>
+      <tr><td>11.1, 11.2 (p.23)</td><td>At most 300 &times; 200 &times; 300 mm and 1.5 kg</td><td>A car of 200 &times; 125 mm: 100 mm shorter and 75 mm narrower than the limit</td></tr>
+      <tr><td>11.3, 11.5 (p.23); note on p.5</td><td>Four wheels, one steering actuator, no motor per side; the drive wheels physically connected</td><td>A 1:28-class RC chassis: one motor through the chassis gearbox, one servo on an Ackermann linkage</td></tr>
+      <tr><td>Parking lot (p.8)</td><td>1.5 &times; the car length long and 200 mm wide</td><td>A 300 mm lot for our car: 50 mm at each end and 75 mm across when centred</td></tr>
+      <tr><td>Open corridors (p.11)</td><td>600 or 1000 mm wide</td><td>At 125 mm wide the car leaves 475 mm of free width in a 600 mm corridor</td></tr>
+      <tr><td>13.4, 13.6 (p.26)</td><td>Black walls</td><td>HC-SR04 sonars, which time an echo of sound whatever the colour or the light</td></tr>
+      <tr><td>13.21, 13.22, 13.27</td><td>Red and green pillars, magenta parking limiters</td><td>Pixy2 signatures 1 red, 2 green, 3 magenta</td></tr>
+      <tr><td>9.10, 9.11, 9.14 (p.17)</td><td>One switch turns the car on; it then waits for one start button; pressing it starts the round</td><td>One main power switch; a start input on A2; <code>#define PRACTICE 0</code> in both sketches</td></tr>
+      <tr><td>9.9 (p.17), 13.18 (p.27)</td><td>No sensor calibration in preparation time; testing rounds for tuning to the venue colours</td><td>All calibration and Pixy2 training done in practice time</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="s1-limits"><span class="sn">1.3</span>Limits from our own parts</h3>
+  <table>
+    <thead><tr><th style="width:20%">Constraint</th><th style="width:30%">Number</th><th>Effect on the design</th></tr></thead>
+    <tbody>
+      <tr><td>Flash</td><td>32,256 B on the Uno</td><td>The Obstacle sketch uses 29,604 B (91 %). A new feature must fit, or replace debug print text</td></tr>
+      <tr><td>RAM</td><td>2,048 B</td><td>Obstacle globals use 818 B. A 316 &times; 208 camera frame (65,728 px) could never fit, so the Pixy2 sends block lists</td></tr>
+      <tr><td>PWM pins</td><td>6 on the Uno, 5 taken by sonars, the servo timer and SPI</td><td>One motor channel, on D3</td></tr>
+      <tr><td>Camera view</td><td>60 degrees horizontal</td><td>The first pillar after a corner can be out of view</td></tr>
+      <tr><td>Side sonar geometry</td><td>About 40 degrees from the nose</td><td>Only a bearing-free law (left minus right) works; corner ties need a vote</td></tr>
+      <tr><td>Toolchain</td><td>We upload from the Arduino IDE</td><td>One <code>.ino</code> per challenge; sizes checked with the IDE's own compiler</td></tr>
+      <tr><td>Time</td><td>The v20 sketches were finished on 15 Sep 2026</td><td>Software changes come first; a hardware change such as a rear sonar needs its own test time on the mat</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- =================================================================== 2 HARDWARE -->
+<section class="chapter" id="s2">
+  <div class="chapter-head">
+    <div class="num">02</div>
+    <div>
+      <h2>Hardware decisions</h2>
+      <p class="lead">For each main part: why we chose it, and the trade-off we accepted with it. Many of those trade-offs show up again in the code.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/01-mobility.md">Mobility</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/02-power-and-sensors.md">Power and sensors</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#why-we-chose-these-parts">Engineering decisions: why we chose these parts</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/Models/README.md">Models</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/Vehicle_Photos/README.md">Vehicle photos</a></p>
+
+  <figure>
+    <div class="photos">
+      <div class="prow r1">
+        <div class="ph"><img src="../../Vehicle_Photos/left.jpg" alt="Left side of the Blue Wave car"><span>Left</span></div>
+        <div class="ph"><img src="../../Vehicle_Photos/right.jpg" alt="Right side of the Blue Wave car"><span>Right</span></div>
+      </div>
+      <div class="prow r2">
+        <div class="ph"><img src="../../Vehicle_Photos/front.jpg" alt="Front of the Blue Wave car"><span>Front</span></div>
+        <div class="ph"><img src="../../Vehicle_Photos/back.jpg" alt="Back of the Blue Wave car"><span>Back</span></div>
+        <div class="ph"><img src="../../Vehicle_Photos/bottom.jpg" alt="Underside of the Blue Wave car"><span>Bottom</span></div>
+      </div>
+    </div>
+    <figcaption><b>The car we race, with the body and every sensor fitted.</b> <em>Left:</em> left corner HC-SR04 (D4/D5) and the Pixy2 bracket over the nose; the Uno's USB-B port is reachable through an opening in the side of the body, so sketches upload with the body on. <em>Right:</em> right corner HC-SR04 (D2/D9) and the Pixy2 ribbon cable; the chassis gear train shows under the body. <em>Front:</em> Pixy2 on its bracket above the nose, the front HC-SR04 (A0/D7) straight ahead, the two corner units at about 40&deg; from the axis. <em>Back:</em> the main power switch in the rear vents; the Cytron MD13S under the rear of the body. <em>Bottom:</em> chassis plate with the drive motor in the centre and the Ackermann steering knuckles at the front.</figcaption>
+  </figure>
+
+  <table class="glance">
+    <thead><tr><th colspan="4">The car at a glance</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Size</td><td>About 200 &times; 125 mm (limit 300 &times; 200 &times; 300 mm, 1.5 kg)</td><td class="k">Distance</td><td>3 &times; HC-SR04: one straight ahead, one on each nose corner at about 40&deg;</td></tr>
+      <tr><td class="k">Chassis</td><td>WLtoys 1:28-class RC chassis, four wheels, Ackermann front axle</td><td class="k">Heading</td><td>BNO055 IMU on I2C (A4, A5)</td></tr>
+      <tr><td class="k">Controller</td><td>Arduino Uno R3: 32,256 B flash, 2,048 B RAM</td><td class="k">Camera</td><td>Pixy2 on SPI (ICSP): signature 1 red, 2 green, 3 magenta</td></tr>
+      <tr><td class="k">Drive</td><td>One brushed DC motor on a Cytron MD13S (PWM D3, DIR D8); race setting PWM 30, about 1 m/s</td><td class="k">Power</td><td>Battery 1 for the MD13S; battery 2 through the main switch to the Uno's VIN</td></tr>
+      <tr><td class="k">Steering</td><td>Servo on D10; 30-160 while driving, 10 and 170 when parking</td><td class="k">Start</td><td>Waits for the start switch on A2 after power-on</td></tr>
+    </tbody>
+  </table>
+
+  <figure>
+    <img src="../images/robot_exploded_view.jpg" alt="Exploded illustration of the Blue Wave car: orange body, Arduino Uno R3, Cytron MD13S, BNO055, Pixy2, HC-SR04 sensors, chassis plate, servo, motor, wheels and battery">
+    <figcaption><b>Exploded view of our car.</b> This is an illustration, not a photograph and not a CAD export. The car runs on the four wheels of its chassis. For part names, sizes, sensor angles and the power wiring, the photos, the text and the diagrams in this journal are the reference.</figcaption>
+  </figure>
+
+  <h3 id="s2-chassis"><span class="sn">2.1</span>Chassis, drive and steering</h3>
+  <div class="decision">
+    <div class="dh"><b>WLtoys 1:28-class RC chassis</b><span>four wheels, gearbox, Ackermann steering linkage</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">Why we chose it</div>
+        <ul>
+          <li><strong>Size.</strong> 200 &times; 125 mm is inside the 300 &times; 200 mm limit, and the car fits its 300 mm lot with 50 mm to spare at each end.</li>
+          <li><strong>Rules.</strong> Four wheels, front Ackermann steering moved by one servo, and one motor through the chassis gearbox meet rules 11.3 and 11.5.</li>
+          <li><strong>Time.</strong> Wheels, gearbox and steering linkage came built. Our work went into the printed body, the sensors and the code.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li>The brushed motor needs PWM 25 to start from rest: PWM 15 does not move the car and 18 only creeps. The code adds a 70 ms kick at PWM 55.</li>
+          <li>The chassis has no wheel encoder. The park measures its step length with the front sonar and closes every arc on the IMU heading.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p>The lot end clearance is always (1.5 L &minus; L) / 2 = 0.25 L. Because the lot grows with the car's length, a shorter car gains no end clearance. Only width changes the side clearance: at 125 mm the car fills 62.5 % of the 200 mm depth.</p>
+
+  <h4>Speed</h4>
+  <p><code>analogWrite</code> is 8-bit, so our race setting PWM 30 is 30 / 255 = 11.8 % duty. Our speed anchor is a real run: the car drove the three Open laps in about 23 s with <code>open_kuwait</code> at PWM 30, timed with a stopwatch <span class="tag mat">Mat</span>. Our simulator had assumed 520 mm/s at PWM 30 and predicted 40-48 s. Refitted to the real run it gives about 998 mm/s, band 867-1176 mm/s. As a rough check, a lap along the centre line of 1000 mm corridors is 8 m, and three laps in 23 s is 1.04 m/s.</p>
+  <p>Running the whole Open round at PWM 37 finished in about 20 s but succeeded in 28 of 40 simulated rounds, against 34 of 40 at PWM 30 <span class="tag sim">Simulation</span>. So the Open sketch goes up to PWM 38 only on straights that stayed calm in lap 1, and the Obstacle sketch runs PWM 36 only on straights that showed no pillar in lap 1.</p>
+
+  <h4>Steering</h4>
+  <table class="keep">
+    <thead><tr><th style="width:30%">Setting</th><th style="width:34%">Servo value</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>Straight ahead</td><td>90; above 90 steers left, below 90 right</td><td>Both sketches</td></tr>
+      <tr><td>Driving limits</td><td>30-160: 70 degrees left, 60 right</td><td><code>Obstacle_Challenge.ino</code> line 88</td></tr>
+      <tr><td>Front avoid</td><td>90 + 70 &times; urgency left, 90 &minus; 60 &times; urgency right</td><td>line 638</td></tr>
+      <tr><td>Pillar mode slew</td><td>At most 6 degrees per control loop</td><td>line 99</td></tr>
+      <tr><td>Parking full lock</td><td>10 (right) and 170 (left)</td><td>line 107</td></tr>
+    </tbody>
+  </table>
+  <p>The rear-axle centre of an ideal Ackermann car follows a circle of radius R = L / tan &delta;. The park code uses R = 170 mm (<code>R_PARK_MM</code>) and models every arc about a point on the rear-axle line. At the nominal 50-degree entry an arc moves the rear axle 0.77 R along the lot and 0.36 R across it, 130 mm and 61 mm. Every 10 mm of error in R moves the end of that arc about 8 mm along and 4 mm across; the final heading does not change, because the arc is closed on the IMU.</p>
+
+  <h3 id="s2-controller"><span class="sn">2.2</span>Controller and motor driver</h3>
+  <div class="decision">
+    <div class="dh"><b>Arduino Uno R3 as the only controller</b><span>ATmega328P, 16 MHz, 32,256 B flash, 2,048 B RAM</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">Why we chose it</div>
+        <ul>
+          <li>One Uno runs each challenge sketch in a fixed loop and starts the moment it is powered.</li>
+          <li>It uploads from the Arduino IDE in seconds.</li>
+          <li>It has a library for each part that needs one: Servo, Adafruit BNO055 over Wire, NewPing and Pixy2.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li>Our Obstacle sketch uses 29,604 of 32,256 B of flash (91 %).</li>
+          <li>With 2,048 B of RAM the camera must send block lists, not images.</li>
+          <li>The Servo library takes Timer1, which leaves D3 as the one free PWM pin.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="decision">
+    <div class="dh"><b>Cytron MD13S motor driver</b><span>sign-magnitude: speed on PWM D3, direction on D8, DIR HIGH = forward</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">Why we chose it</div>
+        <ul>
+          <li>The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5, D6 and D9 were sonar lines, D11 is SPI MOSI for the Pixy2, and the Servo library disables <code>analogWrite</code> on D9 and D10. D3 was left. The front trigger has since moved from D6 to A0.</li>
+          <li>The MD13S needs exactly one PWM line and one digital line for one motor.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li>One motor channel only. A driver that takes speed on two PWM inputs would need a second PWM pin that we do not have.</li>
+          <li>Speed is set in 8-bit steps through <code>analogWrite</code>: the race setting PWM 30 is 11.8 % duty.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p>Every part and the link it uses are drawn together in the system overview in Appendix A.</p>
+
+  <h3 id="s2-sonar"><span class="sn">2.3</span>Distance sensors and their placement</h3>
+  <div class="decision">
+    <div class="dh"><b>3 &times; HC-SR04 ultrasonic sensors</b><span>front A0/D7, left D4/D5, right D2/D9</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">Why we chose them</div>
+        <ul>
+          <li>The walls are black. A sonar returns the distance to a black wall whatever the colour or the light in the hall.</li>
+          <li>Each one uses two digital pins and reads whole centimetres up to 400 cm through NewPing.</li>
+          <li>The front unit faces the wall ahead square on, which the 48 cm corner trigger, the Open finish and the park stop mark all use.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li>Echoes return poorly at oblique angles: in a 1000 mm corridor the inner 40-degree unit often hears nothing, and the car rides 250-300 mm off the outer wall <span class="tag sim">Simulation</span>.</li>
+          <li>A ping with no echo can wait about 23 ms.</li>
+          <li>Nothing nearer than about 34 mm reads, so inside the parking bay the car steers on the IMU heading.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <figure>
+    <img src="../diagrams/sensor_layout.png" alt="Top view of the 200 by 125 mm car: front HC-SR04 on the nose facing straight ahead, left and right HC-SR04 on the slanted nose corners about 40 degrees from the nose axis, and the Pixy2 60-degree horizontal field of view">
+    <figcaption><b>Sensor layout, drawn to scale.</b> The front sonar faces straight ahead; the side sonars sit on the slanted nose corners about 40 degrees from the axis (drawn at 39 and 41, from our drawing of the nose, 14 Sep 2026). The Pixy2 sees 60 degrees across.</figcaption>
+  </figure>
+
+  <h4>What the 40-degree side sonars changed in the code</h4>
+  <p class="lead-in">Each side sonar also sees part of the wall ahead. That changed the code in four places:</p>
+  <ol>
+    <li><strong>Corner ties.</strong> At the 48 cm front trigger both side units see the same front wall, so left minus right is close to zero and its sign flips from loop to loop. <code>open_kuwait</code> broke ties by turning right. The finals code decides the turn from a vote of the corners already driven.</li>
+    <li><strong>Drift toward the outer wall</strong> <span class="tag sim">Simulation</span>. The inner unit meets the wall at about 50 degrees incidence and often returns no echo. The code copies the other side's reading, the error becomes zero, and the car rides about 250-300 mm off the outer wall instead of centred.</li>
+    <li><strong>Late pillar sighting</strong> <span class="tag sim">Simulation</span>. After a corner that drift puts the first pillar at a 55-65 degree bearing, outside the Pixy2's 30 degrees each side, until it is close.</li>
+    <li><strong>One parking fit per side</strong> <span class="tag sim">Simulation</span>. Near a parallel wall a 40-degree unit returns the edge of its beam, not the axis, so the park keeps one linear fit per side: <code>mm = A &times; cm + B</code>, A 5.16 / B 202.5 on the left and A 13.02 / B &minus;50.2 on the right.</li>
+  </ol>
+  <p>We kept the cant because our lane law does not depend on the bearing: a PD law on left minus right sees equal readings when the car is centred, at any sensor angle. Before we had a drawing of the nose, we had tuned laws in simulation for 90-degree flank sonars. On the real car those laws drove into the walls <span class="tag mat">Mat</span>.</p>
+
+  <h4>HC-SR04 details we design around</h4>
+  <table class="keep">
+    <thead><tr><th style="width:22%">Item</th><th>What it means for us</th></tr></thead>
+    <tbody>
+      <tr><td>Minimum range</td><td>The module sends 8 cycles at 40 kHz, a 200 &micro;s burst. Sound covers 68.6 mm in that time, so an echo from nearer than about 34 mm returns while the burst is still going out.</td></tr>
+      <tr><td>Scale</td><td>NewPing converts at 57 &micro;s per cm. At 20 &deg;C the round trip takes 58.3 &micro;s per cm, so readings are about 2.3 % long.</td></tr>
+      <tr><td>Timeout</td><td>A ping to the 400 cm limit can wait 400 &times; 57 &micro;s &asymp; 23 ms for an echo that never comes.</td></tr>
+      <tr><td>Firing order</td><td>Left, right, front, one after another, with a 3 ms pause before each. Each ping waits for its echo or timeout.</td></tr>
+      <tr><td>Filter</td><td><code>lpf = 0.9 &times; new + 0.1 &times; old</code>: 90 % of each new reading passes, so the lane error follows each reading closely.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="s2-camera"><span class="sn">2.4</span>Camera</h3>
+  <div class="decision">
+    <div class="dh"><b>Pixy2 camera</b><span>SPI through the ICSP header</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">Why we chose it</div>
+        <ul>
+          <li>It finds the trained colour signatures on its own processor and sends only block records: signature, x, width and height.</li>
+          <li>The Uno never handles images. One 316 &times; 208 frame is 65,728 pixels; the Uno has 2,048 B of RAM.</li>
+          <li>A block's x gives the pillar's bearing and its size gives the range.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li>A 60-degree horizontal view: after a corner the first pillar can sit outside it until the car is close <span class="tag sim">Simulation</span>.</li>
+          <li>The signatures are trained again under each venue's light, in the testing time of rule 13.18.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <table class="keep">
+        <thead><tr><th>Sig.</th><th>Trained on</th><th>Use in the finals code</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Red pillar, RGB (238, 39, 55)</td><td>Pass on the pillar's right</td></tr>
+          <tr><td>2</td><td>Green pillar, RGB (68, 214, 44)</td><td>Pass on the pillar's left</td></tr>
+          <tr><td>3</td><td>Magenta limiter, RGB (255, 0, 255)</td><td>Declared as <code>SIG_PARK_WALL</code>; skipped</td></tr>
+        </tbody>
+      </table>
+      <p class="small">A block in signature 1 or 2 is also rejected if it has the shape of a limiter: area of 600 px or more and width/height of 1.4 or more.</p>
+    </div>
+    <div>
+      <p><strong>Bearing and range from the image.</strong> The range constants use a field of view of about 60 &times; 40 degrees on the 316 &times; 208 frame:</p>
+      <ul>
+        <li>bearing &asymp; (x &minus; 158) &times; 0.19 degrees;</li>
+        <li>range = 13683 / width px or 28574 / height px for a 50 &times; 100 mm pillar, whichever is smaller.</li>
+      </ul>
+      <p>In a simulator probe this range read about 5 % short straight ahead and up to 37 % short for a pillar 150-300 mm to the side <span class="tag sim">Simulation</span>. The front sonar may replace the camera range near the image centre, but only to make a pillar nearer.</p>
+    </div>
+  </div>
+
+  <h3 id="s2-imu"><span class="sn">2.5</span>IMU</h3>
+  <div class="decision">
+    <div class="dh"><b>BNO055 IMU</b><span>I2C on A4 (SDA) and A5 (SCL), address 0x28</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">Why we chose it</div>
+        <ul>
+          <li>It fuses its sensors on its own chip and sends one heading over I2C.</li>
+          <li>That heading counts the 12 corners, ends the lot exit at 50 degrees, drives the U-turn guard and closes every park arc.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li><code>bno.begin()</code> with no argument selects NDOF mode, so the magnetometer is part of the fusion and a magnetic field can move the heading. The corner count keeps 20 degrees of margin for that.</li>
+          <li>A failed I2C read can show as a heading of exactly 0.0. The code keeps the previous heading and resets a stuck bus after 25 ms.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <p>The corner count adds each heading change, wrapped to &plusmn;180 degrees, to a total that is never reset, and counts a corner when the total reaches 90 &times; n + 70 degrees. If the Obstacle exit turns 20 degrees or more the wrong way on the heading, the sketch flips <code>headingSign</code>, so an IMU mounted the other way up still counts the right way.</p>
+
+  <h3 id="s2-power"><span class="sn">2.6</span>Two batteries</h3>
+  <div class="decision">
+    <div class="dh"><b>Separate motor and logic batteries</b><span>battery 1 for the motor, battery 2 for the Uno</span></div>
+    <div class="db">
+      <div>
+        <div class="lbl">What the split gives us</div>
+        <ul>
+          <li><strong>Battery 1</strong> (2S LiPo, 7.4 V nominal) connects straight to the Cytron MD13S power input and powers only the drive motor.</li>
+          <li><strong>Battery 2</strong> goes through the main power switch to the Uno's VIN. The Uno's on-board regulator makes 5 V for the sensors and, through the ICSP header, the Pixy2.</li>
+          <li>The motor's current flows only between battery 1, the MD13S and the motor. The current dips it pulls on battery 1, including the 70 ms kick at PWM 55, never reach the Uno's supply.</li>
+        </ul>
+      </div>
+      <div class="tr">
+        <div class="lbl">Trade-off we accepted</div>
+        <ul>
+          <li>Two packs to charge and check before every round.</li>
+          <li>A flat battery 2 resets the Uno even when battery 1 is full. <code>setup()</code> then sets the motor to 0 and the servo to 90 and waits for a new start input, so the round does not continue.</li>
+          <li>Battery 1 has no switch in its line, so the MD13S has power whenever battery 1 is connected. Its speed and direction come from the Uno on D3 and D8.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <figure id="fig-power">
+    <img src="../diagrams/power_tree.png" alt="Power tree with two batteries. Battery 1 connects straight to the Cytron MD13S power input and powers only the drive motor. Battery 2 goes through the main power switch to the Arduino Uno's VIN; the Uno's on-board regulator makes 5 V for the three HC-SR04 sonars, the BNO055 and, through the ICSP header, the Pixy2. The Uno drives the MD13S PWM input from D3 and DIR from D8">
+    <figcaption><b>Power tree.</b> Battery 1 feeds only the MD13S and the drive motor. Battery 2 feeds the Uno through the main power switch, and the sensors and the Pixy2 take 5 V from the Uno's regulator. D3 and D8 carry signals, not power.</figcaption>
+  </figure>
+
+  <div class="grid2">
+    <div>
+      <h4>Current through the Uno's regulator</h4>
+      <table class="keep">
+        <thead><tr><th>Load</th><th class="n">Current</th></tr></thead>
+        <tbody>
+          <tr><td>Arduino Uno logic</td><td class="n">about 50 mA</td></tr>
+          <tr><td>Pixy2, 5 V through ICSP</td><td class="n">about 140 mA</td></tr>
+          <tr><td>3 &times; HC-SR04, while pinging</td><td class="n">about 15 mA each</td></tr>
+          <tr class="total"><td>Uno, Pixy2 and three sonars</td><td class="n">about 235 mA</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Pixy2 and HC-SR04 figures from their datasheets; the Uno board figure is an estimate. Everything in this budget runs from battery 2; the drive motor has its own battery. The Pixy2 is about 60 % of the total.</p>
+    </div>
+    <div>
+      <h4>Wiring rules we keep</h4>
+      <ul>
+        <li>Motor current stays on battery 1 and never returns through the Uno header. Only signal ground goes to the Uno, as the reference for the PWM and DIR lines.</li>
+        <li>We once connected a black lead near the Uno power header and got heat and a burnt component.</li>
+        <li>After any wiring fault we measure the resistance from 5 V to GND with the power off before switching on again.</li>
+        <li>One power switch and one start input, from A2 to GND with the internal pull-up (rules 9.10 and 9.11).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 id="s2-body"><span class="sn">2.7</span>Printed body and brackets</h3>
+  <figure class="side">
+    <img src="../../Models/BlueWave_main_body_v2_plate.png" alt="Plate preview from the project file: the body shell and its sensor brackets in red PETG">
+    <figcaption><b>Plate preview stored in our print project.</b> <code>Models/BlueWave_main_body_v2.3mf</code> is a Bambu Studio 02.01.01.52 project saved on 20 November 2025, with five parts on one plate. The raised "AUMers" lettering and the logo on this body are from AUMers, the name our club and team used before we competed as Blue Wave. The design is ours. The saved filament colour is red, and the car we race has an orange body.</figcaption>
+  </figure>
+  <div class="grid2">
+    <table class="keep">
+      <thead><tr><th>Part in the file</th><th class="n">Copies</th><th class="n">Bounding box (mm)</th></tr></thead>
+      <tbody>
+        <tr><td>Body shell</td><td class="n">1</td><td class="n">79.0 &times; 123.0 &times; 58.0</td></tr>
+        <tr><td>Ultrasonic sensor bracket</td><td class="n">2</td><td class="n">32.7 &times; 47.4 &times; 19.0</td></tr>
+        <tr><td>Ultrasonic and Pixy2 bracket</td><td class="n">1</td><td class="n">49.3 &times; 15.3 &times; 23.5</td></tr>
+        <tr><td>Pixy2 bracket</td><td class="n">1</td><td class="n">49.3 &times; 6.7 &times; 29.7</td></tr>
+      </tbody>
+    </table>
+    <table class="keep">
+      <thead><tr><th>Print setting saved</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Printer</td><td>Bambu Lab X1 Carbon, 0.4 mm nozzle</td></tr>
+        <tr><td>Layers</td><td>0.24 mm, first layer 0.20 mm</td></tr>
+        <tr><td>Infill, walls</td><td>15 % grid; 2 loops</td></tr>
+        <tr><td>Supports</td><td>Tree (auto), 35&deg; threshold</td></tr>
+        <tr><td>Filament</td><td>Generic PETG, nozzle 255 &deg;C, plate 70 &deg;C</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The two ultrasonic brackets and the combined bracket give three ultrasonic mounts, the same count as the HC-SR04 sensors on the car.</p>
+</section>
+
+<!-- =================================================================== 3 SOFTWARE -->
+<section class="chapter" id="s3">
+  <div class="chapter-head">
+    <div class="num">03</div>
+    <div>
+      <h2>Software development by version</h2>
+      <p class="lead">From the June national-round code to the v20 finals sketches. Every row below is a problem we found, the change we made and what it did.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#version-history">Engineering decisions: version history</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/03-software-and-strategy.md">Software and strategy</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/01-mobility.md#what-changed-since-june">Mobility: what changed since June</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/src/README.md">src/README.md</a></p>
+
+  <h3><span class="sn">3.1</span>Where the code started</h3>
+  <p>The June sketch in this repository (commit <code>87508ae</code>; both challenge folders held the same file) and the finals sketches share the race speed PWM 30, the servo limits and the gains KP 0.6 and KD 0.05. They differ here:</p>
+  <table class="keep">
+    <thead><tr><th style="width:24%">Item</th><th style="width:34%">June sketch</th><th>Finals sketches</th></tr></thead>
+    <tbody>
+      <tr><td>Corner trigger</td><td><code>FRONT_AVOID_CM</code> 28</td><td>48</td></tr>
+      <tr><td>Avoid speed</td><td><code>MOTOR_SPEED_AVOID</code> 20, no kick</td><td>25, plus the PWM 55 kick</td></tr>
+      <tr><td>Pillar ladder</td><td>One step: servo 140 for green, 40 for red</td><td>Three steps per colour: 140/120/102 and 40/60/78</td></tr>
+      <tr><td>Start</td><td>Drives on power-up</td><td>Waits for a change on A2</td></tr>
+      <tr><td>Lot exit and park</td><td>None</td><td>Ratchet exit, front-wall park</td></tr>
+    </tbody>
+  </table>
+  <p>The finals sketches are built on <code>open_kuwait</code> and <code>obstacle_kuwait</code>. Both already had the 48 cm trigger and PWM 25 with the kick. Only <code>obstacle_kuwait</code> had the three-step ladder; <code>open_kuwait</code> steered 140 or 40 on the largest Pixy2 block. Both drove off on power-up, and neither parked. The Obstacle sketch is built on the 6 September 2026 build, which is <code>obstacle_kuwait</code> plus fixes 15, 16 and 17.</p>
+
+  <h3 id="s3-history"><span class="sn">3.2</span>Version history</h3>
+  <p>This history comes from our firmware folders and dated notes. The work between the national round and the v20 sketches was done in our local workspace and committed to <code>main</code> in September 2026, with every commit keeping its original date.</p>
+
+  <div class="timeline">
+    <div class="phase">JUNE 2026</div>
+    <div class="tl event">
+      <div class="when">June 2026</div>
+      <div class="body">
+        <div class="ver">National-round code <span class="tag mat">Mat</span></div>
+        <div class="rows"><div class="k">Result</div><div>1st place with 61 points at the Kuwait national round.</div></div>
+      </div>
+    </div>
+
+    <div class="phase">BEFORE SEPTEMBER 2026</div>
+    <div class="tl">
+      <div class="when">Before Sep 2026</div>
+      <div class="body">
+        <div class="ver">Fixes in <code>obstacle_kuwait</code> <span class="tag mat">Mat</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>The pillar area overflowed a 16-bit <code>int</code> (a log printed <code>area=-9646</code>). Wrong-side passes; our fix notes give the likely cause, signature 1 trained on red while the code treated 1 as green. <code>blocks[0]</code> is the largest blob, not the nearest pillar. PWM 15 could not restart a stopped car.</div>
+          <div class="k">Change</div><div>Area as <code>long</code>. The code reads red as 1 and green as 2. Every block ranged, and the nearest within 900 mm steers. Avoid at PWM 25 plus the PWM 55 kick (fix 4).</div>
+          <div class="k">Result</div><div>All four kept in v20. PWM 25 always moves the car.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">Before Sep 2026</div>
+      <div class="body">
+        <div class="ver">Versions 8-17 <span class="tag mat">Mat</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>All ten were worse on the mat and were reverted.</div>
+          <div class="k">Change</div><div>A rule: no change without a named mechanism.</div>
+          <div class="k">Result</div><div>Applied to every later change.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">Before Sep 2026</div>
+      <div class="body">
+        <div class="ver">Parking versions 14-16 <span class="tag mat">Mat</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>Legs that ended on sensor readings stalled or hit the limiter.</div>
+          <div class="k">Change</div><div>Timed legs closed on the IMU heading.</div>
+          <div class="k">Result</div><div>Became the park architecture.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">SEPTEMBER 2026</div>
+    <div class="tl event">
+      <div class="when">2 Sep 2026</div>
+      <div class="body">
+        <div class="ver">Car on <code>obstacle_kuwait</code>, per our notes <span class="tag mat">Mat</span></div>
+        <div class="rows"><div class="k">Result</div><div>Three full Obstacle laps with one light touch on one pillar.</div></div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">6 Sep 2026</div>
+      <div class="body">
+        <div class="ver">6 September parking build <span class="tag mat">Mat</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>The exit worked, but the car did not park: the lap total was zeroed while the car was 50 degrees rotated.</div>
+          <div class="k">Change</div><div>Fix 26: a total that is never reset, with the exit rotation seeded into it.</div>
+          <div class="k">Result</div><div>Lap 3 can close and the park can arm.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">11 Sep 2026</div>
+      <div class="body">
+        <div class="ver">Simulator <span class="tag sim">Simulation</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>The model car was 1.9 times too slow.</div>
+          <div class="k">Change</div><div>Speed refitted to the real 23 s Open run.</div>
+          <div class="k">Result</div><div>All later simulator results use the fitted speed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">14 Sep 2026</div>
+      <div class="body">
+        <div class="ver">Team drawing of the nose <span class="tag mat">Mat</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>Laws tuned for 90-degree side sonars hit the walls.</div>
+          <div class="k">Change</div><div>Side units modelled at 39 and 41 degrees; only the left-minus-right law kept.</div>
+          <div class="k">Result</div><div>The simulator uses the drawn geometry.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">14 Sep 2026</div>
+      <div class="body">
+        <div class="ver">Finals build of that day <span class="tag mat">Mat</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>The car did not move: the start waited for a press then a release, the exit PWM was below 25, the park build fitted only with PlatformIO flags, and an IMU failure ended in a silent <code>while(1)</code>.</div>
+          <div class="k">Change</div><div>Start on any A2 change; IDE build; servo wiggle fault code.</div>
+          <div class="k">Result</div><div>v20 keeps the start logic and the fault code and fits the IDE build. Its exit keeps PWM 18 from the 6 September build.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">15 SEPTEMBER 2026: V20</div>
+    <div class="tl">
+      <div class="when">15 Sep 2026</div>
+      <div class="body">
+        <div class="ver"><code>open_v20</code> <span class="tag sim">Simulation</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>Corner direction a coin toss; lap 3 sometimes closed at corner 13.</div>
+          <div class="k">Change</div><div>Corner vote; 12 counted corners, then a front-range stop.</div>
+          <div class="k">Result</div><div>37/40 against 21/40 in simulation.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">15 Sep 2026</div>
+      <div class="body">
+        <div class="ver"><code>obstacle_v20</code> <span class="tag sim">Simulation</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>The 6 September build never reached its park, had no start input, turned right on every tie and ended its round on a nose-on contact.</div>
+          <div class="k">Change</div><div>Front-wall park with a solved entry angle, lap-1 map, corner vote, stuck recovery, A2 start.</div>
+          <div class="k">Result</div><div>Exit 119/120 and three laps 12/120 in simulation.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="when">15 Sep 2026</div>
+      <div class="body">
+        <div class="ver"><code>src/</code> <span class="tag build">Build</span></div>
+        <div class="rows">
+          <div class="k">Problem</div><div>Rule 9.11.</div>
+          <div class="k">Change</div><div><code>open_v20</code> and <code>obstacle_v20</code> committed as <code>Open_Challenge.ino</code> and <code>Obstacle_Challenge.ino</code> with <code>PRACTICE 0</code>; nothing else changed.</div>
+          <div class="k">Result</div><div>Compiles with the Arduino IDE compiler: 15,136 B and 29,604 B.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3><span class="sn">3.3</span>How both sketches run</h3>
+  <p>Both sketches are single <code>.ino</code> files with no local libraries, because we upload from the Arduino IDE. Each is one <code>loop()</code> that runs top to bottom:</p>
+  <div class="steps">
+    <div class="st"><b>1. Sonars</b>Ping left, right and front, a 3 ms pause before each</div>
+    <div class="st"><b>2. Heading</b>Read the BNO055 over I2C and update the corner count</div>
+    <div class="st"><b>3. Camera</b>Poll the Pixy2 over SPI</div>
+    <div class="st"><b>4. Decide</b>Choose a servo angle and a motor PWM</div>
+    <div class="st"><b>5. Report</b>Print one debug line at 115200 baud</div>
+  </div>
+  <p>Before the start the servo reports the IMU: one wiggle means ready, two wiggles repeating means the BNO055 did not answer and the car will not drive. <code>waitStart()</code> reads A2 with the internal pull-up and starts the round when the level has changed for 30 ms, so a push button and a toggle switch both work. With <code>PRACTICE 1</code> the car would also start 3 s after power-up, which we use only on a practice table; both sketches in <code>src/</code> have <code>PRACTICE 0</code>.</p>
+  <p>Open stays in that loop for the whole round. The Obstacle sketch runs the same loop inside a six-state machine, and its laps hand over to the park only when the car is parallel and clear of pillars, so the park starts from a known pose.</p>
+  <figure>
+    <svg viewBox="0 0 720 612" role="img" aria-labelledby="sm-t sm-d" xmlns="http://www.w3.org/2000/svg">
+      <title id="sm-t">Obstacle sketch state machine</title>
+      <desc id="sm-d">WAIT goes to EXIT after an A2 change and a 500 ms side-sonar average; EXIT goes to LAPS when the heading is 50 degrees out of the lot or after 20 cycles, then 800 ms straight; LAPS goes to APPROACH after 12 corners with the heading within 8 degrees of 1080, PD mode and no pillar for 5 frames; LAPS goes to DONE at a 13th corner or a wall ahead after corner 12 with no clean window; APPROACH goes to PARK when the front range reaches the stop mark, or to DONE after a 15 s cap; PARK goes to DONE when steps B to F are finished.</desc>
+      <defs>
+        <marker id="sm-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#002a62"/></marker>
+        <marker id="sm-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3a7fb8"/></marker>
+      </defs>
+      <style>
+        .sm-n { font: 700 16px "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #002a62; letter-spacing: 0.06em; }
+        .sm-nw { font: 700 16px "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #ffffff; letter-spacing: 0.06em; }
+        .sm-s { font: 400 12.5px "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #3d4a5c; }
+        .sm-sw { font: 400 12.5px "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #cfe6f4; }
+        .sm-c { font: 400 13px "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #17202c; }
+        .sm-cb { font: 400 13px "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #2e6a9e; }
+        .sm-box { fill: #eaf4fa; stroke: #002a62; stroke-width: 1.6; }
+        .sm-line { stroke: #002a62; stroke-width: 2; fill: none; }
+        .sm-side { stroke: #3a7fb8; stroke-width: 1.8; stroke-dasharray: 6 4; fill: none; }
+      </style>
+      <rect x="0.5" y="0.5" width="719" height="611" rx="8" fill="#ffffff" stroke="#d3dce6"/>
+
+      <rect class="sm-box" x="24" y="16" width="220" height="56" rx="6"/>
+      <text class="sm-n" x="40" y="40">WAIT</text>
+      <text class="sm-s" x="40" y="59">power on, wait for A2</text>
+      <path class="sm-line" d="M134,72 V118" marker-end="url(#sm-a)"/>
+      <text class="sm-c" x="266" y="92">A2 change held 30 ms, then a 500 ms side-sonar</text>
+      <text class="sm-c" x="266" y="109">average picks the outer wall</text>
+
+      <rect class="sm-box" x="24" y="120" width="220" height="56" rx="6"/>
+      <text class="sm-n" x="40" y="144">EXIT</text>
+      <text class="sm-s" x="40" y="163">ratchet out of the lot</text>
+      <path class="sm-line" d="M134,176 V222" marker-end="url(#sm-a)"/>
+      <text class="sm-c" x="266" y="196">heading 50&#176; out of the lot or 20 cycles,</text>
+      <text class="sm-c" x="266" y="213">then 800 ms straight</text>
+
+      <rect class="sm-box" x="24" y="224" width="220" height="56" rx="6"/>
+      <text class="sm-n" x="40" y="248">LAPS</text>
+      <text class="sm-s" x="40" y="267">lane law, pillar ladder, 12 corners</text>
+      <path class="sm-line" d="M134,280 V326" marker-end="url(#sm-a)"/>
+      <text class="sm-c" x="266" y="300">12 corners, heading within 8&#176; of 1080&#176;,</text>
+      <text class="sm-c" x="266" y="317">PD mode, no pillar for 5 frames</text>
+
+      <rect class="sm-box" x="24" y="328" width="220" height="56" rx="6"/>
+      <text class="sm-n" x="40" y="352">APPROACH</text>
+      <text class="sm-s" x="40" y="371">stop mark from the front wall</text>
+      <path class="sm-line" d="M134,384 V430" marker-end="url(#sm-a)"/>
+      <text class="sm-c" x="266" y="412">front range reaches the stop mark</text>
+
+      <rect class="sm-box" x="24" y="432" width="220" height="56" rx="6"/>
+      <text class="sm-n" x="40" y="456">PARK</text>
+      <text class="sm-s" x="40" y="475">reverse on IMU-closed arcs</text>
+      <path class="sm-line" d="M134,488 V534" marker-end="url(#sm-a)"/>
+      <text class="sm-c" x="266" y="516">steps B to F finished</text>
+
+      <rect x="24" y="536" width="220" height="56" rx="6" fill="#002a62"/>
+      <text class="sm-nw" x="40" y="560">DONE</text>
+      <text class="sm-sw" x="40" y="579">motor 0, servo 90</text>
+
+      <path class="sm-side" d="M244,252 H690 V556 H252" marker-end="url(#sm-b)"/>
+      <path class="sm-side" d="M244,356 H660 V572 H252" marker-end="url(#sm-b)"/>
+      <text class="sm-cb" x="266" y="244">13th corner, or wall ahead after corner 12 with no clean window</text>
+      <text class="sm-cb" x="266" y="348">15 s cap</text>
+    </svg>
+    <figcaption><b>Obstacle sketch state machine.</b> Solid arrows are the planned path through a round; dashed arrows are the two ways a round ends early. In DONE the motor stays at 0 and the servo at 90, and the car never starts a fourth lap.</figcaption>
+  </figure>
+
+  <h3 id="s3-open"><span class="sn">3.4</span>What open_v20 does</h3>
+  <div class="grid2">
+    <div>
+      <p><strong>Lane keeping.</strong> The error is e = left &minus; right in centimetres, after the filter. The servo command is 90 + 0.6&middot;e + 0.05&middot;&Delta;e, limited to 30-160. The integral gain is 0.</p>
+      <p><strong>Corners.</strong> At 48 cm or less on the front sonar the car slows to PWM 25 and turns. Urgency = (48 &minus; front) / (48 &minus; 18), clamped to 0.25-1, so the servo reaches full travel at 18 cm. The side is chosen in this order:</p>
+      <ol>
+        <li>if left and right differ by more than 3 cm, the longer side;</li>
+        <li>otherwise the majority of the corners already counted;</li>
+        <li>before the first corner, the sign of a slow left-minus-right average, if it is at least 4 cm;</li>
+        <li>otherwise right.</li>
+      </ol>
+      <p>A U-turn guard holds the servo straight once the car has turned 100 degrees inside one avoid.</p>
+    </div>
+    <div>
+      <p><strong>Laps and the finish.</strong> Corner n+1 counts when the never-reset turn total reaches 90&middot;n + 70 degrees. After corner 12, once the front has read more than 180 cm twice (looking down the start straight), the car stops at the first two readings of 150 cm or less. A 700 ms backstop after corner 12 stops it anyway.</p>
+      <p><strong>Faster straights.</strong> In lap 1 the car records the largest error on each straight, more than 700 ms after the corner with the front over 150 cm. In laps 2 and 3 a straight whose lap-1 maximum stayed under 25 cm runs at PWM 38 while the error is under 18 cm and the front reads over 150 cm. Every corner starts at PWM 30.</p>
+      <p><strong>Stiction kick.</strong> Whenever the commanded PWM is above 0 and below 30, the motor gets PWM 55 for the first 70 ms, then 70 ms of PWM 55 every 500 ms.</p>
+      <p><strong>Camera call.</strong> Open calls <code>pixy.ccc.getBlocks()</code> every loop and ignores the result, so each loop takes as long as it did in the <code>open_kuwait</code> runs on the mat.</p>
+    </div>
+  </div>
+
+  <h3 id="s3-obstacle"><span class="sn">3.5</span>What obstacle_v20 does</h3>
+  <p>The six states are in the figure in section 3.3. This section follows one Obstacle round through them.</p>
+
+
+  <h4>Start, outer-wall pick and lot exit</h4>
+  <p>Standing still for 500 ms, the car averages both side sonars. The shorter side is the outer wall, which also seeds the corner vote with a weight of 2: outer wall on the left means the round is clockwise and the corners turn right. We place the car about 40 mm from the outer wall every time.</p>
+  <p>One exit ratchet cycle is: pause 220 ms with the wheels at full lock toward the wall, reverse 200 ms at PWM 18, pause 220 ms at the opposite lock, forward 200 ms at PWM 18. Cycles repeat until the heading is 50 degrees out or 20 cycles have run, then the car drives straight for 800 ms at PWM 18. These are the values of the 6 September build whose exit worked on the mat. The exit's rotation is carried into the turn total (fix 26).</p>
+
+  <h4>Pillars</h4>
+  <div class="grid2">
+    <div>
+      <p>Each loop reads up to 8 Pixy2 blocks. A block counts as a pillar only if its signature is 1 or 2, it is not shaped like a limiter, its area is at least 200 px and its x is between 20 and 300. Only pillars within 900 mm steer the car. The nearest wins, and the colour lock switches only if the other pillar is at least 250 mm nearer.</p>
+      <p>Beyond 550 mm the servo target is pulled toward 90 by k = (900 &minus; range) / 350, never below 0.35. Pillar mode starts after 2 good frames, if 280 ms have passed since the last change or the pillar is within 550 mm, and ends after 3 missed frames and 280 ms.</p>
+    </div>
+    <div>
+      <table class="keep">
+        <thead><tr><th>Pillar</th><th>x in the 316 px frame</th><th class="n">Servo target</th></tr></thead>
+        <tbody>
+          <tr><td>Green</td><td>x &lt; 120</td><td class="n">140 (hard left)</td></tr>
+          <tr><td>Green</td><td>120 &le; x &lt; 170</td><td class="n">120</td></tr>
+          <tr><td>Green</td><td>x &ge; 170</td><td class="n">102 (soft left)</td></tr>
+          <tr><td>Red</td><td>x &gt; 200</td><td class="n">40 (hard right)</td></tr>
+          <tr><td>Red</td><td>150 &lt; x &le; 200</td><td class="n">60</td></tr>
+          <tr><td>Red</td><td>x &le; 150</td><td class="n">78 (soft right)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p>In pillar mode the servo slews at most 6 degrees per loop; a front reading of 25 cm or less snaps it to full travel on the target side; and if the side sonar toward the turn reads under 25 cm, the command is capped at 90 + (target &minus; 90) &times; (side &minus; 16) / 9, so the car cannot steer hard into a wall it is already close to.</p>
+
+  <h4>Lap-1 map, scan weave and stuck recovery</h4>
+  <ul>
+    <li><strong>Lap-1 map.</strong> In lap 1 the car stores the colours of the first two pillars that put it into pillar mode on each straight. In laps 2 and 3, for up to 1.6 s after a corner and once the heading is within 12 degrees of the new straight, it moves the lane set-point 20 cm toward the side the first mapped pillar needs.</li>
+    <li><strong>Scan weave.</strong> With no pillar in view and |L &minus; R| under 6 cm, a &plusmn;5 degree sine with a 1.3 s period sweeps the camera view across the frame edges.</li>
+    <li><strong>Stuck recovery.</strong> If the last front reading is 15 cm or less and the heading has not moved 3 degrees in 0.7 s, the car sets opposite lock and reverses: PWM 55 for 70 ms, PWM 30 for 450 ms, then stops for 120 ms.</li>
+  </ul>
+  <p class="lead-in"><strong>Control priority inside <code>lapStep()</code>:</strong></p>
+  <div class="steps">
+    <div class="st"><b>1</b>Park handover, or a stop if the park window is missed</div>
+    <div class="st"><b>2</b>Pillar mode, with the 25 cm full lock and the wall cap</div>
+    <div class="st"><b>3</b>Front avoid at 48 cm</div>
+    <div class="st"><b>4</b>Lane PD with map bias, scan weave, fast straights</div>
+    <div class="st"><b>5</b>Stiction kick on the chosen PWM</div>
+    <div class="st"><b>6</b>Stuck recovery, overriding the rest for 640 ms</div>
+  </div>
+
+  <h3 id="s3-park"><span class="sn">3.6</span>The front-wall park</h3>
+  <p>After three laps the front HC-SR04 measures the wall at the end of the start straight at near-normal incidence. The car stops at a mark computed from that distance, then reverses into the lot on IMU-closed arcs and measured straight steps.</p>
+  <p><strong>Why the front wall.</strong> We measured the distance from the far wall to the downstream limiter on a mat: about 1.0 m with the lot on the car's right and about 1.7 m with it on the left <span class="tag team">Team</span>. That matches the rulebook. Inside the bay the side units are near their 34 mm minimum and lose the echo at oblique angles, and the camera faces away from the lot the car reverses into. So while the car manoeuvres, the IMU heading is the reading we trust.</p>
+  <p><strong>The stop mark.</strong> mark = lot distance &minus; 200 &minus; (&minus;40). With <code>LOT_RIGHT_MM</code> 980 the mark is 820 mm for a lot on the right. The lot-left distance is 3000 &minus; 340 &minus; 980 = 1680 mm, so that mark is 1520 mm. During the approach a far-wall tracker rejects echoes from the limiter tips, which read about 900 mm short of the wall.</p>
+  <div class="steps">
+    <div class="st"><b>B. Mark</b>Step onto the mark within 30 mm; measure the real step length from four reverse steps</div>
+    <div class="st"><b>Solve</b>Pose from front range, wall sonar and IMU; entry angle from 36-64&deg;</div>
+    <div class="st"><b>C. Arc in</b>Reverse arc at the wall-side lock, cut by the clearance model</div>
+    <div class="st"><b>D. Straight</b>Straight reverse in steps, each checked first</div>
+    <div class="st"><b>E. Square</b>Arc pairs of up to 6&deg; until within 3&deg; of parallel</div>
+    <div class="st"><b>F. Centre</b>Centre on the downstream limiter; motor 0, servo 90</div>
+  </div>
+  <p>A step is 25 ms at PWM 55, 25 ms at PWM 22, then 380 ms to settle. Every arc runs at PWM 18 and is closed on the IMU heading; the motor is cut early by the turn rate &times; 150 ms because the car keeps turning while it coasts, and arcs are capped at 2.6 s. Before each arc in C and E and each straight step in D, the 200 &times; 125 mm car outline is checked against both limiters and the wall with a 12 mm margin.</p>
+
+  <h3><span class="sn">3.7</span>How we change the code</h3>
+  <div class="note">
+    <p><strong>Our rule since versions 8-17:</strong> before we try a change we write down the input, the state, the computed value and the wrong action it fixes. In our simulator we compare the change against the previous version on the same seeds. On the mat a new sketch runs in practice time first.</p>
+  </div>
+  <p>KP 0.6 and KD 0.05 are unchanged from the June sketch, and the ladder thresholds (x 120 and 170 for green, 150 and 200 for red) come from fix 8 in <code>obstacle_kuwait</code>. We kept them because the builds that carried them drove on the mat.</p>
+</section>
+
+<!-- =================================================================== 4 TESTING -->
+<section class="chapter" id="s4">
+  <div class="chapter-head">
+    <div class="num">04</div>
+    <div>
+      <h2>Testing method and results</h2>
+      <p class="lead">Our mat results come from our earlier builds. Every v20 result comes from our simulator, and each one carries that label.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md">Build, test and reproduce</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/02-power-and-sensors.md#calibration-procedures">Power and sensors: calibration procedures</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/03-software-and-strategy.md#how-we-tune">Software and strategy: how we tune</a></p>
+
+  <h3 id="s4-method"><span class="sn">4.1</span>How we test</h3>
+  <div class="steps">
+    <div class="st"><b>1. Bench</b>The ten-minute bench check below, before every session</div>
+    <div class="st"><b>2. Simulation</b>Seeded batches in <code>real2</code>, each change against the previous version on the same seeds</div>
+    <div class="st"><b>3. Replay</b>Webots replays of selected simulated runs, to watch a failure in 3D</div>
+    <div class="st"><b>4. Mat</b>New sketches in practice time first, with a fallback rule</div>
+  </div>
+  <p>A mat test of an Obstacle sketch is 20 runs from legal random starts. For each run we record the exit, laps, pillars touched and park result, and we report the success rate. In simulation we record per batch:</p>
+  <table class="keep">
+    <thead><tr><th style="width:18%">Metric</th><th style="width:41%">Open</th><th>Obstacle</th></tr></thead>
+    <tbody>
+      <tr><td>Full score</td><td>3 laps and a stop in the start section (30/30)</td><td>Exit, 3 laps, park type</td></tr>
+      <tr><td>Where it failed</td><td>Wall crash, wrong direction, first corner, stop outside the section</td><td>Wrong-side pass, reversed, limiter, stuck</td></tr>
+      <tr><td>Quality</td><td>Lap-3 median time, wall grazes per run</td><td>Sections completed, grazes per run</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Ten-minute bench check</h4>
+  <p class="lead-in" data-bench-intro>Car on a stand with all four wheels off the table, both batteries charged and battery 1 connected to the MD13S, serial monitor at 115200 baud.</p>
+  <table>
+    <thead><tr><th class="n" style="width:5%">#</th><th style="width:42%">Check</th><th>Pass</th></tr></thead>
+    <tbody data-bench>
+      <tr><td class="n">1</td><td>Library versions on the upload laptop</td><td>Versions match Appendix B</td></tr>
+      <tr><td class="n">2</td><td>Verify the sketch</td><td>Sizes match Appendix B; <code>#define PRACTICE 0</code></td></tr>
+      <tr><td class="n">3</td><td>Upload, then switch on with the main switch</td><td>One servo wiggle. Two wiggles repeating: BNO055 not answering, check A4/A5</td></tr>
+      <tr><td class="n">4</td><td>Obstacle sketch: read the serial monitor</td><td><code>WAIT L .. R .. F .. yaw ..</code> every 400 ms</td></tr>
+      <tr><td class="n">5</td><td>Hand 20 cm in front of each sonar in turn; nose square to a wall at a taped 50 cm</td><td><code>L</code>, <code>R</code> and <code>F</code> each change; <code>F</code> reads about 51</td></tr>
+      <tr><td class="n">6</td><td>Turn the car clockwise by hand</td><td><code>yaw</code> increases</td></tr>
+      <tr><td class="n">7</td><td>Wait 5 s after power-on</td><td>Wheels do not turn</td></tr>
+      <tr><td class="n">8</td><td>Change the A2 switch</td><td>Obstacle: <code>outer wall = LEFT/RIGHT</code> prints, then the servo alternates full locks. Open: the drive wheels turn</td></tr>
+      <tr><td class="n">9</td><td>PixyMon with a red, a green and a magenta object at 900 mm</td><td>Boxes with signatures 1, 2 and 3</td></tr>
+      <tr><td class="n">10</td><td>Voltage of battery 1 and battery 2 with a meter, written on the test sheet</td><td>Two numbers: battery 1 so speed results can be matched to charge, battery 2 because a flat battery 2 resets the Uno</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Calibration checks in practice time</h4>
+  <table>
+    <thead><tr><th style="width:17%">Check</th><th style="width:44%">How</th><th>Pass</th></tr></thead>
+    <tbody>
+      <tr><td>Pixy2 signatures</td><td>In PixyMon, under the venue light: signature 1 on a red pillar, 2 on a green pillar, 3 on a magenta limiter</td><td>One box with the right signature at 900 mm</td></tr>
+      <tr><td>Pixy2 range</td><td>Pillar 500 mm straight ahead; read its width and height in PixyMon</td><td>About 27 px wide and 57 px tall, matching 13683 and 28574</td></tr>
+      <tr><td>IMU direction</td><td>Obstacle sketch waiting; turn the car clockwise by hand</td><td><code>yaw</code> increases</td></tr>
+      <tr><td>Front range</td><td>Car square to a wall; tape from the nose</td><td><code>F</code> matches the tape within about 3 %</td></tr>
+      <tr><td>Side sonars</td><td>Hand in front of each side unit</td><td><code>L</code> and <code>R</code> change</td></tr>
+      <tr><td>Outer-wall pick</td><td>Car in the lot about 40 mm from the outer wall, facing the driving direction; start</td><td>Prints <code>outer wall = LEFT</code> or <code>RIGHT</code>, matching the real wall</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Park constants and how to set them on a mat</h4>
+  <table class="keep">
+    <thead><tr><th style="width:27%">Constant</th><th style="width:15%">Now</th><th>Procedure</th></tr></thead>
+    <tbody>
+      <tr><td><code>LOT_RIGHT_MM</code></td><td>980</td><td>Tape from the far wall to the far face of the downstream limiter, lot on the car's right. <code>LOT_LEFT_MM</code> follows as 3000 &minus; 340 &minus; <code>LOT_RIGHT_MM</code></td></tr>
+      <tr><td><code>R_PARK_MM</code></td><td>170</td><td>Servo at 170, push the car slowly through a full circle, mark the rear-axle centre, halve the diameter. Repeat at servo 10</td></tr>
+      <tr><td><code>SIDE_A_L</code>, <code>SIDE_B_L</code>, <code>SIDE_A_R</code>, <code>SIDE_B_R</code></td><td>5.16, 202.5, 13.02, &minus;50.2</td><td>Car parallel to a wall with the rear axle 300 mm and then 400 mm from it; read that side's sonar in cm. A = 100 / (cm400 &minus; cm300), B = 300 &minus; A &times; cm300</td></tr>
+      <tr><td><code>CAR_NOSE_MM</code></td><td>168</td><td>Rear-axle centre to the front bumper, steel rule</td></tr>
+      <tr><td><code>PARK_LANE_MM</code></td><td>320</td><td>Rear axle to the outer wall during the approach; check that it clears the limiter tips at 200 mm</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="s4-mat"><span class="sn">4.2</span>Results on the mat <span class="tag mat">Mat</span></h3>
+  <table class="keep">
+    <thead><tr><th style="width:15%">Date</th><th style="width:27%">Code</th><th>What happened</th></tr></thead>
+    <tbody>
+      <tr><td>June 2026</td><td>National-round code</td><td><strong>1st place, 61 points</strong>, Kuwait national round</td></tr>
+      <tr><td>Before Sep 2026</td><td>Motor test</td><td>PWM 15 does not start the car from rest, 18 creeps, 25 always moves it</td></tr>
+      <tr><td>2 Sep 2026</td><td><code>obstacle_kuwait</code>, as listed in our notes</td><td>Three full Obstacle laps with one light touch on one pillar</td></tr>
+      <tr><td>6 Sep 2026</td><td>6 September parking build</td><td>Lot exit worked; our best Obstacle driving so far, with light scrapes; did not park (lap counter, fixed as fix 26)</td></tr>
+      <tr><td>By 11 Sep 2026</td><td><code>open_kuwait</code>, PWM 30</td><td>Three Open laps in about 23 s</td></tr>
+      <tr><td>14 Sep 2026</td><td>Finals build of that day</td><td>The car did not move; four causes found and fixed (chapter 5)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="s4-sim"><span class="sn">4.3</span>Results in simulation <span class="tag sim">Simulation</span></h3>
+  <div class="sim-note"><strong>Read these numbers as comparisons.</strong> The simulator is harsher than the real car and passes one of its three fidelity gates. We use its numbers only to compare code versions against each other.</div>
+  <p><code>real2</code> compiles the unchanged <code>.ino</code> with a PC compiler and runs it against a model of our car; only <code>while(1);</code> is rewritten, to a halt. The model has the 200 &times; 125 mm outline with side sonars at 39 and 41 degrees, HC-SR04 acoustics including a 38-60 ms hold when no echo returns, a Pixy2 at 60 frames per second, a BNO055 with drift and noise, the time cost of serial printing, tyre grip and wall contact. Each seed randomises the turning radius (&plusmn;15 %), speed (&plusmn;12 %), break-away (PWM 16-18), servo speed, start pose and sonar dropout.</p>
+
+  <h4>Fidelity gates: does the model reproduce the real car?</h4>
+  <table class="keep">
+    <thead><tr><th style="width:25%">Gate</th><th style="width:22%">Real car</th><th class="n" style="width:9%">Target</th><th>Simulator</th><th style="width:9%">Verdict</th></tr></thead>
+    <tbody>
+      <tr><td><code>open_kuwait</code>, 3 laps</td><td>Reliable</td><td class="n">&ge; 80 %</td><td>33/60 = 55 % (clockwise 77 %, counter-clockwise 24 %)</td><td>Fail</td></tr>
+      <tr><td><code>obstacle_kuwait</code>, 3 laps, no pillar moved</td><td>Three laps, one light touch, 2 Sep 2026</td><td class="n">&ge; 60 %</td><td>1/60 = 2 %</td><td>Fail</td></tr>
+      <tr><td>6 September build, lot exit</td><td>Worked on 6 Sep 2026</td><td class="n">&ge; 80 %</td><td>58/60 = 97 %</td><td>Pass</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Calibration F3, 60 seeds from 10,500,000. Both failed gates score below the real car, so the simulator is harsher than the car.</p>
+
+  <h4>The v20 sketches</h4>
+  <table class="keep">
+    <thead><tr><th style="width:15%">Sketch</th><th style="width:40%">Test</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Open v20</td><td>Paired with <code>open_kuwait</code> on the same seeds</td><td>37/40 against 21/40</td></tr>
+      <tr><td>Open v20</td><td>Final file, 40 fresh seeds from 9,100,000</td><td>36/40; lap-3 median 25.6 s; 0.1 wall grazes per run</td></tr>
+      <tr><td>Open v20</td><td>All 32 draw cells (16 corridor combinations &times; 2 directions), 320 runs</td><td>287/320 = 90 % scored 30/30; lap-3 median 26.0 s; 0.14 grazes per run</td></tr>
+      <tr><td>Open v20</td><td>Calibration F3, 60 seeds</td><td>55/60 = 92 %</td></tr>
+      <tr><td>Obstacle v20</td><td>60 lot starts from 9,200,000</td><td>Exit 60/60; three laps 1/60; endings: wrong-side pass 35, reversed 8, limiter 10</td></tr>
+      <tr><td>Obstacle v20</td><td>120 lot starts from 10,500,000, F3</td><td>Exit 119/120; three laps 12/120; of those, 3 partial parks and 0 full</td></tr>
+      <tr><td>Obstacle v20</td><td>Park only, from the lap-3 handover pose, 16 runs</td><td>4 full parks; limiter touched in about half</td></tr>
+    </tbody>
+  </table>
+  <p>The 37/40 comes from the paired comparison during development; the final file on fresh seeds scored 36/40, and that is the number we quote for v20. The gap between 1/60 and 12/120 three-lap Obstacle rounds comes from the seed blocks, not from the calibration.</p>
+
+  <div class="grid2">
+    <div>
+      <h4>Where Open v20 fails: 33 of 320 runs</h4>
+      <table class="keep">
+        <thead><tr><th>Failure</th><th class="n">Runs</th></tr></thead>
+        <tbody>
+          <tr><td>Wall crash mid-round</td><td class="n">11</td></tr>
+          <tr><td>Wrong turn direction</td><td class="n">8</td></tr>
+          <tr><td>At the first corner (5 stuck, 1 crash)</td><td class="n">6</td></tr>
+          <tr><td>Three laps, stopped outside the start section</td><td class="n">6</td></tr>
+          <tr><td>Other</td><td class="n">2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h4>Weakest corridor cells</h4>
+      <table class="keep">
+        <thead><tr><th>Cell</th><th>Direction</th><th class="n">Success</th></tr></thead>
+        <tbody>
+          <tr><td>600-1000-1000-600</td><td>Counter-clockwise</td><td class="n">7/11</td></tr>
+          <tr><td>600-1000-1000-1000</td><td>Clockwise</td><td class="n">7/10</td></tr>
+          <tr><td>600-1000-600-1000</td><td>Counter-clockwise</td><td class="n">8/11</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h4>Webots replays</h4>
+  <p>Webots draws the rulebook field and moves the car along a path logged by <code>real2</code>. It is a kinematic replay with no physics, and the verdict on screen is copied from our arena scorer. The seven v20 replays:</p>
+  <div class="grid2">
+    <ol>
+      <li>Open, clockwise (seed 7100007)</li>
+      <li>Open, counter-clockwise (seed 7100003)</li>
+      <li>Obstacle, three laps, no park, counter-clockwise (seed 6200015)</li>
+      <li>Obstacle, three laps, no park, clockwise (seed 6200035)</li>
+    </ol>
+    <ol start="5">
+      <li>Obstacle, the typical failure: inner-row pillar right after a corner (seed 6100004)</li>
+      <li>Park only, full park, clockwise (seed 8100000)</li>
+      <li>Park only, partial park, counter-clockwise (seed 8100007)</li>
+    </ol>
+  </div>
+</section>
+
+<!-- =================================================================== 5 PROBLEMS -->
+<section class="chapter" id="s5">
+  <div class="chapter-head">
+    <div class="num">05</div>
+    <div>
+      <h2>Problems we met and how we fixed them</h2>
+      <p class="lead">Each card is a problem recorded on our pages: what we saw, why it happened, and what we changed. Most came from the mat; the cards with a light edge came from simulation.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#decision-log">Engineering decisions: decision log</a> and <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#what-failed">what failed</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/02-power-and-sensors.md#sensing-bugs-we-fixed">Power and sensors: sensing bugs we fixed</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/01-mobility.md#break-away-and-the-stiction-kick">Mobility: break-away</a></p>
+
+  <h3><span class="sn">5.1</span>Drive and power</h3>
+  <div class="problem">
+    <div class="ph"><b>A stopped car stayed stopped</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>At the old avoid speed of PWM 15, a car that had stopped stayed stopped until we pushed it by hand.</div>
+      <div class="k">Why</div><div>A stopped car needs more torque to start than to keep rolling. Our break-away test: PWM 15 does not move it from rest, PWM 18 creeps, PWM 25 always moves it.</div>
+      <div class="k">What we changed</div><div>Fix 4: avoid speed PWM 25. Whenever the commanded PWM is above 0 and below 30, the motor gets PWM 55 for the first 70 ms, then 70 ms of PWM 55 every 500 ms. Both finals sketches keep it.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Heat and a burnt component</b><span class="tag build">Wiring</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>We connected a black lead near the Uno power header and got heat and a burnt component.</div>
+      <div class="k">What we changed</div><div>Motor current never returns through the Uno header; only signal ground goes to the Uno. After any wiring fault we measure the resistance from 5 V to GND with the power off before switching on again.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>A simulator car 1.9 times too slow</b><span><span class="tag mat">Mat</span> <span class="tag sim">Simulation</span></span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>An assumed 520 mm/s at PWM 30 predicted 40-48 s for three Open laps. The car did it in about 23 s.</div>
+      <div class="k">What we changed</div><div>We refitted the simulator to the real run: about 998 mm/s at PWM 30. Every later simulator result uses the fitted speed.</div>
+    </div>
+  </div>
+
+  <h3><span class="sn">5.2</span>Sensing and the camera</h3>
+  <div class="problem">
+    <div class="ph"><b>A near pillar was thrown away</b><span class="tag mat">Mat serial log</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>A serial log printed <code>area=-9646</code> for a pillar at about 30 cm, and the pillar was ignored.</div>
+      <div class="k">Why</div><div>A pillar filling the frame overflowed a 16-bit <code>int</code>.</div>
+      <div class="k">What we changed</div><div>The area is a <code>long</code>.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Passing pillars on the wrong side</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>The car passed pillars on the wrong side.</div>
+      <div class="k">Why</div><div>Our fix notes give the likely cause: signature 1 was trained on red while the code treated 1 as green.</div>
+      <div class="k">What we changed</div><div>The code reads red as 1 and green as 2, and we train to match.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Steering on the wrong block</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">Why</div><div><code>blocks[0]</code> is the largest blob, not the nearest pillar.</div>
+      <div class="k">What we changed</div><div>The code ranges every block and steers on the nearest one within 900 mm.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Full lock into the wall (fix 13)</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>A limiter 20 cm away with a green pillar in view steered the car to full lock into the wall.</div>
+      <div class="k">Why</div><div>The limiter distance was written into <code>frontDist</code>, which fed the 25 cm full-lock rule. One variable served two subsystems.</div>
+      <div class="k">What we changed</div><div>Each measurement has its own variable.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>The car stopped avoiding pillars (fix 25)</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>After we removed the floor on the pillar steering scale, the car stopped avoiding pillars.</div>
+      <div class="k">Why</div><div>A pillar clipped by the frame edge reads far away, and without a floor the turn scaled to nothing.</div>
+      <div class="k">What we changed</div><div>Back to fix 15 and its 0.35 floor. Blocks with x outside 20-300 are ignored, and the front sonar may shorten a pillar's range.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Laws that drove into the walls</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>Laws tuned in simulation for 90-degree flank sonars drove into the walls on the real car.</div>
+      <div class="k">Why</div><div>Our drawing of the nose (14 Sep 2026) shows the side sonars at about 40 degrees from the nose axis.</div>
+      <div class="k">What we changed</div><div>The simulator models the side units at 39 and 41 degrees, and we kept only the left-minus-right law, which does not depend on the bearing.</div>
+    </div>
+  </div>
+  <div class="problem sim">
+    <div class="ph"><b>Corner direction was a coin toss</b><span class="tag sim">Simulation</span></div>
+    <div class="pr">
+      <div class="k">Why</div><div>At the 48 cm trigger both side units see the same front wall, so left minus right is close to zero. <code>open_kuwait</code> broke ties by turning right.</div>
+      <div class="k">What we changed</div><div>A vote of the corners already counted, plus a slow left-minus-right memory before the first corner. The vote never locks, so a wall avoided in the start zone cannot lock the wrong way. Open went from 21 to 37 successful rounds out of 40.</div>
+    </div>
+  </div>
+  <div class="problem sim">
+    <div class="ph"><b>An early corner cue made it worse</b><span class="tag sim">Simulation</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>Starting the turn from raw side readings as the inner side opened took one batch from 22 to 5 successful rounds out of 30.</div>
+      <div class="k">What we changed</div><div>We removed it. The corner trigger stays on the front sonar.</div>
+    </div>
+  </div>
+
+  <h3><span class="sn">5.3</span>Laps, parking and the code itself</h3>
+  <div class="problem">
+    <div class="ph"><b>The exit worked, but the park never armed</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>On 6 September the lot exit worked and the driving was our best so far, but the car did not park.</div>
+      <div class="k">Why</div><div>The build zeroed its lap counter at the handover with the car still about 50 degrees rotated. The straightening then counted as &minus;50 degrees, lap 3 never closed, and the park never armed.</div>
+      <div class="k">What we changed</div><div>Fix 26: the turn total is never reset, the exit rotation is carried into it, and a corner counts at 70 of its 90 degrees.</div>
+    </div>
+  </div>
+  <div class="problem sim">
+    <div class="ph"><b>Lap 3 closed at corner 13</b><span class="tag sim">Simulation</span></div>
+    <div class="pr">
+      <div class="k">Why</div><div><code>open_kuwait</code> closed a lap at every 360 degrees.</div>
+      <div class="k">What we changed</div><div>Open counts 12 corners, then stops on the front range in the start straight, with a 700 ms backstop.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Parks that stalled (versions 14-16)</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>Parks that ended each leg on a sensor reading stalled or drove into the limiter.</div>
+      <div class="k">Why</div><div>Inside the bay the side units are near their 34 mm minimum and lose the echo at oblique angles, and the camera faces away from the lot.</div>
+      <div class="k">What we changed</div><div>Legs closed on the IMU heading, straight moves in measured steps, and a clearance model that checks each move before it is driven.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Ten versions in a row were worse</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>Versions 8-17 were all worse on the mat and were reverted.</div>
+      <div class="k">What we changed</div><div>No change without a named mechanism: the input, the state, the computed value and the wrong action it fixes.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>Code that never ran (version 15)</b><span class="tag code">Code</span></div>
+    <div class="pr">
+      <div class="k">What we saw</div><div>A start-in-the-lot mode printed on the serial monitor, but its arming line was never written.</div>
+      <div class="k">What we changed</div><div>After every edit we search the file for the call site.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>The car did not move (14 September)</b><span class="tag mat">Mat</span></div>
+    <div class="pr">
+      <div class="k">Why</div><div>Four causes. The start waited for a press followed by a release, so a toggle switch never started it. The exit PWM was below the break-away value of 25. The park build fitted in flash only with PlatformIO's flags (31,724 of 32,256 B), while we upload from the Arduino IDE. A BNO055 that did not answer hung the code silently in <code>while(1)</code>.</div>
+      <div class="k">What we changed</div><div>Start on any A2 change held 30 ms. One <code>.ino</code> per challenge, sized with the IDE's compiler; the v20 Obstacle sketch fits at 29,604 B with stock flags. The servo wiggles twice, repeating, when the BNO055 fails. The v20 exit keeps PWM 18, the value of the 6 September exit that worked on the mat, and we watch the first practice exits.</div>
+    </div>
+  </div>
+  <div class="problem">
+    <div class="ph"><b>A build 1,674 B larger than it needed to be</b><span class="tag build">Build</span></div>
+    <div class="pr">
+      <div class="k">Why</div><div>The Pixy2 Arduino library ships <code>ZumoBuzzer.cpp</code> and <code>ZumoMotors.cpp</code>. Neither sketch calls them, but they add 1,674 B of flash and 57 B of RAM to each build.</div>
+      <div class="k">What we changed</div><div>We rename both files to <code>.cpp.bak</code>. With them in place the Obstacle sketch is 31,278 B (96 %); without them, 29,604 B (91 %).</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== 6 STATE -->
+<section class="chapter" id="s6">
+  <div class="chapter-head">
+    <div class="num">06</div>
+    <div>
+      <h2>Current state and next changes</h2>
+      <p class="lead">Where the car and its code stand on 15 September 2026, the problems still open, and the changes we test next.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#v20-status">Engineering decisions: v20 status</a>, <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#risks-and-mitigations">risks</a> and <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/04-engineering-decisions.md#changes-we-test-next">changes we test next</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/src/README.md#constants-to-calibrate">src/README.md: constants to calibrate</a></p>
+
+  <h3><span class="sn">6.1</span>v20 status</h3>
+  <table class="keep">
+    <thead><tr><th style="width:30%">Part</th><th style="width:34%">State on 15 Sep 2026</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td><code>Open_Challenge.ino</code> (<code>open_v20</code>)</td><td>Frozen, <code>PRACTICE 0</code>, compiles at 15,136 B</td><td>Simulation: 36/40 on fresh seeds, 287/320 across all draw cells</td></tr>
+      <tr><td><code>Obstacle_Challenge.ino</code> (<code>obstacle_v20</code>)</td><td>Frozen, <code>PRACTICE 0</code>, compiles at 29,604 B</td><td>Simulation: exit 119/120, three laps 12/120</td></tr>
+      <tr><td>Front-wall park</td><td>Part of the Obstacle sketch; park constants set in simulation</td><td>Simulation: 4 full parks in 16 park-only runs</td></tr>
+      <tr><td><code>open_v21</code></td><td>In development</td><td>A fixed path at each corner, a stronger direction choice, a mid-straight stop on the front sensor</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sn">6.2</span>Problems still open</h3>
+  <h4>Obstacle inner-pillar failure <span class="tag sim">Simulation</span></h4>
+  <p>In 23 of 24 wrong-side passes we traced, the pillar needed an inner pass: green when driving counter-clockwise, red when clockwise. Most were in the inner row, first in the straight. The mechanism is the outer-wall drift from the 40-degree sonars (section 2.3). None of these changes moved the success rate, 60 seeds each:</p>
+  <div class="grid2">
+    <ul>
+      <li>an inward sweep after corners;</li>
+      <li>earlier corner triggers at 60, 70 and 80 cm;</li>
+      <li>engaging pillars from 1200 mm;</li>
+      <li>faster pillar-mode entry;</li>
+      <li>a 0.7 floor instead of 0.35;</li>
+    </ul>
+    <ul>
+      <li>a stronger steering ladder;</li>
+      <li>a bearing-offset tracking law;</li>
+      <li>treating a silent side as long;</li>
+      <li>disabling the fix-16 wall clamp.</li>
+    </ul>
+  </div>
+  <p>Our next attempt plans the lane after each corner instead of changing another constant.</p>
+  <h4>The park <span class="tag sim">Simulation</span></h4>
+  <p>Among 12 three-lap runs out of 120 there were 3 partial parks and 0 full parks. From the lap-3 handover pose alone, 4 of 16 parks were full, and the limiter was touched in about half. An earlier simulator model found the park succeeds only when its counter-steer leg starts inside a window about 37 mm wide, while open-loop positioning scattered with a standard deviation of about 24 mm. That is why v20 measures its step length and solves the entry angle from the real stop pose.</p>
+  <div class="avoid">
+  <h3><span class="sn">6.3</span>Before every official round</h3>
+  <div class="note">
+    <ul class="checklist">
+      <li><code>PRACTICE</code> is 0 in the uploaded sketch. With 0 the car stays still after power-up until A2 changes.</li>
+      <li>Pixy2 trained in PixyMon under the venue light: signature 1 red, 2 green, 3 magenta.</li>
+      <li>Obstacle car placed about 40 mm from the outer wall, the same gap every attempt.</li>
+      <li>On the bench, turn the car clockwise by hand: <code>yaw</code> in the <code>WAIT</code> line rises.</li>
+      <li>Both batteries charged; voltages written on the test sheet.</li>
+    </ul>
+  </div>
+  </div>
+
+
+  <div class="avoid">
+  <h3><span class="sn">6.4</span>Changes we test next</h3>
+  <p>Each candidate names the mechanism it addresses before we write any code.</p>
+  <table class="keep">
+    <thead><tr><th style="width:30%">Candidate</th><th style="width:33%">Mechanism it addresses</th><th>Test before it ships</th></tr></thead>
+    <tbody>
+      <tr><td>BNO055 in IMUPLUS mode, <code>bno.begin(OPERATION_MODE_IMUPLUS)</code></td><td>A magnetic field moving the NDOF heading and counting a phantom corner</td><td>Heading drift over 3 minutes standing, and 12-corner counts, in both modes</td></tr>
+      <tr><td>Corner-exit lane plan for Obstacle, from the lap-1 map or the camera during the turn</td><td>Outer-wall drift puts the first pillar outside the camera view</td><td>60 lot-start seeds against v20, then practice runs</td></tr>
+      <tr><td>Rear-facing HC-SR04 on two free pins (TRIG and ECHO from D6, A1, A3)</td><td>The park's reverse leg is dead-reckoned into a 37 mm window</td><td>Park-only runs in simulation, then on the mat</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+
+  <h3><span class="sn">6.5</span>Risks and what we do about them</h3>
+  <table>
+    <thead><tr><th style="width:26%">Risk</th><th style="width:30%">What we would see</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td><code>PRACTICE 1</code> in an official round</td><td>Car moves 3 s after power-up, breaking rule 9.11</td><td><code>src/</code> has <code>PRACTICE 0</code>; bench check before every round</td></tr>
+      <tr><td>Start input does not reach A2</td><td>Car never starts with <code>PRACTICE 0</code></td><td>Bench check step 8: change the switch and watch the car respond</td></tr>
+      <tr><td>BNO055 not answering</td><td>Servo wiggles twice, repeating</td><td>Visible fault code instead of a silent hang</td></tr>
+      <tr><td>NDOF magnetometer moves the heading</td><td>Phantom or missed corner</td><td>20 degrees of margin in the corner count; IMUPLUS mode is a change we test next</td></tr>
+      <tr><td>Exit creeps at PWM 18, below the 25 break-away value</td><td>Car stalls in the lot</td><td>Same values as the 6 September exit that worked on the mat; we watch the first practice exits</td></tr>
+      <tr><td>Wrong outer-wall pick</td><td>Car exits the wrong way</td><td>Place the car about 40 mm from the outer wall; check the printout</td></tr>
+      <tr><td>Inner sonar silent in a 1000 mm corridor</td><td>Car rides off the outer wall and misses the next pillar</td><td>A corner-exit lane plan is a change we test next</td></tr>
+      <tr><td>Park constants set in simulation</td><td>Park too shallow, too deep or touching a limiter</td><td>The car measures its own step length and closes every arc on the IMU; the mat procedures in chapter 4 set the constants in practice time</td></tr>
+      <tr><td>Park window missed</td><td>Car would start lap 4</td><td>Stops at the next corner in the start section</td></tr>
+      <tr><td>Obstacle v20 drives worse than our earlier build in practice</td><td>Wrong direction or pillar hits</td><td>If it drives the wrong way or hits pillars twice in practice, we switch to the earlier build</td></tr>
+      <tr><td>Pixy2 range constants off for our lens</td><td>Pillars engage at the wrong distance</td><td>Width check in PixyMon: a pillar 500 mm straight ahead reads about 27 px wide</td></tr>
+      <tr><td>Battery 1 charge changes speed</td><td>Timed moves behave differently on a flat motor battery</td><td>Arcs closed on the IMU, steps measured before use; battery 1 voltage written down before every session</td></tr>
+      <tr><td>Battery 2 runs flat</td><td>The Uno resets mid-round; <code>setup()</code> sets the motor to 0 and waits for a new start input</td><td>Battery 2 voltage written down before every session (bench check step 10)</td></tr>
+      <tr><td>Flash near the limit</td><td>A new feature does not fit</td><td>Size checked with the IDE compiler before upload</td></tr>
+      <tr><td>Motor battery negative through the Uno header</td><td>Heat, burnt parts</td><td>Motor current kept on battery 1 and off the Uno header; 5 V to GND checked with power off after a fault</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- =================================================================== APPENDIX A -->
+<section class="chapter" id="a1">
+  <div class="chapter-head">
+    <div class="num">A</div>
+    <div>
+      <h2>Appendix: pin map and system overview</h2>
+      <p class="lead">The pins are identical in both sketches: <code>Open_Challenge.ino</code> lines 30-35 and <code>Obstacle_Challenge.ino</code> lines 51-56.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md#wiring">Build, test and reproduce: wiring</a> &middot; <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/src/README.md#pin-map">src/README.md: pin map</a></p>
+  <figure>
+    <img src="../../Schemes/wiring_schematic.png" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor">
+    <figcaption><b>Wiring schematic.</b> Every signal, supply and ground wire of the car on one sheet. A hop marks two wires that cross without connecting; a dot marks a junction. Editable source: <code>Schemes/wiring_schematic_source.svg</code>.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="../diagrams/wiring_pinmap.png" alt="Wiring pin map: each HC-SR04 TRIG and ECHO pin, the start switch on A2, MD13S PWM on D3 and DIR on D8, servo on D10, BNO055 on A4 and A5, Pixy2 on the ICSP header, and where these pins sit on the Uno R3">
+    <figcaption><b>Wiring pin map.</b> Signal wires between the Arduino Uno R3 and every part, as set in the v20 finals firmware. The supply side is in the power paths figure in section 2.6.</figcaption>
+  </figure>
+
+  <table class="keep">
+    <thead><tr><th style="width:26%">Part</th><th style="width:18%">Signal</th><th style="width:21%">Uno pin</th><th>Code object and mode</th></tr></thead>
+    <tbody>
+      <tr><td>HC-SR04, left front corner</td><td>TRIG / ECHO</td><td>D4 / D5</td><td><code>sonarLeft</code>, NewPing, 400 cm limit</td></tr>
+      <tr><td>HC-SR04, right front corner</td><td>TRIG / ECHO</td><td>D2 / D9</td><td><code>sonarRight</code>, NewPing</td></tr>
+      <tr><td>HC-SR04, nose</td><td>TRIG / ECHO</td><td>A0 / D7</td><td><code>sonarFront</code>, NewPing</td></tr>
+      <tr><td>Steering servo</td><td>Signal</td><td>D10</td><td><code>steeringServo</code>, Servo library</td></tr>
+      <tr><td>Cytron MD13S</td><td>PWM / DIR</td><td>D3 / D8</td><td><code>runMotor()</code>; DIR HIGH = forward</td></tr>
+      <tr><td>Start switch, other side to GND</td><td>Input</td><td>A2</td><td><code>waitStart()</code>, <code>INPUT_PULLUP</code>; a change held 30 ms starts</td></tr>
+      <tr><td>BNO055 IMU</td><td>SDA / SCL</td><td>A4 / A5</td><td><code>bno</code>, I2C address 0x28, 25 ms bus timeout with reset</td></tr>
+      <tr><td>Pixy2 camera</td><td>SPI</td><td>ICSP: MOSI D11, MISO D12, SCK D13</td><td><code>pixy</code>, Link2SPI; 5 V and GND on the ICSP header</td></tr>
+      <tr><td>USB serial</td><td>RX / TX</td><td>D0 / D1</td><td>Debug print, 115200 baud</td></tr>
+      <tr><td>Free</td><td>-</td><td>D6, A1, A3</td><td>-</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Steering convention for every law: above 90 steers left, below 90 steers right. The lap laws stay within 30-160; the Obstacle lot exit and park use full lock at 10 (right) and 170 (left). The Servo library takes Timer1, which removes PWM from D9 and D10, so D9 is only an echo input and the motor PWM is on D3.</p>
+
+  <figure>
+    <img src="../diagrams/system_overview.png" alt="System overview: three HC-SR04 sonars, the Pixy2 camera, the BNO055 IMU and the start switch feed the Arduino Uno R3, which drives the Cytron MD13S and drive motor and the steering servo; battery 1 feeds the MD13S, and battery 2 feeds the Uno's VIN through the main power switch">
+    <figcaption><b>System overview.</b> Every part on the car and the link it uses, with the pins from the v20 finals firmware. Battery 1 feeds the MD13S; battery 2 feeds the Uno's VIN through the main power switch.</figcaption>
+  </figure>
+
+
+</section>
+
+<!-- =================================================================== APPENDIX B -->
+<section class="chapter" id="a2">
+  <div class="chapter-head">
+    <div class="num">B</div>
+    <div>
+      <h2>Appendix: parts list and software versions</h2>
+      <p class="lead">Everything needed to build the car and to compile the two sketches to the same sizes.</p>
+    </div>
+  </div>
+  <p class="sources">Sources: <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md#bill-of-materials">Build, test and reproduce: bill of materials</a>, <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md#software-versions">software versions</a> and <a href="https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/main/docs/05-build-test-reproduce.md#expected-sizes">expected sizes</a></p>
+
+  <h3><span class="sn">B.1</span>Parts list</h3>
+  <table class="keep">
+    <thead><tr><th class="n" style="width:6%">Qty</th><th style="width:31%">Part</th><th style="width:28%">Job</th><th>Connection</th></tr></thead>
+    <tbody data-bom>
+      <tr><td class="n">1</td><td>Arduino Uno R3 (ATmega328P, 16 MHz)</td><td>Runs one challenge sketch at a time</td><td>USB for upload and serial; VIN from battery 2</td></tr>
+      <tr><td class="n">1</td><td>Cytron MD13S motor driver</td><td>Drives the motor from PWM and direction</td><td>PWM D3, DIR D8; power input from battery 1</td></tr>
+      <tr><td class="n">1</td><td>Brushed DC drive motor</td><td>Propulsion through the chassis gearbox</td><td>MD13S output</td></tr>
+      <tr><td class="n">1</td><td>Hobby steering servo</td><td>Ackermann steering</td><td>Signal D10</td></tr>
+      <tr><td class="n">1</td><td>WLtoys 1:28-class RC chassis with wheels, gearbox and steering linkage</td><td>Frame and drivetrain</td><td>-</td></tr>
+      <tr><td class="n">3</td><td>HC-SR04 ultrasonic sensor</td><td>Front, left and right distance</td><td>A0/D7, D4/D5, D2/D9; 5 V from the Uno</td></tr>
+      <tr><td class="n">1</td><td>Pixy2 camera</td><td>Pillar colour, bearing and range</td><td>ICSP header (SPI and 5 V)</td></tr>
+      <tr><td class="n">1</td><td>BNO055 IMU breakout</td><td>Heading</td><td>A4 (SDA), A5 (SCL); 5 V from the Uno</td></tr>
+      <tr><td class="n">1</td><td>Battery 1: 2S LiPo, 7.4 V nominal</td><td>Powers only the drive motor</td><td>Straight to the MD13S power input</td></tr>
+      <tr><td class="n">1</td><td>Battery 2</td><td>Powers the Uno; the Uno's regulator makes 5 V for the sensors and the Pixy2</td><td>Main power switch, then the Uno's VIN</td></tr>
+      <tr><td class="n">1</td><td>Main power switch</td><td>Rule 9.10: one switch turns the car on</td><td>Between battery 2 and the Uno's VIN</td></tr>
+      <tr><td class="n">1</td><td>Start switch or push button</td><td>Rule 9.11: one start button</td><td>A2 to GND</td></tr>
+      <tr><td class="n">1 set</td><td>Printed body and sensor brackets</td><td>Mounting</td><td><code>Models/BlueWave_main_body_v2.3mf</code>: main body, two ultrasonic brackets, one ultrasonic and Pixy2 bracket, one Pixy2 bracket</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid2">
+    <div>
+      <h3><span class="sn">B.2</span>Software versions</h3>
+      <table class="keep">
+        <thead><tr><th>Item</th><th>Version</th></tr></thead>
+        <tbody>
+          <tr><td>Arduino IDE</td><td>2.3.10 (bundled <code>arduino-cli</code> 1.5.1)</td></tr>
+          <tr><td>Arduino AVR Boards core</td><td>1.8.8, board <code>arduino:avr:uno</code></td></tr>
+          <tr><td>Servo</td><td>1.3.0</td></tr>
+          <tr><td>Wire</td><td>Bundled with the core</td></tr>
+          <tr><td>Adafruit BNO055</td><td>1.6.4</td></tr>
+          <tr><td>Adafruit Unified Sensor</td><td>1.1.15</td></tr>
+          <tr><td>Adafruit BusIO</td><td>1.17.4</td></tr>
+          <tr><td>NewPing</td><td>1.9.7</td></tr>
+          <tr><td>Pixy2</td><td>Arduino library from pixycam.com, installed by hand</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Installed on our development PC on 15 September 2026. The upload laptop must have the same versions; bench check step 1 compares them.</p>
+    </div>
+    <div>
+      <h3><span class="sn">B.3</span>Build steps</h3>
+      <ol>
+        <li>In the Boards Manager install <em>Arduino AVR Boards</em> 1.8.8 and select <em>Arduino Uno</em>.</li>
+        <li>In the Library Manager install the versions in the table. Copy the Pixy2 library into <code>Documents/Arduino/libraries/</code>, then rename <code>ZumoBuzzer.cpp</code> and <code>ZumoMotors.cpp</code> to <code>.cpp.bak</code>.</li>
+        <li>Open <code>src/Open_Challenge/Open_Challenge.ino</code> or <code>src/Obstacle_Challenge/Obstacle_Challenge.ino</code>.</li>
+        <li>Check that line 36 (Open) or line 62 (Obstacle) reads <code>#define PRACTICE 0</code>.</li>
+        <li>Verify: the output must match the sizes below.</li>
+        <li>Connect the Uno over USB, select its port, press <em>Upload</em>.</li>
+        <li>Train the Pixy2 signatures in PixyMon, then run the bench check.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h3><span class="sn">B.4</span>Expected sizes <span class="tag build">Build</span></h3>
+  <table class="keep">
+    <thead><tr><th style="width:44%">Build</th><th>Open_Challenge.ino</th><th>Obstacle_Challenge.ino</th></tr></thead>
+    <tbody>
+      <tr><td>Stock compiler flags, Zumo files renamed</td><td>15,136 B (46 %), RAM 721 B</td><td>29,604 B (91 %), RAM 818 B</td></tr>
+      <tr><td>Stock compiler flags, Pixy2 library as downloaded</td><td>16,810 B (52 %), RAM 778 B</td><td>31,278 B (96 %), RAM 875 B</td></tr>
+      <tr><td>Our PC's extra flags, Zumo files renamed</td><td>14,630 B (45 %), RAM 721 B</td><td>28,682 B (88 %), RAM 818 B</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Compiled on 15 Sep 2026 with the IDE's own <code>arduino-cli</code> 1.5.1 and AVR core 1.8.8, from the files in <code>src/</code>, each with a fresh build folder, out of 32,256 B of flash. Our development PC also has a <code>platform.local.txt</code> that adds <code>-mcall-prologues -mrelax</code>; neither sketch needs it. If a build reports a different size on another PC, check the Zumo files and this file first.</p>
+</section>
+
+</main>
+</body>
+</html>

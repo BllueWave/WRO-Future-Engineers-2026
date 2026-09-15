@@ -8,7 +8,7 @@
 
 **Open it online:** https://blluewave.github.io/WRO-Future-Engineers-2026/docs/arena/
 
-The link works when GitHub Pages serves this repository from the `main` branch and the root folder (*Settings > Pages > Deploy from a branch*). With the `/docs` folder selected instead, the address is `https://blluewave.github.io/WRO-Future-Engineers-2026/arena/`.
+GitHub Pages serves it from the `main` branch.
 
 **Open it locally:** open `docs/arena/index.html` in a desktop browser. The page loads three.js r128 from `cdnjs.cloudflare.com` and OrbitControls from `cdn.jsdelivr.net`, so it needs an internet connection. It remembers the last settings in the browser's local storage.
 

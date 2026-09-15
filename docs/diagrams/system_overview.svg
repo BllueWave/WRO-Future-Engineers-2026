@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="610" viewBox="0 0 1000 610" role="img" aria-labelledby="t d">
   <title id="t">System overview of the Blue Wave car</title>
-  <desc id="d">Arduino Uno R3 in the centre. Left: three HC-SR04 sonars on trig and echo pins D6/D7, D4/D5 and D2/D9, a Pixy2 camera on SPI through the ICSP header, a BNO055 IMU on I2C A4/A5 and a start switch on A2. Right: a 2S LiPo feeding the Cytron MD13S, the MD13S on PWM D3 and DIR D8 driving the motor, and the steering servo on D10.</desc>
+  <desc id="d">Arduino Uno R3 in the centre. Left: three HC-SR04 sonars on trig and echo pins A0/D7, D4/D5 and D2/D9, a Pixy2 camera on SPI through the ICSP header, a BNO055 IMU on I2C A4/A5 and a start switch on A2. Right: battery 1, a 2S LiPo, feeding the Cytron MD13S, the MD13S on PWM D3 and DIR D8 driving the motor, and the steering servo on D10. Battery 2 goes through the main power switch to the Uno VIN; the power tree shows both batteries.</desc>
   <style>
     text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #1f2328; }
     .title { font-size: 20px; font-weight: 600; }
@@ -80,7 +80,7 @@
 
   <!-- Controller -->
   <rect class="mcu" x="430" y="92" width="220" height="416" rx="8"/>
-  <text class="pin" x="442" y="124.5">D6 / D7</text>
+  <text class="pin" x="442" y="124.5">A0 / D7</text>
   <text class="pin" x="442" y="196.5">D4 / D5</text>
   <text class="pin" x="442" y="268.5">D2 / D9</text>
   <text class="pin" x="442" y="340.5">ICSP</text>
@@ -93,8 +93,8 @@
 
   <!-- Right column: power and outputs -->
   <rect class="box" x="740" y="92" width="228" height="56" rx="6"/>
-  <text class="name" x="756" y="115">2S LiPo battery</text>
-  <text class="sub" x="756" y="135">7.4 V nominal</text>
+  <text class="name" x="756" y="115">Battery 1, 2S LiPo</text>
+  <text class="sub" x="756" y="135">7.4 V nominal, motor only</text>
 
   <rect class="box" x="740" y="212" width="228" height="56" rx="6"/>
   <text class="name" x="756" y="235">Cytron MD13S</text>
@@ -126,9 +126,10 @@
   <text class="labg" x="866" y="292" style="fill:#1f2328">motor leads</text>
 
   <!-- Notes and legend -->
-  <text class="sub" x="32" y="546">USB on the Uno: upload from the Arduino IDE and serial debug at 115200 baud on D0/D1. Free pins: A0, A1, A3.</text>
+  <text class="sub" x="32" y="546">USB on the Uno: upload from the Arduino IDE and serial debug at 115200 baud on D0/D1. Free pins: D6, A1, A3.</text>
   <line class="sig" x1="32" y1="576" x2="62" y2="576"/>
   <text class="sub" x="70" y="580">signal</text>
   <line class="pwr" x1="130" y1="576" x2="160" y2="576"/>
   <text class="sub" x="168" y="580">power</text>
+  <text class="sub" x="240" y="580">Battery 2 feeds the Uno VIN through the main power switch: see power_tree.svg.</text>
 </svg>

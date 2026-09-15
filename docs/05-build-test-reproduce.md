@@ -21,19 +21,28 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 | Qty | Part | Job | Connection |
 |---|---|---|---|
 | 1 | Arduino Uno R3 (ATmega328P, 16 MHz) | Runs one challenge sketch at a time | USB for upload and serial |
-| 1 | Cytron MD13S motor driver | Drives the motor from PWM and direction | PWM D3, DIR D8, battery supply |
+| 1 | Cytron MD13S motor driver | Drives the motor from PWM and direction | PWM D3, DIR D8; power input from battery 1 |
 | 1 | Brushed DC drive motor | Propulsion through the chassis gearbox | MD13S output |
 | 1 | Hobby steering servo | Ackermann steering | Signal D10 |
 | 1 | WLtoys 1:28-class RC chassis with wheels, gearbox and steering linkage | Frame and drivetrain | - |
-| 3 | HC-SR04 ultrasonic sensor | Front, left and right distance | D6/D7, D4/D5, D2/D9 |
+| 3 | HC-SR04 ultrasonic sensor | Front, left and right distance | A0/D7, D4/D5, D2/D9 |
 | 1 | Pixy2 camera | Pillar colour, bearing and range | ICSP header (SPI) |
 | 1 | BNO055 IMU breakout | Heading | A4 (SDA), A5 (SCL) |
-| 1 | 2S LiPo battery, 7.4 V nominal | Power | See [power tree](02-power-and-sensors.md#power) |
-| 1 | Main power switch | Rule 9.10: one switch turns the car on | Battery line |
+| 1 | Battery 1: 2S LiPo, 7.4 V nominal | Powers only the drive motor | Straight to the MD13S power input; see [power tree](02-power-and-sensors.md#power) |
+| 1 | Battery 2 | Powers the Uno; the Uno's regulator makes 5 V for the sensors and the Pixy2 | Main power switch, then the Uno's VIN |
+| 1 | Main power switch | Rule 9.10: one switch turns the car on | Between battery 2 and the Uno's VIN |
 | 1 | Start switch or push button | Rule 9.11: one start button | A2 to GND |
 | 1 set | Printed body and sensor brackets | Mounting | [`Models/BlueWave_main_body_v2.3mf`](../Models/BlueWave_main_body_v2.3mf): main body, two ultrasonic brackets, one ultrasonic and Pixy2 bracket, one Pixy2 bracket |
 
+<p align="center">
+  <img src="components.jpg" width="560" alt="The parts before assembly: the RC chassis, the Pixy2 in its box, an HC-SR04, the 2S LiPo, the Cytron MD13S, the BNO055 breakout, the Arduino Uno R3, the steering servo and jumper wires">
+</p>
+
 ## Wiring
+
+<p align="center">
+  <a href="../Schemes/wiring_schematic.png"><img src="../Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
+</p>
 
 <p align="center">
   <img src="diagrams/wiring_pinmap.png" width="760" alt="Wiring pin map: each HC-SR04 TRIG and ECHO pin, the start switch on A2, MD13S PWM on D3 and DIR on D8, servo on D10, BNO055 on A4 and A5, Pixy2 on the ICSP header, and where these pins sit on the Uno R3">
@@ -46,18 +55,24 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 |---|---|---|---|
 | HC-SR04 left TRIG / ECHO | D4 / D5 | NewPing | [51](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L51) |
 | HC-SR04 right TRIG / ECHO | D2 / D9 | NewPing | [52](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L52) |
-| HC-SR04 front TRIG / ECHO | D6 / D7 | NewPing, 400 cm limit | [53](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L53) |
+| HC-SR04 front TRIG / ECHO | A0 / D7 | NewPing, 400 cm limit | [53](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L53) |
 | Steering servo signal | D10 | Servo library | [54](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L54) |
 | MD13S PWM / DIR | D3 / D8, DIR HIGH = forward | `analogWrite` / `digitalWrite` | [55](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
 | Start switch | A2 to GND | `INPUT_PULLUP` | [56](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L56) |
 | BNO055 SDA / SCL | A4 / A5 | I2C, 25 ms bus timeout with reset | [299](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L299) |
 | Pixy2 | ICSP header: MOSI D11, MISO D12, SCK D13 | SPI | Pixy2 library `Link2SPI` |
 | Serial debug | D0 / D1 | 115200 baud | [296](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L296) |
-| Free | A0, A1, A3 | - | - |
+| Free | D6, A1, A3 | - | - |
 
 </details>
 
-The diagram and the table above are the wiring reference for this car. [`Schemes/`](../Schemes/) keeps the June 2026 Fritzing drawing as a record of the car at that time. The supply side is on the [power tree](02-power-and-sensors.md#power). One rule applies to every wiring job: motor current never returns through the Uno header, and after any wiring fault we measure 5 V to GND with the power off.
+The schematic, the pin map and the table above are the wiring reference for this car. [`Schemes/`](../Schemes/README.md) holds the schematic, its editable SVG source, a ground table, and the June 2026 Fritzing drawing in an archive folder. The supply side is also on the [power tree](02-power-and-sensors.md#power):
+
+- Battery 1 connects straight to the Cytron MD13S power input and powers only the drive motor.
+- Battery 2 goes through the main power switch to the Uno's VIN. The Uno's on-board regulator makes 5 V, and the sensors and the Pixy2 (through the ICSP header) take their 5 V from the Uno, and so does the steering servo.
+- The Uno drives the MD13S PWM input from D3 and DIR from D8.
+
+One rule applies to every wiring job: motor current stays on battery 1 and never returns through the Uno header, and after any wiring fault we measure 5 V to GND with the power off.
 
 ## Build and upload
 
@@ -120,7 +135,7 @@ Replace `COM5` with the Uno's port. To reproduce the stock-flag sizes on a PC th
 
 ## Ten-minute bench check
 
-Car on a stand with all four wheels off the table, battery charged, serial monitor at 115200 baud.
+Car on a stand with all four wheels off the table, both batteries charged and battery 1 connected to the MD13S, serial monitor at 115200 baud.
 
 | # | Time | Check | Pass |
 |---|---|---|---|
@@ -133,7 +148,7 @@ Car on a stand with all four wheels off the table, battery charged, serial monit
 | 7 | 1 min | Wait 5 s after power-on | Wheels do not turn |
 | 8 | 1 min | Change the A2 switch | Obstacle: `outer wall = LEFT/RIGHT` prints, then the servo alternates full locks. Open: the drive wheels turn |
 | 9 | 1 min | PixyMon with a red, a green and a magenta object at 900 mm | Boxes with signatures 1, 2 and 3 |
-| 10 | 1 min | Battery voltage with a meter, written on the test sheet | A number, so speed results can be matched to charge |
+| 10 | 1 min | Voltage of battery 1 and battery 2 with a meter, written on the test sheet | Two numbers: battery 1 so speed results can be matched to charge, battery 2 because a flat battery 2 resets the Uno |
 
 ## How we test
 
@@ -148,7 +163,7 @@ A mat test of an Obstacle sketch is 20 runs from legal random starts. For each r
 
 | Date | Code | What happened |
 |---|---|---|
-| June 2026 | National-round code | 1st place, 64 points, Kuwait national round |
+| June 2026 | National-round code | 1st place, 61 points, Kuwait national round |
 | Before Sep 2026 | Motor test | PWM 15 does not start the car from rest, 18 creeps, 25 always moves it |
 | 2 Sep 2026 | `obstacle_kuwait`, as listed in our notes | Three full Obstacle laps with one light touch on one pillar |
 | 6 Sep 2026 | 6 September parking build | Lot exit worked (our notes: excellent); best Obstacle driving so far, with light scrapes; did not park (lap counter, fixed as fix 26) |
@@ -231,7 +246,7 @@ The replay worlds are in our development workspace.
 
 ## Arena page
 
-[`docs/arena/`](arena/README.md) holds `index.html`, an interactive three.js model of the 2026 field, and a README. It builds random draws with the rulebook procedures, cites every dimension to its rulebook page, and checks our 200 × 125 mm footprint against the start zone and the 300 mm lot. It draws the field; it does not simulate driving and it is not a test result. With GitHub Pages serving the `main` branch it opens at https://blluewave.github.io/WRO-Future-Engineers-2026/docs/arena/.
+[`docs/arena/`](arena/README.md) holds `index.html`, an interactive three.js model of the 2026 field, and a README. It builds random draws with the rulebook procedures, cites every dimension to its rulebook page, and checks our 200 × 125 mm footprint against the start zone and the 300 mm lot. It draws the field; it does not simulate driving and it is not a test result. It is live at https://blluewave.github.io/WRO-Future-Engineers-2026/docs/arena/.
 
 ## Versioning and releases
 
@@ -258,7 +273,7 @@ Each tag gets a GitHub Release whose notes list the sketches it holds, their fla
 | 998 mm/s at PWM 30 (867-1176) | [Mobility](01-mobility.md#speed) | Simulator fit to the 23 s run | Direct check: time 1 m at PWM 18, 25, 30 and 55, forward and reverse, on a full and a flat battery |
 | Park turning radius 170 mm | [Mobility](01-mobility.md#steering-and-ackermann-geometry) | Park model value, `R_PARK_MM` | Servo at 170, push the car slowly through a full circle, mark the rear-axle centre, halve the diameter; repeat at servo 10. Or R = L / tan δ from the wheelbase and the inner-wheel angle |
 | Flash 15,136 B and 29,604 B, RAM 721 B and 818 B | [Expected sizes](#expected-sizes) | IDE `arduino-cli` 1.5.1, AVR core 1.8.8, stock flags, Pixy2 Zumo files renamed, 15 Sep 2026 | [From a terminal](#from-a-terminal) |
-| About 235 mA logic and sensors | [Power and sensors](02-power-and-sensors.md#current-budget) | Estimate in our audit notes | Meter in series with the battery: standing, PWM 30, break-away, servo held at lock |
+| About 235 mA through the Uno's regulator | [Power and sensors](02-power-and-sensors.md#current-budget) | Datasheet figures for the Pixy2 and HC-SR04, an estimate for the Uno board | Meter in series between the main power switch and the Uno's VIN, Obstacle sketch in WAIT so the sonars ping. The motor runs from battery 1, so its current is not in this reading |
 | HC-SR04 34 mm, 2.3 % long, 23 ms timeout | [Power and sensors](02-power-and-sensors.md#hc-sr04) | Datasheet burst and NewPing constants | 343 m/s × 200 µs / 2; 58.3 / 57; 400 × 57 µs |
 | Side sonars at about 40 degrees | [Power and sensors](02-power-and-sensors.md#placement-and-the-40-degree-side-sonars) | Team drawing of the nose, 14 Sep 2026 | Protractor from the nose axis to each sensor face normal |
 | Pixy2 13683, 28574 and 0.19 degrees per px | [Power and sensors](02-power-and-sensors.md#pixy2) | 60 × 40 degree lens, 316 × 208 px frame, 50 × 100 mm pillar | 158 / tan 30° × 50 and 104 / tan 20° × 100; check with a pillar at 500 mm: about 27 px wide |

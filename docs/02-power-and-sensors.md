@@ -1,6 +1,6 @@
 # Power and sensor architecture
 
-A 2S LiPo powers the Cytron MD13S and an Arduino Uno with three HC-SR04 sonars, a BNO055 IMU and a Pixy2 camera.
+The car has two batteries. Battery 1 feeds the Cytron MD13S and the drive motor only. Battery 2 feeds the Arduino Uno, which powers three HC-SR04 sonars, a BNO055 IMU and a Pixy2 camera.
 The side sonars face about 40 degrees from the nose, which changed four parts of the code.
 
 <sub>[Back to the README](../README.md) · Criterion 2 of 5 · Previous: [Mobility](01-mobility.md) · Next: [Software and strategy](03-software-and-strategy.md)</sub>
@@ -9,7 +9,7 @@ The side sonars face about 40 degrees from the nose, which changed four parts of
 
 | Claim | Where to check |
 |---|---|
-| Power tree | [diagrams/power_tree.svg](diagrams/power_tree.svg) |
+| Two batteries: battery 1 to the MD13S, battery 2 through the main switch to the Uno's VIN | [diagrams/power_tree.png](diagrams/power_tree.png); team wiring record, 15 Sep 2026 |
 | Every signal pin | [diagrams/wiring_pinmap.png](diagrams/wiring_pinmap.png); constants in [Obstacle_Challenge.ino lines 51-56](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56) |
 | Side sonars at about 40 degrees from the nose axis | Team drawing, 14 Sep 2026; [diagrams/sensor_layout.png](diagrams/sensor_layout.png) |
 | Pixy2 signature 1 red, 2 green, 3 magenta | [line 90](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L90) |
@@ -19,36 +19,51 @@ The side sonars face about 40 degrees from the nose, which changed four parts of
 ## Power
 
 <p align="center">
-  <img src="diagrams/power_tree.svg" width="760" alt="Power tree: on the battery side a 2S LiPo goes through the main power switch to the Cytron MD13S and the drive motor; on the logic side the Arduino Uno 5 V rail feeds the Pixy2 through the ICSP header, with the estimated 5 V currents">
+  <img src="diagrams/power_tree.png" width="760" alt="Power tree with two batteries. Battery 1 connects straight to the Cytron MD13S power input and powers only the drive motor. Battery 2 goes through the main power switch to the Arduino Uno's VIN; the Uno's on-board regulator makes 5 V for the sensors and, through the ICSP header, the Pixy2. The Uno drives the MD13S PWM input from D3 and DIR from D8">
 </p>
 
 ### Supply
 
 | Item | What it is | Source |
 |---|---|---|
-| Battery | 2S LiPo, 7.4 V nominal, 8.4 V full | Team |
-| Motor supply | Battery to the MD13S | June README and June Schemes page |
-| Pixy2 supply | 5 V from the Uno through the ICSP header, the only header the Pixy2 SPI link uses | Pixy2 library `Link2SPI` |
-| Main switch | One switch turns the car on | Rule 9.10 (p.17) |
+| Battery 1 | 2S LiPo, 7.4 V nominal, 8.4 V full. Connected straight to the Cytron MD13S power input, it powers only the drive motor | Team |
+| Battery 2 | Goes through the main power switch to the Arduino Uno's VIN | Team |
+| Uno 5 V | The Uno's on-board regulator makes 5 V from VIN | Team |
+| Sensor supply | 5 V from the Uno for the three HC-SR04 sonars and the BNO055 | Team |
+| Pixy2 supply | 5 V from the Uno through the ICSP header, the only header the Pixy2 SPI link uses | Team; Pixy2 library `Link2SPI` |
+| Motor commands | The Uno drives the MD13S PWM input from D3 and DIR from D8 | [line 55](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
+| Main switch | One switch, between battery 2 and the Uno's VIN, turns the car on | Rule 9.10 (p.17); team |
+
+The motor's current flows only between battery 1, the MD13S and the motor. When the motor starts, including the 70 ms kick at PWM 55, the current dip it pulls on battery 1 never reaches the Uno's supply.
+
+Battery 1 has no switch in its line, so the MD13S has power whenever battery 1 is connected. Its speed and direction come from the Uno on D3 and D8.
 
 ### Current budget
 
+Everything in this budget runs from battery 2 through the Uno's on-board regulator. The drive motor is not in it, because it has its own battery.
+
 | Load | Supply | Current | Basis |
 |---|---|---|---|
-| Arduino Uno logic | 5 V | about 50 mA | Estimate in our audit notes |
-| Pixy2 | 5 V through ICSP | about 140 mA | Estimate in our audit notes |
-| 3 × HC-SR04 | 5 V | about 15 mA each while pinging | Estimate in our audit notes |
-| **Uno, Pixy2 and three sonars** | | **about 235 mA** | Sum of the rows above |
+| Arduino Uno logic | Battery 2, Uno regulator | about 50 mA | Estimate for an Uno R3 board: ATmega328P, USB-serial chip and power LED |
+| Pixy2 | Uno 5 V through ICSP | about 140 mA | Pixy2 datasheet, typical |
+| 3 × HC-SR04 | Uno 5 V | about 15 mA each while pinging | HC-SR04 datasheet, working current |
+| **Uno, Pixy2 and three sonars** | **Battery 2, Uno regulator** | **about 235 mA** | Sum of the rows above |
 
-The Pixy2 is about 60 % of that 235 mA. The drive motor runs from the battery through the MD13S, not from the 5 V rail.
+The Pixy2 is about 60 % of the 235 mA that the Uno's regulator carries.
 
-### Battery charge and speed
+### When a battery runs down
 
-Motor speed drops as the battery runs down. Our simulator varies the car's speed by ±12 % per seed. Nothing in the lap law is dead-reckoned: the car steers on what it measures, the left-right sonar balance, the Pixy2 position and the front range. Park arcs end on the IMU heading, and the park measures its own step length before it uses it.
+| Battery | What happens | What the car does |
+|---|---|---|
+| Battery 1, motor | At the same PWM the motor turns slower, so the car drives slower. The Uno, the sensors and the Pixy2 are on battery 2 and keep running. | Nothing in the lap law is dead-reckoned: the car steers on what it measures, the left-right sonar balance, the Pixy2 position and the front range. Park arcs end on the IMU heading, and the park measures its own step length before it uses it ([lines 978-985](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L978-L985)). |
+| Battery 2, Uno | The Uno's 5 V drops and the Uno resets. The sensors and the Pixy2 lose their 5 V with it. Battery 1 and the MD13S supply are unaffected. | When `setup()` runs again it sets the motor to 0 and the servo to 90 ([lines 293-295](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L293-L295)), then waits for a new change on the start input ([line 322](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L322)). The round does not continue. |
+
+The code does not read either battery. Our simulator varies the car's speed by ±12 % per seed. Step 10 of the [bench check](05-build-test-reproduce.md#ten-minute-bench-check) writes both battery voltages on the [test sheet](test-sheet.md) before a session.
 
 ### Wiring rules we keep
 
-- Motor current never returns through the Uno header. We once connected a black lead near the Uno power header and got heat and a burnt component. Only signal ground goes to the Uno.
+- Motor current stays on battery 1 and never returns through the Uno header. Only signal ground goes to the Uno. We once connected a black lead near the Uno power header and got heat and a burnt component.
+- Battery 2 reaches the Uno at VIN, after the main power switch.
 - After any wiring fault we measure the resistance from 5 V to GND with the power off before switching on again.
 - One power switch and one start input (rules 9.10 and 9.11). The start input is a switch or button from A2 to GND with the internal pull-up; [start logic](03-software-and-strategy.md#start-logic-and-rule-911) explains the code.
 
@@ -72,11 +87,13 @@ Motor speed drops as the battery runs down. Our simulator varies the car's speed
 
 | Sensor | Pins and link | What the code reads | Used for |
 |---|---|---|---|
-| HC-SR04 front | TRIG D6, ECHO D7, NewPing, 400 cm limit | Whole centimetres | Corner trigger at 48 cm, Open finish at 150 cm, park stop mark, pillar range check, stuck detection at 15 cm |
+| HC-SR04 front | TRIG A0, ECHO D7, NewPing, 400 cm limit | Whole centimetres | Corner trigger at 48 cm, Open finish at 150 cm, park stop mark, pillar range check, stuck detection at 15 cm |
 | HC-SR04 left | TRIG D4, ECHO D5 | Whole centimetres | Lane error left minus right, outer-wall pick, wall distance while parking |
 | HC-SR04 right | TRIG D2, ECHO D9 | Whole centimetres | Same as left |
 | BNO055 | I2C on A4/A5, address 0x28 | Euler heading only | Corner and lap count, U-turn guard, end of the lot exit, every park arc |
 | Pixy2 | SPI on the ICSP header | Up to 8 colour blocks: signature, x, width, height | Pillar colour, bearing and range; limiter rejection |
+
+The front trigger is on A0. Until 15 September 2026 it was on D6, and the next wiring we tried put it on D13. D11, D12 and D13 are the SPI lines the Pixy2 uses through the ICSP header: while SPI is on, the ATmega328P drives D13 as the SPI clock, so a trigger pulse written to that pin never reaches the sensor and the front sonar goes blind. Both sketches read the Pixy2 in every loop, so this would hit Open and Obstacle alike. Our development copies refuse to compile with any sonar pin on D11-D13.
 
 ### Placement and the 40-degree side sonars
 
@@ -181,6 +198,7 @@ The formulas are in the sketch header ([lines 31-38](../src/Obstacle_Challenge/O
 | Parking limiter seen as a pillar | Width/height ≥ 1.4 with area ≥ 600 px | Block rejected | [line 495](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L495) |
 | Limiter tip echo while approaching the lot | Reading far from the tracked wall range | Rejected by the far-wall tracker; two readings of 250 mm or less force a reverse onto the mark | [lines 762-800](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L762-L800) |
 | Heading drift during a round | Built into the corner count | Counts each corner at 70 of its 90 degrees, so a drift under 20 degrees cannot add or drop a corner | [line 418](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L418) |
+| Battery 2 runs flat | The code does not read the battery; the Uno resets, and battery 1 is unaffected | `setup()` sets the motor to 0 and waits for a new start input, so the round does not continue ([when a battery runs down](#when-a-battery-runs-down)) | [line 293](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L293), [line 322](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L322) |
 
 ## Sensing bugs we fixed
 

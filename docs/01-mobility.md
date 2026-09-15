@@ -58,9 +58,9 @@ The end clearance is always (1.5 L - L) / 2 = 0.25 L. Because the lot scales wit
 
 ### Why a PWM plus direction driver fits this board
 
-The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. In our pin map D5, D6 and D9 are sonar lines, and D11 is SPI MOSI for the Pixy2. The Servo library runs on Timer1, which disables `analogWrite` on D9 and D10. That leaves D3 as the only free PWM pin.
+The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5, D6 and D9 were sonar lines, and D11 is SPI MOSI for the Pixy2. The Servo library runs on Timer1, which disables `analogWrite` on D9 and D10. That left D3 as the only free PWM pin. The front trigger has since moved from D6 to A0 ([why](02-power-and-sensors.md#what-each-sensor-gives-the-uno)).
 
-The MD13S needs exactly one PWM line and one digital line for one motor. A driver that takes speed on two PWM inputs would need a second PWM pin that we do not have.
+The MD13S needs exactly one PWM line and one digital line for one motor. A driver that takes speed on two PWM inputs would have needed a second PWM pin that we did not have.
 
 `analogWrite` is 8-bit, so our race setting PWM 30 is 30 / 255 = 11.8 % duty.
 
