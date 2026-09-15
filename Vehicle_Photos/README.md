@@ -33,7 +33,7 @@ The car we race, with the body and every sensor fitted. Click a photo for the fu
     <td><a href="bottom.jpg"><img src="bottom.jpg" width="100%" alt="Underside of the Blue Wave car"></a></td>
   </tr>
   <tr>
-    <td>Pixy2 on its bracket above the nose. The front HC-SR04 (A0/D7) looks straight ahead; the two corner HC-SR04s point outward at about 40° from the axis.</td>
+    <td>Pixy2 on its bracket above the nose. The front HC-SR04 (D13/D7) looks straight ahead; the two corner HC-SR04s point outward at about 40° from the axis.</td>
     <td>The main power switch sits in the rear vents. The Cytron MD13S motor driver is mounted under the rear of the body.</td>
     <td>Chassis plate with the drive motor in the centre and the Ackermann steering knuckles at the front. All six sonar transducers sit ahead of the front wheels.</td>
   </tr>

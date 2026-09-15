@@ -13,7 +13,7 @@ Each decision names the alternative we tried and the number that decided it.
 | The motor has its own battery, so its current dips never reach the Uno's supply | [Power supply](02-power-and-sensors.md#supply); [diagrams/power_tree.png](diagrams/power_tree.png) |
 | Ten reverted versions (8-17) led to our named-mechanism rule | [Version history](#version-history) |
 | The corner vote: 37/40 against 21/40 (simulation) | [Decision log](#decision-log); corner code at [Open_Challenge.ino lines 228-232](../src/Open_Challenge/Open_Challenge.ino#L228-L232) |
-| The 6 September build never parked because its lap total was zeroed 50 degrees rotated | Fix at [Obstacle_Challenge.ino line 409](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L409) |
+| The 6 September build never parked because its lap total was zeroed 50 degrees rotated | Fix at [Obstacle_Challenge.ino line 409](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L409) |
 | Obstacle v20 completes three laps in 12 of 120 simulated rounds | [Simulation results](05-build-test-reproduce.md#simulation-results) |
 | Flash is the tightest constraint: 29,604 of 32,256 B | Compile output, [expected sizes](05-build-test-reproduce.md#expected-sizes) |
 | On 14 Sep 2026 the car did not move, for four reasons we found and fixed | [Version history](#version-history) |
@@ -82,7 +82,7 @@ Each decision names the alternative we tried and the number that decided it.
 | Lane law on left minus right with the 40-degree side sonars | Laws tuned for 90-degree flank sonars | The flank-sonar laws drove into the walls on the real car; the left-minus-right law keeps the lane with the same sonars | Mat |
 | Corner direction from a vote of counted corners | Per-frame left minus right with a right-turn default | 37/40 against 21/40 successful Open rounds | Simulation |
 | Keep the corner trigger on the front sonar | An early corner cue from raw side readings | 22/30 fell to 5/30 | Simulation |
-| Front sonar trigger on A0 | D13, where the front trigger went when it left D6 | The ATmega328P drives D13 as the SPI clock while the Pixy2 link is on, so a trigger written to D13 never reaches the sensor | Datasheet; same-seed simulator runs of v20 and v20b are identical |
+| Front sonar trigger on D13 | A0, a free analog pin | D13 is shared with the Pixy2 SPI clock, so we tested it: the front sonar kept giving the corner trigger and pillar ranges with the Pixy2 read every loop | Mat, 15 Sep 2026 |
 | Turn total never reset, corner counted at 70 of 90 degrees | Lap closed at every 360 degrees, total zeroed after the exit | The 6 September build never parked; 360-degree closes sometimes closed lap 3 at corner 13 in simulation | Mat and simulation |
 | PWM 30, with 38 only on calm straights | PWM 37 for the whole Open round | About 20 s but 28/40, against 34/40 at PWM 30 | Simulation |
 | Avoid at PWM 25 plus a 70 ms kick at PWM 55 | Avoid at PWM 15 | PWM 15 does not start the car from rest, 18 creeps, 25 always moves it | Mat |
@@ -119,7 +119,7 @@ This table comes from our firmware folders and dated notes. The work between the
 | 15 Sep 2026 | `open_v20` | Corner direction a coin toss; lap 3 sometimes closed at corner 13 (simulation) | Corner vote; 12 counted corners, then a front-range stop | 37/40 against 21/40 in simulation |
 | 15 Sep 2026 | `obstacle_v20` | 6 September build never reached its park, had no start input, turned right on every tie, ended its round on a nose-on contact | Front-wall park with a solved entry angle, lap-1 map, corner vote, stuck recovery, A2 start | Exit 119/120, three laps 12/120 in simulation |
 | 15 Sep 2026 | `src/` | Rule 9.11 | `open_v20` and `obstacle_v20` committed as `Open_Challenge.ino` and `Obstacle_Challenge.ino` with `PRACTICE 0`, nothing else changed | Compiles with the Arduino IDE compiler |
-| 15 Sep 2026 | v20b | The front trigger left D6 for D13, which is the Pixy2 SPI clock | Front trigger on A0; the development copies refuse any sonar pin on D11-D13 | Same-seed simulator runs identical to v20: Open 32 of 32, Obstacle 24 of 24 |
+| 15 Sep 2026 | Race builds | The front trigger moved from D6 to D13, which it shares with the Pixy2 SPI clock | Kept on D13 after a mat check; the Obstacle build we race (fixes 1-12) goes into `src/` | Obstacle laps with pillars on the mat; video linked in the README |
 
 ## What failed
 
@@ -193,6 +193,6 @@ Each candidate names the mechanism it addresses before we write any code.
 |---|---|---|
 | BNO055 in IMUPLUS mode, `bno.begin(OPERATION_MODE_IMUPLUS)` | A magnetic field moving the NDOF heading and counting a phantom corner | Heading drift over 3 minutes standing, and 12-corner counts, in both modes |
 | Corner-exit lane plan for Obstacle, from the lap-1 map or the camera during the turn | Outer-wall drift puts the first pillar outside the camera view | 60 lot-start seeds against v20, then practice runs |
-| Rear-facing HC-SR04 on two free pins (TRIG and ECHO from D6, A1, A3) | The park's reverse leg is dead-reckoned into a 37 mm window | Park-only runs in simulation, then on the mat |
+| Rear-facing HC-SR04 on two free pins (TRIG and ECHO from A0, A1, A3, D6) | The park's reverse leg is dead-reckoned into a 37 mm window | Park-only runs in simulation, then on the mat |
 
 <sub>[Back to the README](../README.md) · Previous: [Software and strategy](03-software-and-strategy.md) · Next: [Build, test and reproduce](05-build-test-reproduce.md)</sub>

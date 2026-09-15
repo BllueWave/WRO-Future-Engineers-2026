@@ -11,8 +11,8 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 |---|---|
 | Both sketches compile with the Arduino IDE's compiler: 15,136 B and 29,604 B of 32,256 B | [Expected sizes](#expected-sizes); compiled on 15 Sep 2026 |
 | Exact library versions | `arduino-cli lib list` on our development PC, 15 Sep 2026 |
-| Every signal pin | [diagrams/wiring_pinmap.png](diagrams/wiring_pinmap.png); [Obstacle_Challenge.ino lines 51-56](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56) |
-| The car waits for the start input | `#define PRACTICE 0`, [Open line 36](../src/Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L62); step 7 of the [bench check](#ten-minute-bench-check) |
+| Every signal pin | [diagrams/wiring_pinmap.png](diagrams/wiring_pinmap.png); [Obstacle_Challenge.ino lines 51-56](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56) |
+| The car waits for the start input | `#define PRACTICE 0`, [Open line 36](../src/Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L62); step 7 of the [bench check](#ten-minute-bench-check) |
 | Simulation results carry their fidelity limits | [Simulation results](#simulation-results) |
 | Rulebook field model | [`docs/arena/`](arena/README.md) |
 
@@ -25,7 +25,7 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 | 1 | 130-size brushed DC motor, the chassis's own | Four-wheel drive through a 17:29 first stage and a propshaft | MD13S output |
 | 1 | 9 g class micro servo, 3-wire | Ackermann steering | Signal D10, 5 V from the Uno |
 | 1 | WLtoys 284131 1:28 4WD chassis with wheels, gearbox, differentials and steering linkage | Frame and drivetrain | - |
-| 3 | HC-SR04 ultrasonic sensor | Front, left and right distance | A0/D7, D4/D5, D2/D9 |
+| 3 | HC-SR04 ultrasonic sensor | Front, left and right distance | D13/D7, D4/D5, D2/D9 |
 | 1 | Pixy2 camera | Pillar colour, bearing and range | ICSP header (SPI) |
 | 1 | BNO055 IMU breakout | Heading | A4 (SDA), A5 (SCL) |
 | 1 | Battery 1: 2S LiPo, 7.4 V nominal, 400 mAh | Powers only the drive motor | Straight to the MD13S power input; see [power tree](02-power-and-sensors.md#power) |
@@ -41,7 +41,7 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 ## Wiring
 
 <p align="center">
-  <a href="../Schemes/wiring_schematic.png"><img src="../Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
+  <a href="../Schemes/wiring_schematic.png"><img src="../Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on D13 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
 </p>
 
 <p align="center">
@@ -53,16 +53,16 @@ Our mat results come from our earlier builds, and every v20 result comes from ou
 
 | Function | Uno pin | Mode | Source line |
 |---|---|---|---|
-| HC-SR04 left TRIG / ECHO | D4 / D5 | NewPing | [51](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L51) |
-| HC-SR04 right TRIG / ECHO | D2 / D9 | NewPing | [52](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L52) |
-| HC-SR04 front TRIG / ECHO | A0 / D7 | NewPing, 400 cm limit | [53](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L53) |
-| Steering servo signal | D10 | Servo library | [54](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L54) |
-| MD13S PWM / DIR | D3 / D8, DIR HIGH = forward | `analogWrite` / `digitalWrite` | [55](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
-| Start switch | A2 to GND | `INPUT_PULLUP` | [56](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L56) |
-| BNO055 SDA / SCL | A4 / A5 | I2C, 25 ms bus timeout with reset | [299](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L299) |
+| HC-SR04 left TRIG / ECHO | D4 / D5 | NewPing | [51](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L51) |
+| HC-SR04 right TRIG / ECHO | D2 / D9 | NewPing | [52](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L52) |
+| HC-SR04 front TRIG / ECHO | D13 / D7 | NewPing, 400 cm limit | [53](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L53) |
+| Steering servo signal | D10 | Servo library | [54](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L54) |
+| MD13S PWM / DIR | D3 / D8, DIR HIGH = forward | `analogWrite` / `digitalWrite` | [55](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
+| Start switch | A2 to GND | `INPUT_PULLUP` | [56](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L56) |
+| BNO055 SDA / SCL | A4 / A5 | I2C, 25 ms bus timeout with reset | [299](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L299) |
 | Pixy2 | ICSP header: MOSI D11, MISO D12, SCK D13 | SPI | Pixy2 library `Link2SPI` |
-| Serial debug | D0 / D1 | 115200 baud | [296](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L296) |
-| Free | D6, A1, A3 | - | - |
+| Serial debug | D0 / D1 | 115200 baud | [296](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L296) |
+| Free | A0, A1, A3, D6 | - | - |
 
 </details>
 

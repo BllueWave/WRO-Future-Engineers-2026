@@ -29,7 +29,7 @@
 
 const int TRIG_LEFT = 4,  ECHO_LEFT = 5;
 const int TRIG_RIGHT = 2, ECHO_RIGHT = 9;
-const int TRIG_FRONT = A0, ECHO_FRONT = 7;   // not D13: Pixy2 SPI clock
+const int TRIG_FRONT = 13, ECHO_FRONT = 7;   // front trigger on D13
 const int SERVO_PIN = 10;
 const int PWM_PIN = 3, DIR_PIN = 8;
 const int START_PIN = A2;

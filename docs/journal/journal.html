@@ -664,7 +664,7 @@ table.crit { font-size: 8.3pt; }
         <div class="ph"><img src="../../Vehicle_Photos/bottom.jpg" alt="Underside of the Blue Wave car"><span>Bottom</span></div>
       </div>
     </div>
-    <figcaption><b>The car we race, with the body and every sensor fitted.</b> <em>Left:</em> left corner HC-SR04 (D4/D5) and the Pixy2 bracket over the nose; the Uno's USB-B port is reachable through an opening in the side of the body, so sketches upload with the body on. <em>Right:</em> right corner HC-SR04 (D2/D9) and the Pixy2 ribbon cable; the chassis gear train shows under the body. <em>Front:</em> Pixy2 on its bracket above the nose, the front HC-SR04 (A0/D7) straight ahead, the two corner units at about 40&deg; from the axis. <em>Back:</em> the main power switch in the rear vents; the Cytron MD13S under the rear of the body. <em>Bottom:</em> chassis plate with the drive motor in the centre and the Ackermann steering knuckles at the front.</figcaption>
+    <figcaption><b>The car we race, with the body and every sensor fitted.</b> <em>Left:</em> left corner HC-SR04 (D4/D5) and the Pixy2 bracket over the nose; the Uno's USB-B port is reachable through an opening in the side of the body, so sketches upload with the body on. <em>Right:</em> right corner HC-SR04 (D2/D9) and the Pixy2 ribbon cable; the chassis gear train shows under the body. <em>Front:</em> Pixy2 on its bracket above the nose, the front HC-SR04 (D13/D7) straight ahead, the two corner units at about 40&deg; from the axis. <em>Back:</em> the main power switch in the rear vents; the Cytron MD13S under the rear of the body. <em>Bottom:</em> chassis plate with the drive motor in the centre and the Ackermann steering knuckles at the front.</figcaption>
   </figure>
 
   <table class="glance">
@@ -752,7 +752,7 @@ table.crit { font-size: 8.3pt; }
       <div>
         <div class="lbl">Why we chose it</div>
         <ul>
-          <li>The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5, D6 and D9 were sonar lines, D11 is SPI MOSI for the Pixy2, and the Servo library disables <code>analogWrite</code> on D9 and D10. D3 was left. The front trigger has since moved from D6 to A0.</li>
+          <li>The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5, D6 and D9 were sonar lines, D11 is SPI MOSI for the Pixy2, and the Servo library disables <code>analogWrite</code> on D9 and D10. D3 was left. The front trigger has since moved from D6 to D13.</li>
           <li>The MD13S needs exactly one PWM line and one digital line for one motor.</li>
         </ul>
       </div>
@@ -770,7 +770,7 @@ table.crit { font-size: 8.3pt; }
 
   <h3 id="s2-sonar"><span class="sn">2.3</span>Distance sensors and their placement</h3>
   <div class="decision">
-    <div class="dh"><b>3 &times; HC-SR04 ultrasonic sensors</b><span>front A0/D7, left D4/D5, right D2/D9</span></div>
+    <div class="dh"><b>3 &times; HC-SR04 ultrasonic sensors</b><span>front D13/D7, left D4/D5, right D2/D9</span></div>
     <div class="db">
       <div>
         <div class="lbl">Why we chose them</div>
@@ -1668,7 +1668,7 @@ table.crit { font-size: 8.3pt; }
     <tbody>
       <tr><td>BNO055 in IMUPLUS mode, <code>bno.begin(OPERATION_MODE_IMUPLUS)</code></td><td>A magnetic field moving the NDOF heading and counting a phantom corner</td><td>Heading drift over 3 minutes standing, and 12-corner counts, in both modes</td></tr>
       <tr><td>Corner-exit lane plan for Obstacle, from the lap-1 map or the camera during the turn</td><td>Outer-wall drift puts the first pillar outside the camera view</td><td>60 lot-start seeds against v20, then practice runs</td></tr>
-      <tr><td>Rear-facing HC-SR04 on two free pins (TRIG and ECHO from D6, A1, A3)</td><td>The park's reverse leg is dead-reckoned into a 37 mm window</td><td>Park-only runs in simulation, then on the mat</td></tr>
+      <tr><td>Rear-facing HC-SR04 on two free pins (TRIG and ECHO from A0, A1, A3, D6)</td><td>The park's reverse leg is dead-reckoned into a 37 mm window</td><td>Park-only runs in simulation, then on the mat</td></tr>
     </tbody>
   </table>
   </div>
@@ -1713,7 +1713,7 @@ table.crit { font-size: 8.3pt; }
   </figure>
 
   <figure>
-    <img src="../../Schemes/wiring_schematic.png" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor">
+    <img src="../../Schemes/wiring_schematic.png" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on D13 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor">
     <figcaption><b>Wiring schematic.</b> Every signal, supply and ground wire of the car on one sheet. A hop marks two wires that cross without connecting; a dot marks a junction. Editable source: <code>Schemes/wiring_schematic_source.svg</code>.</figcaption>
   </figure>
 
@@ -1727,14 +1727,14 @@ table.crit { font-size: 8.3pt; }
     <tbody>
       <tr><td>HC-SR04, left front corner</td><td>TRIG / ECHO</td><td>D4 / D5</td><td><code>sonarLeft</code>, NewPing, 400 cm limit</td></tr>
       <tr><td>HC-SR04, right front corner</td><td>TRIG / ECHO</td><td>D2 / D9</td><td><code>sonarRight</code>, NewPing</td></tr>
-      <tr><td>HC-SR04, nose</td><td>TRIG / ECHO</td><td>A0 / D7</td><td><code>sonarFront</code>, NewPing</td></tr>
+      <tr><td>HC-SR04, nose</td><td>TRIG / ECHO</td><td>D13 / D7</td><td><code>sonarFront</code>, NewPing</td></tr>
       <tr><td>Steering servo</td><td>Signal</td><td>D10</td><td><code>steeringServo</code>, Servo library</td></tr>
       <tr><td>Cytron MD13S</td><td>PWM / DIR</td><td>D3 / D8</td><td><code>runMotor()</code>; DIR HIGH = forward</td></tr>
       <tr><td>Start switch, other side to GND</td><td>Input</td><td>A2</td><td><code>waitStart()</code>, <code>INPUT_PULLUP</code>; a change held 30 ms starts</td></tr>
       <tr><td>BNO055 IMU</td><td>SDA / SCL</td><td>A4 / A5</td><td><code>bno</code>, I2C address 0x28, 25 ms bus timeout with reset</td></tr>
       <tr><td>Pixy2 camera</td><td>SPI</td><td>ICSP: MOSI D11, MISO D12, SCK D13</td><td><code>pixy</code>, Link2SPI; 5 V and GND on the ICSP header</td></tr>
       <tr><td>USB serial</td><td>RX / TX</td><td>D0 / D1</td><td>Debug print, 115200 baud</td></tr>
-      <tr><td>Free</td><td>-</td><td>D6, A1, A3</td><td>-</td></tr>
+      <tr><td>Free</td><td>-</td><td>A0, A1, A3, D6</td><td>-</td></tr>
     </tbody>
   </table>
   <p class="small">Steering convention for every law: above 90 steers left, below 90 steers right. The lap laws stay within 30-160; the Obstacle lot exit and park use full lock at 10 (right) and 170 (left). The Servo library takes Timer1, which removes PWM from D9 and D10, so D9 is only an echo input and the motor PWM is on D3.</p>
@@ -1767,7 +1767,7 @@ table.crit { font-size: 8.3pt; }
       <tr><td class="n">1</td><td>Brushed DC drive motor</td><td>Propulsion through the chassis gearbox</td><td>MD13S output</td></tr>
       <tr><td class="n">1</td><td>Hobby steering servo</td><td>Ackermann steering</td><td>Signal D10</td></tr>
       <tr><td class="n">1</td><td>WLtoys 1:28-class RC chassis with wheels, gearbox and steering linkage</td><td>Frame and drivetrain</td><td>-</td></tr>
-      <tr><td class="n">3</td><td>HC-SR04 ultrasonic sensor</td><td>Front, left and right distance</td><td>A0/D7, D4/D5, D2/D9; 5 V from the Uno</td></tr>
+      <tr><td class="n">3</td><td>HC-SR04 ultrasonic sensor</td><td>Front, left and right distance</td><td>D13/D7, D4/D5, D2/D9; 5 V from the Uno</td></tr>
       <tr><td class="n">1</td><td>Pixy2 camera</td><td>Pillar colour, bearing and range</td><td>ICSP header (SPI and 5 V)</td></tr>
       <tr><td class="n">1</td><td>BNO055 IMU breakout</td><td>Heading</td><td>A4 (SDA), A5 (SCL); 5 V from the Uno</td></tr>
       <tr><td class="n">1</td><td>Battery 1: 2S LiPo, 7.4 V nominal</td><td>Powers only the drive motor</td><td>Straight to the MD13S power input</td></tr>

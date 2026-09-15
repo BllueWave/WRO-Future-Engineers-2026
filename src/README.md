@@ -2,10 +2,10 @@
 
 `src/` holds the two sketches our car runs on its Arduino Uno, one per challenge. Both use the same pins and the same wall-balance steering law. The reasoning behind the laws is in [docs/03-software-and-strategy.md](../docs/03-software-and-strategy.md); test results and the simulator's limits are in [docs/05-build-test-reproduce.md](../docs/05-build-test-reproduce.md).
 
-- [`Open_Challenge/Open_Challenge.ino`](Open_Challenge/Open_Challenge.ino): 283 lines, working name `open_v20b`, built on `open_kuwait` (named in its header).
-- [`Obstacle_Challenge/Obstacle_Challenge.ino`](Obstacle_Challenge/Obstacle_Challenge.ino): 1,103 lines, working name `obstacle_v20b`, built on the 6 September 2026 build, which is `obstacle_kuwait` plus FIX 15, 16 and 17.
+- [`Open_Challenge/Open_Challenge.ino`](Open_Challenge/Open_Challenge.ino): 283 lines, working name `open_v20`, built on `open_kuwait` (named in its header).
+- [`Obstacle_Challenge/Obstacle_Challenge.ino`](Obstacle_Challenge/Obstacle_Challenge.ino): 598 lines, the Obstacle build we race. It is the national-round `obstacle_kuwait` with fixes 1-12: signature map (1 red, 2 green), nearest-pillar lock with a 250 mm switch margin, pillar distance from blob size refined by the front sonar, x-ladder steering (red 40/60/78, green 140/120/102), fast entry under 550 mm, side-wall veto at 16 cm, proportional front avoid from 48 to 18 cm, U-turn guard, stiction kick and a 5-degree scan weave. Tested on our mat on 15 September 2026 ([video](https://youtube.com/shorts/thUZArGaG4c)).
 
-`v20b` is v20 with the front sonar trigger on A0. These files differ from our development copies in `#define PRACTICE 0`, in comment wording, and in a compile-time check the development copies add, which refuses any sonar pin on D11-D13 (the Pixy2's SPI lines): `#define PRACTICE 0` ([Open line 36](Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](Obstacle_Challenge/Obstacle_Challenge.ino#L62)). With 0 the car waits for the start switch after power-up, as rule 9.11 requires. With 1 it also starts by itself 3 s after power-up, which we use only on the practice mat.
+Both sketches have the front sonar trigger on D13. The v20 Obstacle development build, with the lot exit and the front-wall park, is kept at the tag [`v2.0-asia-final`](https://github.com/BllueWave/WRO-Future-Engineers-2026/tree/v2.0-asia-final/src); the design pages describe it, and their Obstacle line links point to that tag.
 
 ## Build and upload
 
@@ -40,7 +40,7 @@ Measured on 15 September 2026 with the IDE's own arduino-cli. The Uno has 32,256
 | Sketch | Flash, standard IDE flags, Zumo files renamed | Flash, our PC's extra flags | RAM used by globals |
 |---|---|---|---|
 | Open_Challenge | 15,136 B (46 %) | 14,630 B (45 %) | 721 B (35 %) |
-| Obstacle_Challenge | 29,604 B (91 %) | 28,682 B (88 %) | 818 B (39 %) |
+| Obstacle_Challenge | 16,138 B (50 %) | 15,726 B (48 %) | 689 B (33 %) |
 
 Our development PC has a `platform.local.txt` in the AVR core folder that adds `-mcall-prologues -mrelax`. An earlier park build needed it to fit in flash. Both v20 sketches build without it, so another PC needs no extra file.
 
@@ -48,13 +48,13 @@ Two Uno details matter if a pin is moved. The Servo library takes Timer1, which 
 
 ## Pin map
 
-The pins are the same in both sketches ([Open lines 30-35](Open_Challenge/Open_Challenge.ino#L30-L35), [Obstacle lines 51-56](Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56)). The drawing is [docs/diagrams/wiring_pinmap.svg](../docs/diagrams/wiring_pinmap.svg).
+The pins are the same in both sketches ([Open lines 30-35](Open_Challenge/Open_Challenge.ino#L30-L35), [Obstacle lines 51-56](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56)). The drawing is [docs/diagrams/wiring_pinmap.svg](../docs/diagrams/wiring_pinmap.svg).
 
 | Part | Signal | Pin | Code object |
 |---|---|---|---|
 | HC-SR04, left front corner | TRIG / ECHO | D4 / D5 | `sonarLeft` (NewPing, 400 cm limit) |
 | HC-SR04, right front corner | TRIG / ECHO | D2 / D9 | `sonarRight` |
-| HC-SR04, nose | TRIG / ECHO | A0 / D7 | `sonarFront` |
+| HC-SR04, nose | TRIG / ECHO | D13 / D7 | `sonarFront` |
 | Steering servo | Signal | D10 | `steeringServo` |
 | Cytron MD13S motor driver | PWM / DIR | D3 / D8, DIR HIGH = forward | `runMotor()` |
 | Start switch, other side to GND | Input with internal pull-up | A2 | `waitStart()` |
@@ -130,7 +130,7 @@ Once the car has turned 100° inside one avoid, the servo returns to 90. The PID
 
 ## Obstacle_Challenge.ino
 
-`loop()` ([lines 1079-1103](Obstacle_Challenge/Obstacle_Challenge.ino#L1079-L1103)) dispatches on `state` (enum at [line 165](Obstacle_Challenge/Obstacle_Challenge.ino#L165)).
+`loop()` ([lines 1079-1103](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1079-L1103)) dispatches on `state` (enum at [line 165](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L165)).
 
 ```mermaid
 stateDiagram-v2
@@ -150,17 +150,17 @@ In `ST_DONE` the motor stays at 0 and the servo at 90. The car never starts a fo
 
 | Job | Functions | Parts and pins |
 |---|---|---|
-| Hardware access | [`runMotor`](Obstacle_Challenge/Obstacle_Challenge.ino#L227-L230), [`getStableDistance`](Obstacle_Challenge/Obstacle_Challenge.ino#L232-L237), [`readYaw`](Obstacle_Challenge/Obstacle_Challenge.ino#L241-L253), [`signalServo`](Obstacle_Challenge/Obstacle_Challenge.ino#L280-L286) | MD13S D3/D8, the 3 HC-SR04, BNO055 A4/A5, servo D10 |
-| Heading math | [`wrap180`](Obstacle_Challenge/Obstacle_Challenge.ino#L259-L263), [`rightTurnSince`](Obstacle_Challenge/Obstacle_Challenge.ino#L266), [`parkHeading`](Obstacle_Challenge/Obstacle_Challenge.ino#L854) | BNO055 |
-| Camera helpers | [`signDistance`](Obstacle_Challenge/Obstacle_Challenge.ino#L268-L274), [`looksLikeBarrier`](Obstacle_Challenge/Obstacle_Challenge.ino#L276-L278) | Pixy2 |
-| Start | [`setup`](Obstacle_Challenge/Obstacle_Challenge.ino#L289-L313), [`waitStart`](Obstacle_Challenge/Obstacle_Challenge.ino#L316-L337), [`parkPickSide`](Obstacle_Challenge/Obstacle_Challenge.ino#L340-L362) | A2, left and right HC-SR04 |
-| Lot exit | [`startTick`](Obstacle_Challenge/Obstacle_Challenge.ino#L366-L415) | Servo, MD13S, BNO055 |
-| Lap count | [`lapsCount`](Obstacle_Challenge/Obstacle_Challenge.ino#L418-L425) | BNO055 |
-| Lap law | [`lapStep`](Obstacle_Challenge/Obstacle_Challenge.ino#L430-L707) | All sensors, servo, MD13S |
-| Approach to the lot | [`lotMm`](Obstacle_Challenge/Obstacle_Challenge.ino#L712), [`markMm`](Obstacle_Challenge/Obstacle_Challenge.ino#L714), [`laneHeading`](Obstacle_Challenge/Obstacle_Challenge.ino#L717-L724), [`approachStep`](Obstacle_Challenge/Obstacle_Challenge.ino#L726-L823) | Front and wall-side HC-SR04, BNO055, servo, MD13S |
-| Averaged ranges for the park | [`frontMeanMm`](Obstacle_Challenge/Obstacle_Challenge.ino#L829-L837), [`wallMeanMm`](Obstacle_Challenge/Obstacle_Challenge.ino#L839-L847), [`sideToWallMm`](Obstacle_Challenge/Obstacle_Challenge.ino#L849-L851) | Front and wall-side HC-SR04 |
-| Park geometry, no hardware | [`lotFar`](Obstacle_Challenge/Obstacle_Challenge.ino#L858), [`arcUpdate`](Obstacle_Challenge/Obstacle_Challenge.ino#L860-L865), [`segLimClear`](Obstacle_Challenge/Obstacle_Challenge.ino#L867-L871), [`bayClear`](Obstacle_Challenge/Obstacle_Challenge.ino#L874-L896), [`maxLeg`](Obstacle_Challenge/Obstacle_Challenge.ino#L900-L912) | None |
-| Park motion | [`parkArcTo`](Obstacle_Challenge/Obstacle_Challenge.ino#L916-L949), [`parkStep`](Obstacle_Challenge/Obstacle_Challenge.ino#L951-L960), [`parkRun`](Obstacle_Challenge/Obstacle_Challenge.ino#L962-L1076) | Servo at lock, MD13S, BNO055, front and wall-side HC-SR04 |
+| Hardware access | [`runMotor`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L227-L230), [`getStableDistance`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L232-L237), [`readYaw`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L241-L253), [`signalServo`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L280-L286) | MD13S D3/D8, the 3 HC-SR04, BNO055 A4/A5, servo D10 |
+| Heading math | [`wrap180`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L259-L263), [`rightTurnSince`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L266), [`parkHeading`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L854) | BNO055 |
+| Camera helpers | [`signDistance`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L268-L274), [`looksLikeBarrier`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L276-L278) | Pixy2 |
+| Start | [`setup`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L289-L313), [`waitStart`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L316-L337), [`parkPickSide`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L340-L362) | A2, left and right HC-SR04 |
+| Lot exit | [`startTick`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L366-L415) | Servo, MD13S, BNO055 |
+| Lap count | [`lapsCount`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L418-L425) | BNO055 |
+| Lap law | [`lapStep`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L430-L707) | All sensors, servo, MD13S |
+| Approach to the lot | [`lotMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L712), [`markMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L714), [`laneHeading`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L717-L724), [`approachStep`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L726-L823) | Front and wall-side HC-SR04, BNO055, servo, MD13S |
+| Averaged ranges for the park | [`frontMeanMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L829-L837), [`wallMeanMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L839-L847), [`sideToWallMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L849-L851) | Front and wall-side HC-SR04 |
+| Park geometry, no hardware | [`lotFar`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L858), [`arcUpdate`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L860-L865), [`segLimClear`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L867-L871), [`bayClear`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L874-L896), [`maxLeg`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L900-L912) | None |
+| Park motion | [`parkArcTo`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L916-L949), [`parkStep`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L951-L960), [`parkRun`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L962-L1076) | Servo at lock, MD13S, BNO055, front and wall-side HC-SR04 |
 
 ### Start and outer-wall pick
 
@@ -174,14 +174,14 @@ If the exit turned at least 20°, it sets `headingSign`. The nose must have turn
 
 ### Lap law: one pass of `lapStep()`
 
-1. Sensing ([lines 431-443](Obstacle_Challenge/Obstacle_Challenge.ino#L431-L443)), the same as Open.
-2. Heading and corners ([lines 445-446](Obstacle_Challenge/Obstacle_Challenge.ino#L445-L446)). `readYaw()` has Open's 0.0 guard. `lapsCount()` counts a corner at 70 of its 90° and never resets the total.
-3. Which straight ([lines 449-457](Obstacle_Challenge/Obstacle_Challenge.ino#L449-L457)). The straight number is `(|turnAccum| + 45) / 90`, and the car counts as lined up with it within 30°. With the lot on the right, straight 0 is never mapped: its pillars are behind the camera when lap 1 leaves the lot.
-4. New corner ([lines 459-478](Obstacle_Challenge/Obstacle_Challenge.ino#L459-L478)). The corner votes by its measured rotation: -1 for right, +1 for left. In laps 2-3, if lap 1 recorded a pillar colour for this straight, the first colour becomes a side bias for up to 1.6 s.
-5. Pixy2 pipeline ([lines 480-539](Obstacle_Challenge/Obstacle_Challenge.ino#L480-L539)), below.
-6. Mode manager ([lines 541-564](Obstacle_Challenge/Obstacle_Challenge.ino#L541-L564)). PID mode switches to PIXY mode after 2 frames in a row with a pillar, if 280 ms have passed since the last switch or the pillar is 550 mm or nearer. PIXY mode returns to PID after 3 frames without one and 280 ms. At the switch into PIXY mode in lap 1, the colour is stored for the current straight (up to 2 colours).
-7. End of the laps ([lines 566-587](Obstacle_Challenge/Obstacle_Challenge.ino#L566-L587)): the two exits of `ST_LAPS` in the diagram.
-8. Control output ([lines 589-665](Obstacle_Challenge/Obstacle_Challenge.ino#L589-L665)). The first matching branch runs.
+1. Sensing ([lines 431-443](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L431-L443)), the same as Open.
+2. Heading and corners ([lines 445-446](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L445-L446)). `readYaw()` has Open's 0.0 guard. `lapsCount()` counts a corner at 70 of its 90° and never resets the total.
+3. Which straight ([lines 449-457](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L449-L457)). The straight number is `(|turnAccum| + 45) / 90`, and the car counts as lined up with it within 30°. With the lot on the right, straight 0 is never mapped: its pillars are behind the camera when lap 1 leaves the lot.
+4. New corner ([lines 459-478](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L459-L478)). The corner votes by its measured rotation: -1 for right, +1 for left. In laps 2-3, if lap 1 recorded a pillar colour for this straight, the first colour becomes a side bias for up to 1.6 s.
+5. Pixy2 pipeline ([lines 480-539](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L480-L539)), below.
+6. Mode manager ([lines 541-564](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L541-L564)). PID mode switches to PIXY mode after 2 frames in a row with a pillar, if 280 ms have passed since the last switch or the pillar is 550 mm or nearer. PIXY mode returns to PID after 3 frames without one and 280 ms. At the switch into PIXY mode in lap 1, the colour is stored for the current straight (up to 2 colours).
+7. End of the laps ([lines 566-587](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L566-L587)): the two exits of `ST_LAPS` in the diagram.
+8. Control output ([lines 589-665](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L589-L665)). The first matching branch runs.
    - PIXY mode with a pillar this frame:
      - the servo moves toward the ladder target by at most 6° per pass;
      - a front reading of 25 cm or less snaps it to full lock on the target side (FIX 6);
@@ -196,11 +196,11 @@ If the exit turned at least 20°, it sets `headingSign`. The nose must have turn
      - the mapped bias holds `L - R = +20` cm for red (right of the lane centre) and `-20` cm for green, while the heading is within 12° of the straight and until the camera takes a pillar;
      - with no pillar in view and `|e|` under 6 cm, a ±5° sine weave with a 1.3 s period sweeps the camera;
      - in laps 2-3, a straight where lap 1 saw no pillar runs at PWM 36 while the front reads over 130 cm, `|e|` is under 20 cm and no pillar is in view.
-9. Output ([lines 667-699](Obstacle_Challenge/Obstacle_Challenge.ino#L667-L699)). Servo limit 30-160, the stiction kick as in Open, then the stuck check: if the last valid front reading (under 200 ms old) was 15 cm or less and the heading has not moved 3° for 0.7 s, the car steers the other way (servo 30 or 160) and reverses (PWM 55 for 70 ms, PWM 30 for 450 ms, 120 ms stop).
+9. Output ([lines 667-699](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L667-L699)). Servo limit 30-160, the stiction kick as in Open, then the stuck check: if the last valid front reading (under 200 ms old) was 15 cm or less and the heading has not moved 3° for 0.7 s, the car steers the other way (servo 30 or 160) and reverses (PWM 55 for 70 ms, PWM 30 for 450 ms, 120 ms stop).
 
 ### Pixy2 pipeline
 
-For up to 8 blocks per frame ([lines 486-513](Obstacle_Challenge/Obstacle_Challenge.ino#L486-L513)):
+For up to 8 blocks per frame ([lines 486-513](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L486-L513)):
 
 - Only signature 1 (red) and 2 (green) count. Signature 3 is declared and not used.
 - A red or green blob with an area of at least 600 px and a width/height ratio of at least 1.4 has the shape of a barrier, not a pillar, and is skipped.
@@ -210,7 +210,7 @@ For up to 8 blocks per frame ([lines 486-513](Obstacle_Challenge/Obstacle_Challe
 
 If the pillar is within 45 px of the image centre, the front HC-SR04 may replace the camera range when it reads under 1.5 m, at most 60 mm farther and less than 400 mm nearer. So the sonar can shorten the range but not push it out.
 
-Steering ladder ([lines 525-533](Obstacle_Challenge/Obstacle_Challenge.ino#L525-L533)). Red is passed on its right, so the car steers right of it; green on its left.
+Steering ladder ([lines 525-533](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L525-L533)). Red is passed on its right, so the car steers right of it; green on its left.
 
 | Pillar | Pixy x (centre 158) | Servo target |
 |---|---|---|
@@ -232,21 +232,21 @@ The approach starts with the car stopped. It has no pillar logic; the laps hand 
 
 ### Park: `parkRun()`
 
-Every arc is closed on the BNO055 heading. The arcs of steps C and E and the straight steps of D are sized in a clearance model before they are driven. The model is the 200 × 125 mm car rectangle against the wall and the two 20 mm limiters of the 300 × 200 mm lot, sampled 6 points per edge ([`bayClear()`](Obstacle_Challenge/Obstacle_Challenge.ino#L874-L896)).
+Every arc is closed on the BNO055 heading. The arcs of steps C and E and the straight steps of D are sized in a clearance model before they are driven. The model is the 200 × 125 mm car rectangle against the wall and the two 20 mm limiters of the 300 × 200 mm lot, sampled 6 points per edge ([`bayClear()`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L874-L896)).
 
 <details>
 <summary>The park, step by step (B to F)</summary>
 
 | Step | Lines | What the car does |
 |---|---|---|
-| B, mark | [970-985](Obstacle_Challenge/Obstacle_Challenge.ino#L970-L985) | Up to 10 straight steps until the front range is within 30 mm of the mark. Then 4 steps back and 4 forward measure the real step length from the front range (kept if 5-150 mm, default 45 mm) |
-| Pose | [987-997](Obstacle_Challenge/Obstacle_Challenge.ino#L987-L997) | x from the front range and the lot distance, y from `wallMeanMm()` (or the approach's lane estimate), heading from the IMU relative to `startYaw0` |
-| Target | [999-1004](Obstacle_Challenge/Obstacle_Challenge.ino#L999-L1004) | The nominal end of the entry: from the 320 mm lane and the mark, a 50° reverse arc of radius 170 mm plus a 160 mm straight, with 12 mm biases along and into the lot |
-| Entry angle | [1005-1017](Obstacle_Challenge/Obstacle_Challenge.ino#L1005-L1017) | Tries 36-64° in 1° steps from the measured pose and keeps the angle whose arc plus straight lands closest to the target along the lot |
-| C, arc in | [1019-1024](Obstacle_Challenge/Obstacle_Challenge.ino#L1019-L1024) | Reverse at the wall-side lock to the entry angle, cut to what keeps 12 mm clearance in the model, minus 2.5° slack when cut |
-| D, straight in | [1026-1040](Obstacle_Challenge/Obstacle_Challenge.ino#L1026-L1040) | Up to 10 reverse steps until the depth target is reached, each checked for 12 mm clearance first |
-| E, square up | [1042-1060](Obstacle_Challenge/Obstacle_Challenge.ino#L1042-L1060) | Up to 14 cycles of a forward and a reverse arc of at most 6° each, until the heading is within 3° of parallel. The leg with more room in the model goes first |
-| F, centre | [1062-1070](Obstacle_Challenge/Obstacle_Challenge.ino#L1062-L1070) | With the heading within 8°, up to 4 steps to bring the downstream limiter to 30-75 mm from the front sensor |
+| B, mark | [970-985](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L970-L985) | Up to 10 straight steps until the front range is within 30 mm of the mark. Then 4 steps back and 4 forward measure the real step length from the front range (kept if 5-150 mm, default 45 mm) |
+| Pose | [987-997](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L987-L997) | x from the front range and the lot distance, y from `wallMeanMm()` (or the approach's lane estimate), heading from the IMU relative to `startYaw0` |
+| Target | [999-1004](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L999-L1004) | The nominal end of the entry: from the 320 mm lane and the mark, a 50° reverse arc of radius 170 mm plus a 160 mm straight, with 12 mm biases along and into the lot |
+| Entry angle | [1005-1017](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1005-L1017) | Tries 36-64° in 1° steps from the measured pose and keeps the angle whose arc plus straight lands closest to the target along the lot |
+| C, arc in | [1019-1024](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1019-L1024) | Reverse at the wall-side lock to the entry angle, cut to what keeps 12 mm clearance in the model, minus 2.5° slack when cut |
+| D, straight in | [1026-1040](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1026-L1040) | Up to 10 reverse steps until the depth target is reached, each checked for 12 mm clearance first |
+| E, square up | [1042-1060](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1042-L1060) | Up to 14 cycles of a forward and a reverse arc of at most 6° each, until the heading is within 3° of parallel. The leg with more room in the model goes first |
+| F, centre | [1062-1070](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1062-L1070) | With the heading within 8°, up to 4 steps to bring the downstream limiter to 30-75 mm from the front sensor |
 
 `parkArcTo()` sets the lock, waits 220 ms, drives at PWM 18 and stops when `heading + turn rate x 150 ms` reaches the target, or after 2.6 s. If the heading has not moved 0.3° after 150 ms, it kicks once at PWM 55 for 60 ms. After the stop it waits until the heading changes by less than 0.15° in 70 ms and returns the measured rotation.
 
@@ -265,22 +265,22 @@ Every arc is closed on the BNO055 heading. The arcs of steps C and E and the str
 
 ### Park geometry, Obstacle
 
-The [source header](Obstacle_Challenge/Obstacle_Challenge.ino#L31-L38) gives the mat procedure for the first five constants.
+The [source header](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L31-L38) gives the mat procedure for the first five constants.
 
 | Constant | Line | Value | Basis | How to set it on a mat |
 |---|---|---|---|---|
-| `R_PARK_MM` | [127](Obstacle_Challenge/Obstacle_Challenge.ino#L127) | 170 | Park model | Rear-axle turning radius at servo 170 and at 10: drive one slow full-lock circle and halve the diameter. One constant serves both locks, so check that the two agree |
-| `CAR_NOSE_MM` | [129](Obstacle_Challenge/Obstacle_Challenge.ino#L129) | 168 | Simulator fit of the real exit | Rear axle centre to the front bumper |
-| `SIDE_A_L`, `SIDE_B_L` | [135](Obstacle_Challenge/Obstacle_Challenge.ino#L135) | 5.16, 202.5 | Simulator fit | Car parallel to the wall, rear axle 300 mm and then 400 mm from it; read the left sensor in the `WAIT` line. `A = 100 / (cm400 - cm300)`, `B = 300 - A * cm300` |
-| `SIDE_A_R`, `SIDE_B_R` | [136](Obstacle_Challenge/Obstacle_Challenge.ino#L136) | 13.02, -50.2 | Simulator fit | The same with the right sensor. The two corner sensors map differently, so both need their own fit |
-| `LOT_RIGHT_MM` | [131](Obstacle_Challenge/Obstacle_Challenge.ino#L131) | 980 | Set from our measurement of about 1.0 m | Tape from the far wall to the far face of the downstream limiter, lot on the car's right. `LOT_LEFT_MM` follows from it |
-| `PARK_LANE_MM` | [137](Obstacle_Challenge/Obstacle_Challenge.ino#L137) | 320 | Set in code; the limiter tips are 200 mm from the wall | Check on the mat that the approach clears the limiters at this rear-axle distance from the outer wall |
-| `FRONT_SETBACK_MM` | [133](Obstacle_Challenge/Obstacle_Challenge.ino#L133) | 0 | 0 means flush with the nose | How far the front sensor face sits behind the nose |
-| `CAR_LEN_MM`, `CAR_WID_MM` | [128](Obstacle_Challenge/Obstacle_Challenge.ino#L128) | 200, 125 | Our measurement | Remeasure if the body changes. The lot length is 1.5 × the car length |
+| `R_PARK_MM` | [127](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) | 170 | Park model | Rear-axle turning radius at servo 170 and at 10: drive one slow full-lock circle and halve the diameter. One constant serves both locks, so check that the two agree |
+| `CAR_NOSE_MM` | [129](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L129) | 168 | Simulator fit of the real exit | Rear axle centre to the front bumper |
+| `SIDE_A_L`, `SIDE_B_L` | [135](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L135) | 5.16, 202.5 | Simulator fit | Car parallel to the wall, rear axle 300 mm and then 400 mm from it; read the left sensor in the `WAIT` line. `A = 100 / (cm400 - cm300)`, `B = 300 - A * cm300` |
+| `SIDE_A_R`, `SIDE_B_R` | [136](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L136) | 13.02, -50.2 | Simulator fit | The same with the right sensor. The two corner sensors map differently, so both need their own fit |
+| `LOT_RIGHT_MM` | [131](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L131) | 980 | Set from our measurement of about 1.0 m | Tape from the far wall to the far face of the downstream limiter, lot on the car's right. `LOT_LEFT_MM` follows from it |
+| `PARK_LANE_MM` | [137](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L137) | 320 | Set in code; the limiter tips are 200 mm from the wall | Check on the mat that the approach clears the limiters at this rear-axle distance from the outer wall |
+| `FRONT_SETBACK_MM` | [133](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L133) | 0 | 0 means flush with the nose | How far the front sensor face sits behind the nose |
+| `CAR_LEN_MM`, `CAR_WID_MM` | [128](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L128) | 200, 125 | Our measurement | Remeasure if the body changes. The lot length is 1.5 × the car length |
 
 ### Camera range, Obstacle
 
-`DIST_K_W` 13683 and `DIST_K_H` 28574 ([line 77](Obstacle_Challenge/Obstacle_Challenge.ino#L77)) come from the datasheet field of view. To check them on the car, put a pillar 500 mm straight ahead: PixyMon should show a blob about 27 px wide and 57 px tall. If it does not, set `K = measured px x true distance in mm`.
+`DIST_K_W` 13683 and `DIST_K_H` 28574 ([line 77](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L77)) come from the datasheet field of view. To check them on the car, put a pillar 500 mm straight ahead: PixyMon should show a blob about 27 px wide and 57 px tall. If it does not, set `K = measured px x true distance in mm`.
 
 <details>
 <summary>Values carried over from earlier builds that ran on the mat</summary>

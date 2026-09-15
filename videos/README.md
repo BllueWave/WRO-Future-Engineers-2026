@@ -1,15 +1,19 @@
 # Videos
 
-Rule 7 (p.9 of the 2026 rules) asks for one YouTube video per challenge, public or unlisted, in which the part showing autonomous driving lasts at least 30 s. The YouTube link is what counts; the files in this folder are local copies.
+Rule 7 (p.9 of the 2026 rules) asks for one YouTube video per challenge, public or unlisted, in which the part showing autonomous driving lasts at least 30 s. The YouTube links below are the videos we submit.
 
 ## Challenge videos
 
+<p align="center">
+  <a href="https://youtube.com/shorts/v20ntV0ojf4"><img src="../docs/images/video_open.png" width="49%" alt="Open Challenge video on YouTube"></a>
+  <a href="https://youtube.com/shorts/thUZArGaG4c"><img src="../docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
+</p>
+
 | Challenge | YouTube | Local copy | Clip length | Autonomous driving |
 |---|---|---|---|---|
-| Open Challenge | https://www.youtube.com/shorts/v20ntV0ojf4 | - | - | September 2026, the finals car |
-| Obstacle Challenge | https://youtube.com/shorts/2quu5O000I0 | [`Obstacle_Challenge.mp4`](Obstacle_Challenge.mp4) | 37.0 s | About 32 s |
+| Open Challenge | https://youtube.com/shorts/v20ntV0ojf4 | - | - | September 2026, the finals car |
+| Obstacle Challenge | https://youtube.com/shorts/thUZArGaG4c | - | - | September 2026, the finals car |
 
-The Obstacle clip's length comes from the local copy and passes the 30 s rule.
 
 ## How we film a challenge video
 

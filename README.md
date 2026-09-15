@@ -24,9 +24,18 @@ Our car is a 1:28-class RC chassis, about 200 × 125 mm, with Ackermann steering
 | 4. Systems thinking and decisions | [Systems thinking and engineering decisions](docs/04-engineering-decisions.md) | Why we chose each part, constraints, decision log, version history, risks |
 | 5. Reproducibility | [Build, test and reproduce](docs/05-build-test-reproduce.md) | Parts list, library versions, flash sizes, bench check, test results, how to repeat each number |
 
-Engineering journal: [Blue_Wave_Engineering_Journal.pdf](docs/journal/Blue_Wave_Engineering_Journal.pdf)
+Engineering journal: [Blue_Wave_Engineering_Journal.pdf](docs/journal/Blue_Wave_Engineering_Journal.pdf) · Videos: [Open Challenge](https://youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/thUZArGaG4c)
 
 Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp-content/uploads/WRO-2026-Future-Engineers-Self-Driving-Cars-General-Rules.pdf) (p.44-54).
+
+## Videos
+
+<p align="center">
+  <a href="https://youtube.com/shorts/v20ntV0ojf4"><img src="docs/images/video_open.png" width="49%" alt="Open Challenge video on YouTube"></a>
+  <a href="https://youtube.com/shorts/thUZArGaG4c"><img src="docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
+</p>
+
+<p align="center"><a href="https://youtube.com/shorts/v20ntV0ojf4"><b>Open Challenge video</b></a> · <a href="https://youtube.com/shorts/thUZArGaG4c"><b>Obstacle Challenge video</b></a> · <a href="videos/README.md">all videos</a></p>
 
 ## The car
 
@@ -42,9 +51,9 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 | Heading | BNO055 IMU on I2C (A4, A5) |
 | Camera | Pixy2 on SPI (ICSP header): signature 1 red pillar, 2 green pillar, 3 magenta limiter |
 | Power | Two 2S LiPo 7.4 V 400 mAh packs: one feeds the Cytron MD13S for the drive motor; the other feeds the Uno's VIN through the main power switch |
-| Start | Waits for the start switch on A2 after power-on (rules 9.10, 9.11) |
+| Start | Open waits for the start switch on A2 after power-on (rule 9.11); one main power switch (rule 9.10) |
 | Speed at PWM 30 | About 1 m/s |
-| Code | Open: 283 lines, 15,136 B flash. Obstacle: 1,103 lines, 29,604 B flash |
+| Code | Open: 283 lines, 15,136 B flash. Obstacle: 598 lines, 16,138 B flash |
 
 <p align="center">
   <a href="Vehicle_Photos/README.md"><img src="Vehicle_Photos/left.jpg" height="240" alt="Left side of the car"></a>
@@ -61,12 +70,12 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 </p>
 
 <p align="center">
-  <a href="Schemes/README.md"><img src="Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on A0 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
+  <a href="Schemes/README.md"><img src="Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on D13 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
 </p>
 
 <p align="center">
   <img src="docs/diagrams/sensor_layout.png" width="49%" alt="Sensor layout: front sonar at 0 degrees, side sonars at about 40 degrees on the nose corners, Pixy2 60 degree field of view, on a 200 by 125 mm outline">
-  <img src="docs/diagrams/wiring_pinmap.png" width="49%" alt="Wiring pin map: sonars on A0/D7, D4/D5 and D2/D9, servo on D10, motor PWM D3 and direction D8, start switch A2, BNO055 on A4/A5, Pixy2 on the ICSP header">
+  <img src="docs/diagrams/wiring_pinmap.png" width="49%" alt="Wiring pin map: sonars on D13/D7, D4/D5 and D2/D9, servo on D10, motor PWM D3 and direction D8, start switch A2, BNO055 on A4/A5, Pixy2 on the ICSP header">
 </p>
 
 ## Why these parts
@@ -130,7 +139,7 @@ State diagrams, flowcharts and constants: [Software and strategy](docs/03-softwa
 
 Simulation results compare code versions against each other; full test records are in [Build, test and reproduce](docs/05-build-test-reproduce.md).
 
-Videos: [Open Challenge](https://www.youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/2quu5O000I0). More in [`videos/`](videos/).
+Videos: [Open Challenge](https://youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/thUZArGaG4c). More in [`videos/`](videos/).
 
 ## Repository map
 
@@ -154,7 +163,7 @@ Videos: [Open Challenge](https://www.youtube.com/shorts/v20ntV0ojf4) and [Obstac
 1. **Board.** Install Arduino IDE 2.3.10 and the *Arduino AVR Boards* core 1.8.8. Select *Arduino Uno* (`arduino:avr:uno`).
 2. **Libraries.** From the Library Manager: Adafruit BNO055 1.6.4, Adafruit Unified Sensor 1.1.15, Adafruit BusIO 1.17.4, NewPing 1.9.7, Servo 1.3.0. Add the Pixy2 Arduino library by hand, then rename `ZumoBuzzer.cpp` and `ZumoMotors.cpp` in its folder to `.cpp.bak`. Neither sketch uses them, and they add 1,674 B to each build.
 3. **Start mode.** Keep `#define PRACTICE 0` (line 36 in `src/Open_Challenge/Open_Challenge.ino`, line 62 in `src/Obstacle_Challenge/Obstacle_Challenge.ino`). `PRACTICE 1` also starts the car 3 s after power-up, which rule 9.11 does not allow.
-4. **Verify and upload** over USB. Expected flash: 15,136 B for Open and 29,604 B for Obstacle, of 32,256 B. From a terminal:
+4. **Verify and upload** over USB. Expected flash: 15,136 B for Open and 16,138 B for Obstacle, of 32,256 B. From a terminal:
    ```sh
    arduino-cli compile --fqbn arduino:avr:uno src/Obstacle_Challenge
    arduino-cli upload -p <port> --fqbn arduino:avr:uno src/Obstacle_Challenge

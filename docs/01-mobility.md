@@ -9,11 +9,11 @@ Our speed figures rest on two tests on the car: a break-away test and one stopwa
 
 | Claim | Where to check |
 |---|---|
-| The car is 200 × 125 mm, 100 mm and 75 mm inside the rule limits | Team measurement, 14 Sep 2026; `CAR_LEN_MM`, `CAR_WID_MM` in [Obstacle_Challenge.ino line 128](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L128) |
+| The car is 200 × 125 mm, 100 mm and 75 mm inside the rule limits | Team measurement, 14 Sep 2026; `CAR_LEN_MM`, `CAR_WID_MM` in [Obstacle_Challenge.ino line 128](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L128) |
 | PWM 15 does not start the car from rest, PWM 25 always does | Motor test on the car; avoid speed and kick in [Open_Challenge.ino lines 41-46](../src/Open_Challenge/Open_Challenge.ino#L41-L46) |
 | About 998 mm/s at PWM 30 | Simulator speed fitted to a real 23 s run, see [Speed](#speed) |
-| Servo 30-160 while driving, 10 and 170 when parking | [Obstacle_Challenge.ino line 88](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L88) and [line 107](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L107) |
-| The park code uses a 170 mm turning radius | `R_PARK_MM`, [line 127](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) |
+| Servo 30-160 while driving, 10 and 170 when parking | [Obstacle_Challenge.ino line 88](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L88) and [line 107](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L107) |
+| The park code uses a 170 mm turning radius | `R_PARK_MM`, [line 127](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) |
 | Body and sensor brackets | [`Models/BlueWave_main_body_v2.3mf`](../Models/BlueWave_main_body_v2.3mf) |
 
 ## Why this chassis
@@ -40,8 +40,8 @@ We picked a ready-made 1:28-class RC chassis for three reasons.
 | Wheel diameter | about 28 mm | Side photo scaled to the measured 200 mm length |
 | Sonar centre above the floor | about 45 mm | Side photo; walls and pillars are 100 mm high, so every sonar sees them |
 | Mass | about 360 g, 24 % of the 1.5 kg limit | [Mass budget](#mass-budget) |
-| Rear axle to nose | 168 mm in the park code | `CAR_NOSE_MM`, [line 129](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L129), fitted to the real lot exit in our simulator |
-| Rear-axle turning radius at full lock | 170 mm in the park code | `R_PARK_MM`, [line 127](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) |
+| Rear axle to nose | 168 mm in the park code | `CAR_NOSE_MM`, [line 129](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L129), fitted to the real lot exit in our simulator |
+| Rear-axle turning radius at full lock | 170 mm in the park code | `R_PARK_MM`, [line 127](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) |
 | Rule envelope | 300 × 200 × 300 mm, 1.5 kg | Rules 11.1 and 11.2 (p.23) |
 
 ### Mass budget
@@ -79,7 +79,7 @@ The end clearance is always (1.5 L - L) / 2 = 0.25 L. Because the lot scales wit
 | Chassis | WLtoys 284131, 1:28, four-wheel drive: one motor, a propshaft to the front and rear differentials, Ackermann front steering | Sticker on the chassis plate in the [parts photo](components.jpg); manufacturer page |
 | Drive motor | 130-size brushed DC motor, the chassis's own | Manufacturer page |
 | Gearing | 17-tooth pinion on a 29-tooth spur (1.71 : 1), then the differentials | Published review of the 284131 |
-| Driver | Cytron MD13S, sign-magnitude: speed on PWM D3, direction on D8, DIR HIGH = forward | [Obstacle_Challenge.ino line 55](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
+| Driver | Cytron MD13S, sign-magnitude: speed on PWM D3, direction on D8, DIR HIGH = forward | [Obstacle_Challenge.ino line 55](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
 
 <p align="center">
   <img src="../Vehicle_Photos/bottom.jpg" height="320" alt="Underside of the car: chassis plate, drive motor in the centre, steering knuckles at the front">
@@ -88,7 +88,7 @@ The end clearance is always (1.5 L - L) / 2 = 0.25 L. Because the lot scales wit
 
 ### Why a PWM plus direction driver fits this board
 
-The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5, D6 and D9 were sonar lines, and D11 is SPI MOSI for the Pixy2. The Servo library runs on Timer1, which disables `analogWrite` on D9 and D10. That left D3 as the only free PWM pin. The front trigger has since moved from D6 to A0 ([why](02-power-and-sensors.md#what-each-sensor-gives-the-uno)).
+The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. When we chose the driver, D5, D6 and D9 were sonar lines, and D11 is SPI MOSI for the Pixy2. The Servo library runs on Timer1, which disables `analogWrite` on D9 and D10. That left D3 as the only free PWM pin. The front trigger has since moved from D6 to D13 ([why](02-power-and-sensors.md#what-each-sensor-gives-the-uno)).
 
 The MD13S needs exactly one PWM line and one digital line for one motor. A driver that takes speed on two PWM inputs would have needed a second PWM pin that we did not have.
 
@@ -138,16 +138,16 @@ A hobby servo on D10 moves the chassis's Ackermann linkage. Servo 90 is straight
 
 | Setting | Servo value | Where |
 |---|---|---|
-| Driving limits | 30-160: 70 degrees of servo travel left, 60 right | [line 88](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L88) |
-| Front avoid | 90 + 70 × urgency left, 90 - 60 × urgency right | [line 638](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L638) |
-| Pillar mode slew | at most 6 degrees per control loop | [line 99](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L99) |
-| Parking full lock | 10 (right) and 170 (left) | [line 107](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L107) |
+| Driving limits | 30-160: 70 degrees of servo travel left, 60 right | [line 88](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L88) |
+| Front avoid | 90 + 70 × urgency left, 90 - 60 × urgency right | [line 638](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L638) |
+| Pillar mode slew | at most 6 degrees per control loop | [line 99](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L99) |
+| Parking full lock | 10 (right) and 170 (left) | [line 107](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L107) |
 
 Our spec file records these servo values as checked on the car.
 
 An ideal Ackermann linkage turns the inner front wheel more than the outer one, so both front wheel axes meet on the line of the rear axle. The rear-axle centre then follows a circle of radius R = L / tan δ, where L is the wheelbase and δ the equivalent front-wheel angle. The park code uses R = 170 mm (`R_PARK_MM`).
 
-The park code models every arc about a point on the rear-axle line ([`arcUpdate()`, line 860](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L860)). An arc of angle θ moves the rear axle R·sin θ along the lot and R·(1 - cos θ) across it. At the nominal 50-degree entry that is 0.77 R along and 0.36 R across: 130 mm and 61 mm with R = 170 mm.
+The park code models every arc about a point on the rear-axle line ([`arcUpdate()`, line 860](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L860)). An arc of angle θ moves the rear axle R·sin θ along the lot and R·(1 - cos θ) across it. At the nominal 50-degree entry that is 0.77 R along and 0.36 R across: 130 mm and 61 mm with R = 170 mm.
 
 Every 10 mm of error in R moves the end of that arc about 8 mm along and 4 mm across. The final heading does not change, because the arc is closed on the IMU. A 30 mm error in R moves the end about 24 mm along the 300 mm lot.
 
