@@ -6,6 +6,8 @@
 
 *Plate preview stored in the project file.*
 
+The raised "AUMers" lettering and the logo on this body are from AUMers, the name our club and team used before we competed as Blue Wave. The design is ours; the same lettering shows on the printed shell in `docs/components.jpg`.
+
 ## Parts in the file
 
 Sizes are the bounding boxes of the meshes stored in the file, in each part's own axes.

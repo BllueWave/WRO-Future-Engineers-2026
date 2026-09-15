@@ -156,6 +156,6 @@ The image at the top of the README is an illustration of our car. It is not a ph
 | "Central Support Foot" | No such part is recorded. Rule 11.4 (p.23) bans ball casters and spherical wheels, so we check the car against this label before vehicle inspection |
 | Sensor positions in the top-right inset | Not drawn from our measurements. The placement reference is the sensor layout diagram above |
 
-The lettering on the illustrated body is not a confirmed robot name.
+The lettering and logo on the body come from AUMers, the name our club and team used before we competed as Blue Wave. The body is our own design (see [Models](../Models/README.md)).
 
 <sub>[Back to the README](../README.md) · Next: [Power and sensors](02-power-and-sensors.md)</sub>
