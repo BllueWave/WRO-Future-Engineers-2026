@@ -24,7 +24,7 @@ Our car is a 1:28-class RC chassis, about 200 × 125 mm, with Ackermann steering
 | 4. Systems thinking and decisions | [Systems thinking and engineering decisions](docs/04-engineering-decisions.md) | Why we chose each part, constraints, decision log, version history, risks |
 | 5. Reproducibility | [Build, test and reproduce](docs/05-build-test-reproduce.md) | Parts list, library versions, flash sizes, bench check, test results, how to repeat each number |
 
-Engineering journal: [Blue_Wave_Engineering_Journal.pdf](docs/journal/Blue_Wave_Engineering_Journal.pdf) · Videos: [Open Challenge](https://youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/thUZArGaG4c)
+Engineering journal: [Blue_Wave_Engineering_Journal.pdf](docs/journal/Blue_Wave_Engineering_Journal.pdf) · Videos: [Open Challenge](https://youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/RS68H3QMw6s)
 
 Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp-content/uploads/WRO-2026-Future-Engineers-Self-Driving-Cars-General-Rules.pdf) (p.44-54).
 
@@ -32,10 +32,10 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 
 <p align="center">
   <a href="https://youtube.com/shorts/v20ntV0ojf4"><img src="docs/images/video_open.png" width="49%" alt="Open Challenge video on YouTube"></a>
-  <a href="https://youtube.com/shorts/thUZArGaG4c"><img src="docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
+  <a href="https://youtube.com/shorts/RS68H3QMw6s"><img src="docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
 </p>
 
-<p align="center"><a href="https://youtube.com/shorts/v20ntV0ojf4"><b>Open Challenge video</b></a> · <a href="https://youtube.com/shorts/thUZArGaG4c"><b>Obstacle Challenge video</b></a> · <a href="videos/README.md">all videos</a></p>
+<p align="center"><a href="https://youtube.com/shorts/v20ntV0ojf4"><b>Open Challenge video</b></a> · <a href="https://youtube.com/shorts/RS68H3QMw6s"><b>Obstacle Challenge video</b></a> · <a href="videos/README.md">all videos</a></p>
 
 ## The car
 
@@ -139,7 +139,7 @@ State diagrams, flowcharts and constants: [Software and strategy](docs/03-softwa
 
 Simulation results compare code versions against each other; full test records are in [Build, test and reproduce](docs/05-build-test-reproduce.md).
 
-Videos: [Open Challenge](https://youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/thUZArGaG4c). More in [`videos/`](videos/).
+Videos: [Open Challenge](https://youtube.com/shorts/v20ntV0ojf4) and [Obstacle Challenge](https://youtube.com/shorts/RS68H3QMw6s). More in [`videos/`](videos/).
 
 ## Repository map
 

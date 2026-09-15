@@ -6,13 +6,13 @@ Rule 7 (p.9 of the 2026 rules) asks for one YouTube video per challenge, public 
 
 <p align="center">
   <a href="https://youtube.com/shorts/v20ntV0ojf4"><img src="../docs/images/video_open.png" width="49%" alt="Open Challenge video on YouTube"></a>
-  <a href="https://youtube.com/shorts/thUZArGaG4c"><img src="../docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
+  <a href="https://youtube.com/shorts/RS68H3QMw6s"><img src="../docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
 </p>
 
 | Challenge | YouTube | Local copy | Clip length | Autonomous driving |
 |---|---|---|---|---|
 | Open Challenge | https://youtube.com/shorts/v20ntV0ojf4 | - | - | September 2026, the finals car |
-| Obstacle Challenge | https://youtube.com/shorts/thUZArGaG4c | - | - | September 2026, the finals car |
+| Obstacle Challenge | https://youtube.com/shorts/RS68H3QMw6s | - | - | September 2026, the finals car |
 
 
 ## How we film a challenge video
