@@ -8,7 +8,7 @@
 
 <h1 align="center">Blue Wave - WRO Future Engineers 2026</h1>
 
-<p align="center"><b>1st place - WRO Future Engineers 2026 Kuwait National Round - Asia Final, India</b></p>
+<p align="center"><b>1st place at the WRO Future Engineers 2026 Kuwait national round. Next: the WRO 2026 Asia final in India.</b></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/controller-Arduino%20Uno%20R3-00979D" alt="Controller: Arduino Uno R3">
@@ -55,6 +55,8 @@ Appendix C of the 2026 rules (p.44-54) scores the documentation on five criteria
 | 3. Software and obstacle strategy | [5](#5-obstacle-management), [6](#6-software-architecture) | Open flowchart, Obstacle state machine, pillar ladder, parking sequence, module-to-hardware map, control priority |
 | 4. Systems thinking | [9](#9-engineering-log) | Constraints, version history, changes that did not work, risk table, open problems |
 | 5. Reproducibility and GitHub quality | [7](#7-build-compile-and-upload), [8](#8-testing-and-validation), [9.6](#96-repository-history) | Library versions, flash sizes, upload steps, start switch and rule 9.11, testing workflow, repository history |
+
+Appendix C (C.2, p.44) also expects a structured engineering journal, as a PDF or similar, next to this repository. We have not written it yet; it is an item in the [TODO checklist](#13-team-todo-checklist).
 
 ## 2. The car at a glance
 
@@ -291,7 +293,7 @@ A U-turn guard holds the servo straight once the car has turned 100 degrees insi
 
 ### 5.2 Obstacle Challenge: `obstacle_v20`
 
-`obstacle_v20` is built on the 6 September parking build, which is `obstacle_kuwait` plus fixes 15-17. On the mat that build gave our best Obstacle driving so far, with light scrapes, and a lot exit the team rated "excellent". v20 keeps its driving law and wraps it in a six-state machine.
+`obstacle_v20` is built on the 6 September parking build, which is `obstacle_kuwait` plus fixes 15-17. On the mat that build gave our best Obstacle driving so far, with light scrapes, and its lot exit worked. We judged the exit by eye and did not record a count of attempts. v20 keeps its driving law and wraps it in a six-state machine.
 
 ```mermaid
 stateDiagram-v2
@@ -530,7 +532,7 @@ The simulator and the Webots replays are in our development workspace, not in th
 | June 2026 | National-round code | **1st place, Kuwait national round.** TODO: scores and times |
 | Up to 11 Sep 2026 | `open_kuwait`, PWM 30 | Open Challenge: three laps in about 23 s, reliable |
 | 2 Sep 2026 | Orange car; our notes list `obstacle_kuwait` as its Obstacle firmware | Three full Obstacle laps with one light touch on one pillar |
-| 6 Sep 2026 | 6 September parking build | Lot exit "excellent"; best Obstacle driving so far, with light scrapes; did not park (lap counter bug, fixed as fix 26) |
+| 6 Sep 2026 | 6 September parking build | Lot exit worked (judged by eye, no attempt count); best Obstacle driving so far, with light scrapes; did not park (lap counter bug, fixed as fix 26) |
 | 14 Sep 2026 | Finals build of that day | The car did not move. We found four causes: start logic, a PWM below break-away, a build flag, a silent IMU hang (section 9.2) |
 | - | Motor test | PWM 15 does not start from rest, 18 creeps, 25 always moves |
 | - | `open_v20`, `obstacle_v20` | **Not yet run on the mat** |
@@ -549,7 +551,7 @@ None of the calibration tests in our spec file has a recorded result yet. That i
 |---|---|---|---|---|
 | `open_kuwait`, 3 laps | reliable | ≥ 80 % | 33/60 = 55 % (clockwise 77 %, counter-clockwise 24 %) | **FAIL** |
 | `obstacle_kuwait`, 3 laps, no pillar moved | won the national round | ≥ 60 % | 1/60 = 2 % | **FAIL** |
-| 6 September build, lot exit | "excellent" | ≥ 80 % | 58/60 = 97 % | PASS, but only with two unmeasured placement values |
+| 6 September build, lot exit | worked, judged by eye | ≥ 80 % | 58/60 = 97 % | PASS, but only with two unmeasured placement values |
 
 The simulator is harsher than the mat, most of all in the Obstacle Challenge, where it gives `obstacle_kuwait`, which our notes record as the national-round Obstacle code, 2 %.
 
@@ -617,7 +619,7 @@ We did not commit this work to git while we did it (section 9.6), so this table 
 | Before Sep 2026 | Same | Avoid speed PWM 15 (5.9 % duty) kept a rolling car rolling but could not restart a stopped one; a push by hand restarted it | Avoid PWM 25 plus a 70 ms kick at PWM 55 | PWM 25 always moves the car in our motor test |
 | Before Sep 2026 | Versions 8-17 | All ten were worse on the mat and were reverted | Rule: no change without a named mechanism (inputs → state → value → wrong action) | Applied to every later change |
 | Before Sep 2026 | Parking versions 14-16 | Parks whose legs ended on sensor readings stalled or drove into the limiter | Timed legs closed on the IMU heading | Became the park architecture |
-| 6 Sep 2026 | 6 September parking build | Exit excellent but no park: lap total zeroed while the car was 50 degrees rotated | Fix 26: never-reset turn total, exit rotation seeded | Lap 3 can close; park can arm |
+| 6 Sep 2026 | 6 September parking build | Exit worked but no park: lap total zeroed while the car was 50 degrees rotated | Fix 26: never-reset turn total, exit rotation seeded | Lap 3 can close; park can arm |
 | 11 Sep 2026 | Simulator | Model car 1.9 times too slow; lap times 40-48 s against the real 23 s | Speed refitted to the real run | All later simulator results use the fitted speed |
 | 14 Sep 2026 | Team drawing of the nose | Laws tuned for 90-degree side sonars hit the walls on the real car | Side units modelled at 39 and 41 degrees; only the L-R law kept | Simulator uses the drawn geometry |
 | 14 Sep 2026 | Finals build of that day | Car did not move: waited for press-then-release (a toggle never started it), exit PWM below 25, a park that fitted only with PlatformIO flags, silent `while(1)` on IMU failure | Start on any A2 change; PWM floor of 25 outside the park; IDE build; servo wiggle fault code | v20 keeps the start logic and the fault code, and fits the IDE build without extra flags. Its exit keeps PWM 18 from the 6 September build |
@@ -642,7 +644,7 @@ We did not commit this work to git while we did it (section 9.6), so this table 
   - treating a silent side as long;
   - disabling the fix-16 wall clamp.
 
-  The failure needs a corner-exit plan, not another constant.
+  Since no single constant changed the result, our next step for this failure is the corner-exit lane plan in section 9.5.
 
 ### 9.4 Risks and mitigations
 
@@ -732,6 +734,8 @@ TODO(team): confirm the authorship and origin of `Models/WRO_AUMers_main_body_3D
 - [ ] Battery label (cells, capacity) and current draw in four states (section 4.1)
 - [ ] Loop period on the serial monitor
 - [ ] Speed over 1 m at PWM 18, 25, 30 and 55
+- [ ] Gear ratio, drive motor part number and steering servo model
+- [ ] Mechanical changes made to the car since June 2026, each with its date and reason
 
 **Facts to confirm**
 - [ ] Chassis model number (our notes say 284010, the plate sticker reads 284131)
@@ -750,6 +754,9 @@ TODO(team): confirm the authorship and origin of `Models/WRO_AUMers_main_body_3D
 - [ ] Tags and release notes for the national-round and Asia-final versions
 - [ ] Choose a license
 - [ ] Get the Asia final dates and the documentation deadline in writing from the organiser
+- [ ] Confirm with the organiser that the repository link was submitted, and when (rule 7, p.9: three weeks before the competition)
+- [ ] Keep the repository public for at least 12 months after the competition (rule 7, p.9)
+- [ ] Write the engineering journal (PDF or similar), organised by the five Appendix C criteria, and link it from section 1
 - [ ] Print the hard copy for the final (rule 7, p.9)
 
 ## 14. Credits and references
