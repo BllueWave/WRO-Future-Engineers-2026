@@ -749,6 +749,7 @@ TODO(team): confirm the authorship and origin of `Models/WRO_AUMers_main_body_3D
 
 **Repository**
 - [ ] Redraw the wiring diagram with all three sonars, Pixy2, BNO055, start switch and the real power path
+- [ ] Dimensioned top and side drawing of the car, made only from measured values: length, width, height, wheelbase, track, sensor and camera positions (Appendix C, criterion 1)
 - [ ] Translate the control labels of `docs/arena/index.html` to English
 - [ ] Enable GitHub Pages (`main`, root) so the arena link works
 - [ ] Tags and release notes for the national-round and Asia-final versions
