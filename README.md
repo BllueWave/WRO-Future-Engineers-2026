@@ -16,10 +16,10 @@
   <img src="https://img.shields.io/badge/Kuwait%20National%20Round-1st%20place-f58220" alt="Kuwait National Round 2026: 1st place">
 </p>
 
-<p align="center"><sub>The top image is a labelled illustration of our orange car, not a photograph or a CAD export. Photographs of the car from all six sides belong in <a href="Vehicle_Photos/">Vehicle_Photos/</a>.</sub></p>
+<p align="center"><sub>The top image is a labelled illustration of our orange car, not a photograph or a CAD export. Four of its labels are not yet checked against the car (section 13). Photographs of the car from all six sides belong in <a href="Vehicle_Photos/">Vehicle_Photos/</a>.</sub></p>
 
 <!-- TODO(team): confirm whether MAVERICK, the lettering on the body, is the official robot name. Until then this README calls it "the orange car". -->
-<!-- TODO(team): three labels in the illustration are not verified against the car: "WLtoys 284010 chassis plate", "Rear-Wheel Propulsion (1 Motor)" and "Central Support Foot". -->
+<!-- TODO(team): four labels in the illustration are not verified against the car: "WLtoys 284010 chassis plate" (the plate sticker in docs/components.jpg reads 284131), "Rear-Wheel Propulsion (1 Motor)" (the parts photo suggests a shaft to both axles), "Brushed DC 7.4V Drive Motor" (no motor rating is recorded) and "Central Support Foot" (no such part is recorded; rule 11.4 bans ball casters, so a judge may ask about it). -->
 
 We are Blue Wave from Kuwait: Fawaz Alasousi and Dawood AlEneezi, coached by Shinu Mathew. The car we take to the Asia final is the orange car that won the Kuwait national round in June 2026. It is a 1:28-class RC chassis, about 200 × 125 mm, with Ackermann steering and one brushed DC motor on a Cytron MD13S driver. A single Arduino Uno R3 reads three HC-SR04 ultrasonic sensors, a BNO055 IMU and a Pixy2 camera.
 
@@ -40,7 +40,7 @@ Every number below says where it comes from: measured on the car, read from the 
 9. [Engineering log](#9-engineering-log)
 10. [Team](#10-team)
 11. [Results](#11-results)
-12. [Future design study](#12-future-design-study)
+12. [The red body files](#12-the-red-body-files)
 13. [Team TODO checklist](#13-team-todo-checklist)
 14. [Credits and references](#14-credits-and-references)
 
@@ -64,7 +64,7 @@ Appendix C of the 2026 rules (p.44-54) scores the documentation on five criteria
 | Height, mass | **TODO: measure** | Not measured |
 | Rule envelope | at most 300 × 200 × 300 mm and 1.5 kg (rules 11.1, 11.2, p.23) | Rulebook |
 | Chassis | WLtoys 1:28-class RC chassis. **TODO: confirm the model number** | Team |
-| Drive | One brushed DC motor through the chassis gearbox, one driven axle. **TODO: confirm which axle is driven** | Team spec |
+| Drive | One brushed DC motor through the chassis gearbox. **TODO: confirm whether only the rear axle or both axles are driven** | Team spec |
 | Motor driver | Cytron MD13S, PWM on D3, direction on D8 | Firmware |
 | Steering | Hobby servo on D10, Ackermann front axle. Driving range servo 30-160, parking locks 10 and 170 | Firmware |
 | Wheelbase, track, turning radius | **TODO: measure.** The park code assumes a 170 mm radius and marks it "MEASURE" | Not measured |
@@ -97,7 +97,7 @@ Appendix C of the 2026 rules (p.44-54) scores the documentation on five criteria
 <p align="center">
   <img src="docs/components.jpg" width="520" alt="Parts on a bench: Arduino Uno, Cytron MD13S, BNO055 breakout, HC-SR04, boxed Pixy2, steering servo, LiPo battery, jumper wires, RC chassis and a red printed shell">
 </p>
-<p align="center"><sub>Parts photographed in June 2026, before assembly. The red printed shell in this photo is discussed in section 12.</sub></p>
+<p align="center"><sub>Parts before assembly, in a photo committed in June 2026. The red printed shell in this photo is discussed in section 12.</sub></p>
 
 ## 3. Mobility management
 
@@ -115,14 +115,14 @@ TODO(team): write down why we chose this chassis over a scratch-built one. Our J
 
 One brushed DC motor drives the car through the chassis gearbox. The Cytron MD13S takes a PWM signal on D3 and a direction level on D8, with DIR HIGH as forward. The Uno's `analogWrite` is 8-bit, so our race setting of PWM 30 is 30/255 = 11.8 % duty.
 
-**Break-away, measured on this car:** PWM 15 does not move the car from rest, PWM 18 creeps and PWM 25 always moves it. That test changed the code twice:
+**Break-away, measured on this car:** PWM 15 does not move the car from rest, PWM 18 creeps and PWM 25 always moves it. That problem is behind fix 4 in `obstacle_kuwait`, which changed two things that both finals sketches keep:
 
-- the avoid speed went from 15 to 25 in `obstacle_kuwait` (its fix 4);
-- both finals sketches add a stiction kick. Whenever the commanded PWM is above 0 and below 30, the motor gets PWM 55 for the first 70 ms, then 70 ms of PWM 55 every 500 ms.
+- the avoid speed went from 15 to 25;
+- a stiction kick: whenever the commanded PWM is above 0 and below 30, the motor gets PWM 55 for the first 70 ms, then 70 ms of PWM 55 every 500 ms.
 
 **Speed:** we have no encoder. The only real speed anchor is a stopwatch time: the car drove the three Open laps in about 23 s with `open_kuwait` at PWM 30. Our simulator had assumed 520 mm/s at PWM 30 and predicted 40-48 s for that round. Refitted to the real run, it gives v(PWM 30) ≈ 998 mm/s, band 867-1176 mm/s. That is a fit to one timed run, not a direct measurement.
 
-**Speed against reliability** (simulation): running the whole Open round at PWM 37 finished in about 20 s but succeeded in 28 of 40 rounds, against 34 of 40 at PWM 30. So `open_v20` only speeds up (PWM 38) on straights that stayed calm in lap 1. It drops back to PWM 30 while the next corner is still more than 150 cm away, so every corner starts from the speed proven on the mat.
+**Speed against reliability** (simulation): running the whole Open round at PWM 37 finished in about 20 s but succeeded in 28 of 40 rounds, against 34 of 40 at PWM 30. So `open_v20` only speeds up (PWM 38) on straights that stayed calm in lap 1. It drops back to PWM 30 as soon as the front reads 150 cm or less, well before the 48 cm corner trigger, so every corner starts from the speed proven on the mat.
 
 **Torque:** we cannot give a torque figure yet, because the mass, the gear ratio and the motor part number are all unknown. The break-away test above is the only force-related data we have. TODO(team): weigh the car, identify the motor and gear ratio, and time 1 m runs at PWM 18, 25, 30 and 55 in both directions.
 
@@ -165,7 +165,7 @@ The Pixy2 takes its 5 V from the Uno through the ICSP header, because the Pixy2 
 | Drive motor | not measured | TODO |
 | **Logic and sensors before servo and motor** | **about 235 mA** | Sum of the rows above |
 
-TODO(team): measure the battery current with a meter in four states: standing, cruising at PWM 30, break-away, and servo held at full lock. Also record how speed changes as the battery drains. Our simulator assumes the car is 1.3-2.2 times faster on a full battery than on a flat one, and nobody has checked that.
+TODO(team): measure the battery current with a meter in four states: standing, cruising at PWM 30, break-away, and servo held at full lock. Also record how speed changes as the battery drains. Our spec file assumes the car is 1.8 times faster on a full battery than on a flat one (range 1.3-2.2), while the simulator varies speed by only ±12 % per seed. Nobody has checked either number.
 
 **A wiring rule we learned the hard way:** the battery negative must not return through the Arduino header. We once connected a black lead near the Uno power header and got heat and a burnt component. Our wiring rule since then: motor current never returns through the Uno, only signal ground goes to it, and after a wiring fault we check the 5 V to GND resistance with the power off before switching on again.
 
@@ -215,7 +215,7 @@ flowchart LR
 
 **What the 40-degree cant does to us.** The side sensors are not flank sensors. Four consequences shaped the code:
 
-1. **Corner ties.** At the 48 cm front trigger both side units see the same front wall, so left minus right is close to zero and its sign flips from loop to loop. Our national-round Open code broke ties by turning right, which made the direction a coin toss. `open_v20` decides the turn from a vote of the corners already driven (section 5.1).
+1. **Corner ties.** At the 48 cm front trigger both side units see the same front wall, so left minus right is close to zero and its sign flips from loop to loop. `open_kuwait` broke ties by turning right, which made the direction a coin toss. `open_v20` decides the turn from a vote of the corners already driven (section 5.1).
 2. **Drift toward the outer wall** (simulation). Across a 1000 mm corridor the inner unit meets the wall at about 50 degrees incidence and often returns no echo. The code then copies the other side's reading, so the error becomes zero and the car rides about 250-300 mm off the outer wall instead of centred.
 3. **Late pillar sighting** (simulation). After a corner that drift puts the first pillar at a 55-65 degree bearing, outside the Pixy2's 60-degree horizontal view, until it is close. This is the main reason our Obstacle code still misses inner-row pillars (section 9.5).
 4. **Parking needs a separate fit per side** (simulation). Near a parallel wall the two units map to wall distance differently, so the park code keeps its own linear fit for each: `mm = A × cm + B`, with A 5.16 / B 202.5 on the left and A 13.02 / B -50.2 on the right. Both fits come from the simulator and must be measured on the car.
@@ -254,7 +254,7 @@ Rule 9.9 (p.17) forbids sensor calibration during preparation time, and rule 13.
 
 ### 5.1 Open Challenge: `open_v20`
 
-`open_v20` keeps the lane law and the 48 cm corner of `open_kuwait`. Our notes record `open_kuwait` as the national-round Open code, and it drove three laps on the mat in about 23 s at PWM 30. `open_v20` changes three things: how the corner direction is decided, how laps are counted and where the car stops, and which straights may run faster.
+`open_v20` keeps the lane law and the 48 cm corner of `open_kuwait`. Our notes record `open_kuwait` as the national-round Open code, and it drove three laps on the mat in about 23 s at PWM 30. `open_v20` changes four things: how the corner direction is decided, how laps are counted and where the car stops, which straights may run faster, and a wait for the A2 start input (`open_kuwait` drove off on power-up).
 
 ```mermaid
 flowchart TD
@@ -283,7 +283,7 @@ flowchart TD
 
 A U-turn guard holds the servo straight once the car has turned 100 degrees inside one avoid. In our simulator the vote took Open from 21 to 37 successful rounds out of 40 against `open_kuwait`.
 
-**Laps and the finish.** Each loop the heading change, wrapped to ±180 degrees, is added to a total that is never reset. Corner n+1 counts when |total| reaches 90·n + 70 degrees, 20 degrees before the corner is complete, which leaves that much margin for heading drift. After corner 12 the car keeps driving with the same law. Once the front has read more than 180 cm twice (it is looking down the start straight), it stops at the first two readings of 150 cm or less, which puts the nose in the middle of the start straight. A 700 ms backstop after corner 12 stops the car anyway. Our national-round code closed a lap at every 360 degrees instead, and in simulation it sometimes closed lap 3 only at corner 13.
+**Laps and the finish.** Each loop the heading change, wrapped to ±180 degrees, is added to a total that is never reset. Corner n+1 counts when |total| reaches 90·n + 70 degrees, 20 degrees before the corner is complete, which leaves that much margin for heading drift. After corner 12 the car keeps driving with the same law. Once the front has read more than 180 cm twice (it is looking down the start straight), it stops at the first two readings of 150 cm or less, which puts the nose in the middle of the start straight. A 700 ms backstop after corner 12 stops the car anyway. `open_kuwait` closed a lap at every 360 degrees instead, and in simulation it sometimes closed lap 3 only at corner 13.
 
 **Faster straights.** In lap 1 the car records, for each straight, the largest |e| seen mid-straight: more than 700 ms after the corner, with the front reading over 150 cm. In laps 2 and 3, a straight whose lap-1 maximum stayed under 25 cm runs at PWM 38 while the car is centred now (|e| < 18 cm) and the front reads over 150 cm. Nothing is dead-reckoned; the car always slows on a front reading.
 
@@ -352,7 +352,7 @@ The mode manager enters pillar mode after 2 good frames, when 280 ms have passed
 
 - **Corners** use the same urgency law as Open. A side difference over 3 cm picks the side, otherwise the vote decides. After a 100-degree turn inside one avoid, the car drives straight for 400 ms and starts a new avoid reference.
 - **Scan weave.** When no pillar is seen and the car is within 6 cm of centre, a ±5 degree sine with a 1.3 s period sweeps the camera across the frame edges.
-- **Stuck recovery.** If the last front reading is 15 cm or less and the heading has not moved 3 degrees in 0.7 s, the car sets opposite lock and reverses: PWM 55 for 70 ms, then PWM 30 for 450 ms. It then stops for 120 ms. The national-round law never reversed, so a nose-on contact ended the round.
+- **Stuck recovery.** If the last front reading is 15 cm or less and the heading has not moved 3 degrees in 0.7 s, the car sets opposite lock and reverses: PWM 55 for 70 ms, then PWM 30 for 450 ms. It then stops for 120 ms. The 6 September build never reversed, so a nose-on contact at a corner ended its round.
 
 ### 5.3 Parking: the front-wall method
 
@@ -462,7 +462,7 @@ In pillar mode the front sonar still acts: at 48 cm or less it slows the car to 
 ├── Vehicle_Photos/           six-side photo gallery (files TODO)
 ├── videos/                   YouTube links and June 2026 clips
 ├── Schemes/                  June 2026 wiring diagram and pin notes
-└── Models/                   future design study, not the competing car
+└── Models/                   red body files, not the competing car
 ```
 
 ## 7. Build, compile and upload
@@ -551,7 +551,7 @@ None of the calibration tests in our spec file has a recorded result yet. That i
 | `obstacle_kuwait`, 3 laps, no pillar moved | won the national round | ≥ 60 % | 1/60 = 2 % | **FAIL** |
 | 6 September build, lot exit | "excellent" | ≥ 80 % | 58/60 = 97 % | PASS, but only with two unmeasured placement values |
 
-The simulator is harsher than the mat, most of all in the Obstacle Challenge, where it gives our national-winning code 2 %.
+The simulator is harsher than the mat, most of all in the Obstacle Challenge, where it gives `obstacle_kuwait`, which our notes record as the national-round Obstacle code, 2 %.
 
 **The v20 sketches in the simulator:**
 
@@ -613,7 +613,7 @@ We did not commit this work to git while we did it (section 9.6), so this table 
 | June 2026 | National-round code | - | - | 1st place at the Kuwait national round. TODO(team): confirm which files ran that day |
 | Before Sep 2026 | Fixes in `obstacle_kuwait` | Pillar area `w × h` overflowed a 16-bit `int` on the Uno: a serial log printed `area=-9646`, so a pillar filling the frame at about 30 cm was thrown away | Area computed as `long` | Kept in v20 |
 | Before Sep 2026 | Same | The car passed pillars on the wrong side: the steering sent green left and red right, but signature 1 had been trained on red | Signature numbers swapped to red 1, green 2. The June sketch in `src/` still uses green 1, red 2 | Same mapping in v20 |
-| Before Sep 2026 | Same | `blocks[0]` is the largest Pixy2 blob, not the nearest pillar | v20 computes the range of every block and steers on the nearest within 900 mm | - |
+| Before Sep 2026 | Same | `blocks[0]` is the largest Pixy2 blob, not the nearest pillar | Range computed for every block; the nearest pillar within 900 mm steers the car | Kept in v20 |
 | Before Sep 2026 | Same | Avoid speed PWM 15 (5.9 % duty) kept a rolling car rolling but could not restart a stopped one; a push by hand restarted it | Avoid PWM 25 plus a 70 ms kick at PWM 55 | PWM 25 always moves the car in our motor test |
 | Before Sep 2026 | Versions 8-17 | All ten were worse on the mat and were reverted | Rule: no change without a named mechanism (inputs → state → value → wrong action) | Applied to every later change |
 | Before Sep 2026 | Parking versions 14-16 | Parks whose legs ended on sensor readings stalled or drove into the limiter | Timed legs closed on the IMU heading | Became the park architecture |
@@ -622,7 +622,7 @@ We did not commit this work to git while we did it (section 9.6), so this table 
 | 14 Sep 2026 | Team drawing of the nose | Laws tuned for 90-degree side sonars hit the walls on the real car | Side units modelled at 39 and 41 degrees; only the L-R law kept | Simulator uses the drawn geometry |
 | 14 Sep 2026 | Finals build of that day | Car did not move: waited for press-then-release (a toggle never started it), exit PWM below 25, a park that fitted only with PlatformIO flags, silent `while(1)` on IMU failure | Start on any A2 change; PWM floor of 25 outside the park; IDE build; servo wiggle fault code | v20 keeps the start logic and the fault code, and fits the IDE build without extra flags. Its exit keeps PWM 18 from the 6 September build |
 | 15 Sep 2026 | `open_v20` | Corner direction a coin toss at the 48 cm trigger; lap 3 sometimes closed at corner 13 (simulation) | Corner vote; 12 counted corners, then a front-range stop | 37/40 against 21/40 in simulation |
-| 15 Sep 2026 | `obstacle_v20` | The 6 September build had no park and no start input; corner ties always turned right; a nose-on contact ended the round | Front-wall park with a solved entry angle, lap-1 map, corner vote, stuck recovery, A2 start | Exit 119/120, three laps 12/120 in simulation; not yet on the mat |
+| 15 Sep 2026 | `obstacle_v20` | The 6 September build never reached its timed park (fix 26), had no start input, turned right on every corner tie, and ended its round on a nose-on contact | Front-wall park with a solved entry angle, lap-1 map, corner vote, stuck recovery, A2 start | Exit 119/120, three laps 12/120 in simulation; not yet on the mat |
 | In progress | `open_v21` | The four `open_v20` failure types in 8.3 | Fixed path at each corner, stronger direction choice, mid-straight stop locked on the front sensor | Not finished; not documented as done |
 
 ### 9.3 Changes that did not work
@@ -665,7 +665,7 @@ We did not commit this work to git while we did it (section 9.6), so this table 
 
 - **Obstacle: the first pillar after a corner.** In 23 of 24 wrong-side passes we traced in simulation, the pillar needed an inner pass (green counter-clockwise, red clockwise). Most were in the inner row, first in the straight. The mechanism is the drift in section 4.3. The next step is a corner-exit lane plan, taken from the lap-1 map or from the camera during the turn.
 - **Parking accuracy.** The earlier model showed a window of about 37 mm against a positioning scatter of about 24 mm. A rear-facing HC-SR04 would let the reverse leg end on a measurement instead of dead reckoning. That is a hardware change we have not made.
-- **The simulator itself.** It gives our national-winning Obstacle code 2 % while the real car won, so a real serial log of a counter-clockwise Open round and single-sonar wall readings at 150-800 mm are needed before its numbers can be trusted.
+- **The simulator itself.** It gives `obstacle_kuwait` 2 %, although our notes record that code as the national-round winner, so a real serial log of a counter-clockwise Open round and single-sonar wall readings at 150-800 mm are needed before its numbers can be trusted.
 
 ### 9.6 Repository history
 
@@ -707,9 +707,9 @@ TODO(team): tag the 4 June commit `87508ae` as the national-round version and th
 
 The lengths were measured on the copies in [`videos/`](videos/). The Obstacle clip ends while the car is still driving and does not show parking. TODO(team): record both challenges again on the finals code, with the start switch and `PRACTICE 0`, and time the driving part with a stopwatch.
 
-## 12. Future design study
+## 12. The red body files
 
-The red body in [`Models/`](Models/) is a different design from the orange car and **is not the car that competes**. We keep its files in the repository as a design study; `Models/README.md` lists what the files contain.
+The red body in [`Models/`](Models/) is a different design from the orange car and **is not the car that competes**. Its project file is dated 20 November 2025 and the red shell appears in the June 2026 parts photo. `Models/README.md` lists what the files contain.
 
 TODO(team): confirm the authorship and origin of `Models/WRO_AUMers_main_body_3D_Design_v2.3mf` and of the red printed shell in `docs/components.jpg` before the scored commit, and keep them only if they are the team's own work (rule 3.7, p.4).
 
@@ -735,10 +735,10 @@ TODO(team): confirm the authorship and origin of `Models/WRO_AUMers_main_body_3D
 
 **Facts to confirm**
 - [ ] Chassis model number (our notes say 284010, the plate sticker reads 284131)
-- [ ] Which axle is driven
+- [ ] Whether only the rear axle or both axles are driven (the parts photo suggests a shaft running to both)
 - [ ] Pixy2 version 2.0 or 2.1
 - [ ] Real power path and power switch type; start switch fitted on A2
-- [ ] Official robot name (the body reads MAVERICK) and the three unverified labels in the top illustration
+- [ ] Official robot name (the body reads MAVERICK) and the four unverified labels in the top illustration
 - [ ] Dawood AlEneezi's role
 - [ ] Why we chose this chassis, the Arduino-only design, HC-SR04 and Pixy2
 - [ ] Authorship and origin of the `.3mf` file and the red shell (section 12)

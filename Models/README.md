@@ -1,6 +1,6 @@
-# Future design study (not the competing car)
+# Red body files (not the competing car)
 
-**The files in this folder do not describe the orange car that competes at the WRO 2026 Asia final.** They belong to a different design with a red body, which earlier versions of this repository called "Tracer". We keep them as a design study. The competing car is documented in the main [README](../README.md).
+**The files in this folder do not describe the orange car that competes at the WRO 2026 Asia final.** They belong to a different design with a red body, which earlier versions of this repository called "Tracer". The competing car is documented in the main [README](../README.md).
 
 TODO(team): confirm the authorship and origin of both files below before the scored commit, and keep them only if they are the team's own work (rule 3.7, p.4 of the 2026 rules). If the orange car has printed parts of its own, add their files here with a short description of each.
 
