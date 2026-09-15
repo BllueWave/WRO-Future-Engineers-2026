@@ -38,13 +38,23 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 | Distance | 3 × HC-SR04: one straight ahead, one on each nose corner at about 40° from the axis |
 | Heading | BNO055 IMU on I2C (A4, A5) |
 | Camera | Pixy2 on SPI (ICSP header): signature 1 red pillar, 2 green pillar, 3 magenta limiter |
-| Battery | 2S LiPo, 7.4 V nominal |
+| Power | Two batteries: one feeds the Cytron MD13S for the drive motor; the other feeds the Uno's VIN through the main power switch |
 | Start | Waits for the start switch on A2 after power-on (rules 9.10, 9.11) |
 | Speed at PWM 30 | About 1 m/s |
 | Code | Open: 283 lines, 15,136 B flash. Obstacle: 1,103 lines, 29,604 B flash |
 
 <p align="center">
-  <img src="docs/diagrams/system_overview.png" width="860" alt="System overview: the three HC-SR04 sonars, Pixy2 and BNO055 wired to the Arduino Uno R3, which drives the steering servo and the Cytron MD13S motor driver; the 2S LiPo feeds the driver and the Uno through the main power switch">
+  <a href="Vehicle_Photos/README.md"><img src="Vehicle_Photos/left.jpg" height="240" alt="Left side of the car"></a>
+  <a href="Vehicle_Photos/README.md"><img src="Vehicle_Photos/right.jpg" height="240" alt="Right side of the car"></a>
+</p>
+<p align="center">
+  <a href="Vehicle_Photos/README.md"><img src="Vehicle_Photos/front.jpg" height="240" alt="Front of the car: Pixy2 above the nose, three HC-SR04 sonars"></a>
+  <a href="Vehicle_Photos/README.md"><img src="Vehicle_Photos/back.jpg" height="240" alt="Back of the car: main power switch in the rear vents"></a>
+  <a href="Vehicle_Photos/README.md"><img src="Vehicle_Photos/bottom.jpg" height="240" alt="Underside of the car: chassis plate and drive motor"></a>
+</p>
+
+<p align="center">
+  <img src="docs/diagrams/system_overview.png" width="860" alt="System overview: the three HC-SR04 sonars, Pixy2 and BNO055 wired to the Arduino Uno R3, which drives the steering servo and the Cytron MD13S motor driver; one battery feeds the driver, a second feeds the Uno's VIN through the main power switch">
 </p>
 
 <p align="center">
@@ -61,6 +71,7 @@ Scoring reference: Appendix C of the [2026 rules](https://wro-association.org/wp
 | HC-SR04 sonars | They measure the distance to the black walls whatever the colour or light. Three units cover the front and both front corners; the corner units at about 40° see the wall ahead and beside. |
 | Pixy2 | It finds the red, green and magenta signatures on its own processor and sends only block position and size over SPI, so the Uno never handles images. A pillar's block grows as it gets closer, which gives its distance. |
 | BNO055 | It gives the heading we use to count the 12 corners and to end each parking arc on an angle instead of a timer. |
+| Two batteries | The motor draws its current from its own battery, so the current dips when it starts or stalls never pull down the Uno's supply. The cost is a second battery to charge and check before every round. |
 
 More detail and the trade-offs: [Systems thinking and engineering decisions](docs/04-engineering-decisions.md).
 

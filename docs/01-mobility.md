@@ -51,6 +51,11 @@ The end clearance is always (1.5 L - L) / 2 = 0.25 L. Because the lot scales wit
 | Drive | One brushed DC motor through the chassis gearbox | Team notes |
 | Driver | Cytron MD13S, sign-magnitude: speed on PWM D3, direction on D8, DIR HIGH = forward | [Obstacle_Challenge.ino line 55](../src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
 
+<p align="center">
+  <img src="../Vehicle_Photos/bottom.jpg" height="320" alt="Underside of the car: chassis plate, drive motor in the centre, steering knuckles at the front">
+  <img src="../Vehicle_Photos/left.jpg" height="320" alt="Left side of the car: body on the chassis, corner sonar and Pixy2 bracket">
+</p>
+
 ### Why a PWM plus direction driver fits this board
 
 The Uno R3 has PWM on D3, D5, D6, D9, D10 and D11. In our pin map D5, D6 and D9 are sonar lines, and D11 is SPI MOSI for the Pixy2. The Servo library runs on Timer1, which disables `analogWrite` on D9 and D10. That leaves D3 as the only free PWM pin.
@@ -141,6 +146,6 @@ The lettering and logo on the body come from AUMers, the name our club and team 
 
 ## About the exploded view
 
-The image at the top of the README is an illustration of our car. It is not a photograph and not a CAD export. For part names, sizes and sensor angles, this page and the [sensor layout diagram](diagrams/sensor_layout.png) are the reference. The car runs on the four wheels of its chassis.
+The image at the top of the README is an illustration of our car. It is not a photograph and not a CAD export; the photographs are in [Vehicle photos](../Vehicle_Photos/README.md). For part names, sizes and sensor angles, this page and the [sensor layout diagram](diagrams/sensor_layout.png) are the reference. The car runs on the four wheels of its chassis.
 
 <sub>[Back to the README](../README.md) · Next: [Power and sensors](02-power-and-sensors.md)</sub>
