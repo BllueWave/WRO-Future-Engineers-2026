@@ -1,25 +1,25 @@
 # Videos
 
-Rule 7 (p.9 of the 2026 rules) asks for one YouTube video per challenge, public or unlisted, in which the part showing autonomous driving lasts at least 30 s. The YouTube links below are the videos we submit.
+Section 7 of the 2026 rules asks for one YouTube video per challenge, public or unlisted, in which the part showing
+autonomous driving lasts at least 30 s.
 
 ## Challenge videos
 
-<p align="center">
-  <a href="https://youtube.com/shorts/v20ntV0ojf4"><img src="../docs/images/video_open.png" width="49%" alt="Open Challenge video on YouTube"></a>
-  <a href="https://youtube.com/shorts/RS68H3QMw6s"><img src="../docs/images/video_obstacle.png" width="49%" alt="Obstacle Challenge video on YouTube"></a>
-</p>
-
-| Challenge | YouTube | Local copy | Clip length | Autonomous driving |
-|---|---|---|---|---|
-| Open Challenge | https://youtube.com/shorts/v20ntV0ojf4 | - | - | September 2026, the finals car |
-| Obstacle Challenge | https://youtube.com/shorts/RS68H3QMw6s | - | - | September 2026, the finals car |
-
+| Challenge | YouTube | Program | Autonomous driving in the video |
+|---|---|---|---|
+| Open Challenge | link to be added | `BEST_OPEN_14s` | at least two full runs (one run is 14.7 s on our mat) |
+| Obstacle Challenge | link to be added | `obs_v17` | one full run with the park (55.8 s on our mat) |
 
 ## How we film a challenge video
 
-| Challenge | Sketch | What the video shows |
-|---|---|---|
-| Open Challenge | [`Open_Challenge.ino`](../src/Open_Challenge/Open_Challenge.ino), `PRACTICE 0` | The A2 start switch, three laps, and the stop in the start section |
-| Obstacle Challenge | [`Obstacle_Challenge.ino`](../src/Obstacle_Challenge/Obstacle_Challenge.ino), `PRACTICE 0` | The start, three laps, and every pillar passed on its correct side |
+| Challenge | What the video shows |
+|---|---|
+| Open Challenge | the car still in the start section; the start button; three laps; the stop inside the start section. Then a second full run, so the autonomous part is longer than 30 s. |
+| Obstacle Challenge | the car parked in the lot; the start button; the lot exit; three laps with every sign passed on its correct side; the parallel park with all four corners inside. |
 
-Before upload we time the autonomous part with a stopwatch and name the sketch version in the video description. Each link goes in the table above and in the [Results](../README.md#results) section of the main README.
+Both videos are filmed in race mode: radios off, the program started only by the start button. One continuous shot
+per run, no cuts during driving. The video description names the program file and the pack voltage at the start.
+
+Each link goes in the table above and in the [Results](../README.md#results) section of the main README.
+
+<sub>[Back to the README](../README.md)</sub>

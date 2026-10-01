@@ -69,7 +69,7 @@
 
 <div id="hud">
   <h1><span>BLUE WAVE · WRO 2026 Future Engineers</span><button class="btn" id="toggleHud">▾</button></h1>
-  <div class="sub">Field drawn to the 2026 rulebook; every number carries its page. Car <span class="ltr">200 × 125 mm</span>.</div>
+  <div class="sub">Field drawn to the 2026 rulebook; every number carries its page. Car <span class="ltr">224.8 × 111.0 mm</span> (BW-2, CAD).</div>
 
   <h2>Challenge</h2>
   <div class="seg" id="segChallenge">
@@ -123,7 +123,7 @@
     <div><span class="chip" style="background:#f58220"></span>Orange line CMYK(0,60,100,0)</div>
     <div><span class="chip" style="background:#1f4fa8"></span>Blue line CMYK(100,80,0,0)</div>
     <div><span class="chip" style="background:#7c3aed"></span>Dimensions (not printed)</div>
-    <div><span class="chip" style="background:#2563eb"></span>Team car 200×125</div>
+    <div><span class="chip" style="background:#2563eb"></span>Team car 224.8×111.0</div>
   </div>
 
   <details>
@@ -160,8 +160,8 @@
   const PILLAR = [50, 50, 100];      // p.28 13.19
   const LIMITER = [200, 20, 100];    // p.28 13.25, p.8
   const LOT_DEPTH = 200;       // p.8 "width of the parking lot is always 20 cm"
-  const CAR = { L: 200, W: 125, H: 70 };   // team car footprint; height is display only
-  const LOT_LEN = 1.5 * CAR.L; // p.8 "1,5 * length of the robot" = 300
+  const CAR = { L: 224.8, W: 111.0, H: 157.2 };   // BW-2 envelope from the CAD model (not yet measured on the car)
+  const LOT_LEN = 1.5 * CAR.L; // p.8 "1,5 * length of the robot" = 337.2
   const SEAT_ROWS = { i: 400, o: 600 };    // p.27 Fig.11 chain 400|200|400 from interior wall
   const BANDS = [[0, 400], [400, 600], [600, 1000]];
   const COL = { red: '#ee2737', green: '#44d62c', magenta: '#ff00ff',
@@ -447,7 +447,7 @@
       label(1180, 1260, 'line 20 mm');
       if (z) { const zc = P(sec, (z.s0 + z.s1) / 2, (z.d0 + z.d1) / 2 + 70); label(zc[0], zc[1], `zone ${L.face}: ${z.d1 - z.d0}×500`, COL.overlay); }
       if (L.challenge === 'obstacle') {
-        dim(P(sec, 700, 760), P(sec, 1000, 760), '300 = 1.5×200');
+        dim(P(sec, 1000 - LOT_LEN, 760), P(sec, 1000, 760), `${LOT_LEN.toFixed(1)} = 1.5×${CAR.L}`);
         dim(P(sec, 640, 800), P(sec, 640, 1000), '200');
       }
       void sp;
@@ -542,14 +542,14 @@
       const zw = L.zone.d1 - L.zone.d0;
       rows.push(['Start zone', `#${L.face}: ${zw} × 500 mm`, 'p.13 Fig.7c']);
       const fits = CAR.W <= zw && CAR.L <= 500;
-      rows.push(['Car fully inside the zone', fits ? `<span class="ok">yes</span> 200×125 ⊂ ${zw}×500` : '<span class="warn">no</span>', 'p.17 9.7']);
+      rows.push(['Car fully inside the zone', fits ? `<span class="ok">yes</span> ${CAR.W}×${CAR.L} ⊂ ${zw}×500` : '<span class="warn">no</span>', 'p.17 9.7']);
     }
     if (L.challenge === 'obstacle') {
       const red = L.signs.filter(s => s.colour === 'red').length, green = L.signs.length - red;
       rows.push(['Pillars', `${L.signs.length} (red ${red} / green ${green})`, 'p.28 13.20']);
       rows.push(['Cards', Object.keys(L.cards).map(k => `${k}#${L.cards[k]}`).join(' · '), 'p.15']);
-      rows.push(['Parking lot', `${LOT_LEN} × ${LOT_DEPTH} mm (1.5 × 200)`, 'p.8']);
-      rows.push(['Lot clearance', `${(LOT_LEN - CAR.L) / 2} mm each end · ${LOT_DEPTH - CAR.W} mm across`, 'p.8']);
+      rows.push(['Parking lot', `${LOT_LEN.toFixed(1)} × ${LOT_DEPTH} mm (1.5 × ${CAR.L})`, 'p.8']);
+      rows.push(['Lot clearance', `${((LOT_LEN - CAR.L) / 2).toFixed(1)} mm each end · ${(LOT_DEPTH - CAR.W).toFixed(1)} mm across`, 'p.8']);
     }
     rows.push(['Car pose (x, y)', `${Math.round(L.car[0])}, ${Math.round(L.car[1])} mm · ${Math.round(L.carYaw * 180 / Math.PI)}°`, 'centre, +y north']);
     document.getElementById('meas').innerHTML = rows.map(([a, b, p]) => `<tr><td>${a}</td><td class="v">${b}</td><td class="p">${p}</td></tr>`).join('');
@@ -585,7 +585,7 @@
     ['Red / green', 'RGB(238,39,55) / RGB(68,214,44)', 'p.28 13.21–13.22'],
     ['Pillar count', 'up to 7 of each colour', 'p.28 13.20'],
     ['Parking limiter', '200 × 20 × 100 · RGB(255,0,255)', 'p.28 13.25, 13.27 · p.8'],
-    ['Parking lot', 'depth 200 · length 1.5 × robot length = 300', 'p.8 Fig.4'],
+    ['Parking lot', 'depth 200 · length 1.5 × robot length = 337.2', 'p.8 Fig.4'],
     ['Right limiter', 'directly next to the dotted line', 'p.8'],
     ['Meaning', 'red = keep right · green = keep left', 'p.6'],
     ['Pillars in the parking section', 'move to the row nearer the inner wall', 'p.16 Fig.8e'],

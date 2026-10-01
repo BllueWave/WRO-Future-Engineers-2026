@@ -1,13 +1,17 @@
 # Test sheet
 
-One row per round on the mat. Print it, fill it in by hand, and keep the sheets with the date. Bench-check step 10 in [Build, test and reproduce](05-build-test-reproduce.md#ten-minute-bench-check) fills the battery columns before the first round of a session.
+One row per run on the mat. Print it, fill it in by hand, and keep the sheets with the date. The run ID is the name
+of the run's log file; the pack voltage is read with the car still before the run. The bench check in
+[Build, test and reproduce](05-build-test-reproduce.md#bench-check-before-a-round) comes before the first run of a
+session.
 
-| Date | Sketch and version | Challenge | Draw (direction, corridors, pillars) | Start (zone or lot) | Battery 1 V | Battery 2 V | Laps | Time (s) | Pillars touched | Park (exit, full, partial, none) | Notes |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
-| | | | | | | | | | | | |
+| Date | Run ID | Program and preset | Challenge | Direction | Corridors / signs drawn | Start (section or lot) | Pack V | Laps | Time (s) | Signs wrong side / touched | Park (full, partial, none) | One change from the last run | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | | | | |
+| | | | | | | | | | | | | | |
+| | | | | | | | | | | | | | |
+| | | | | | | | | | | | | | |
+| | | | | | | | | | | | | | |
+| | | | | | | | | | | | | | |
 
 <sub>[Back to the README](../README.md)</sub>

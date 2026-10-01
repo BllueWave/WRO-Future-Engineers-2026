@@ -1,287 +1,198 @@
 # Build, test and reproduce
 
-Both sketches compile with Arduino IDE 2.3.10 to 15,136 B and 29,604 B of the Uno's 32,256 B flash.
-Our mat results come from our earlier builds, and every v20 result comes from our simulator.
+Appendix C criterion 5. What to buy and print, how to set up the software, how we test, every mat result with its
+run ID, and how to repeat each number on these pages.
 
-<sub>[Back to the README](../README.md) · Criterion 5 of 5 · Previous: [Engineering decisions](04-engineering-decisions.md)</sub>
-
-## Evidence
-
-| Claim | Where to check |
-|---|---|
-| Both sketches compile with the Arduino IDE's compiler: 15,136 B and 29,604 B of 32,256 B | [Expected sizes](#expected-sizes); compiled on 15 Sep 2026 |
-| Exact library versions | `arduino-cli lib list` on our development PC, 15 Sep 2026 |
-| Every signal pin | [diagrams/wiring_pinmap.png](diagrams/wiring_pinmap.png); [Obstacle_Challenge.ino lines 51-56](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56) |
-| The car waits for the start input | `#define PRACTICE 0`, [Open line 36](../src/Open_Challenge/Open_Challenge.ino#L36), [Obstacle line 62](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L62); step 7 of the [bench check](#ten-minute-bench-check) |
-| Simulation results carry their fidelity limits | [Simulation results](#simulation-results) |
-| Rulebook field model | [`docs/arena/`](arena/README.md) |
+Tags: **MAT** measured on the car; **FIT** fitted from mat run logs; **SIM** simulator; **CAD** body model; **EST**
+estimate or listing value.
 
 ## Bill of materials
 
-| Qty | Part | Job | Connection |
+| Part | Model | Role | Mass |
 |---|---|---|---|
-| 1 | Arduino Uno R3 (ATmega328P, 16 MHz) | Runs one challenge sketch at a time | USB for upload and serial |
-| 1 | Cytron MD13S motor driver | Drives the motor from PWM and direction | PWM D3, DIR D8; power input from battery 1 |
-| 1 | 130-size brushed DC motor, the chassis's own | Four-wheel drive through a 17:29 first stage and a propshaft | MD13S output |
-| 1 | 9 g class micro servo, 3-wire | Ackermann steering | Signal D10, 5 V from the Uno |
-| 1 | WLtoys 284131 1:28 4WD chassis with wheels, gearbox, differentials and steering linkage | Frame and drivetrain | - |
-| 3 | HC-SR04 ultrasonic sensor | Front, left and right distance | D13/D7, D4/D5, D2/D9 |
-| 1 | Pixy2 camera | Pillar colour, bearing and range | ICSP header (SPI) |
-| 1 | BNO055 IMU breakout | Heading | A4 (SDA), A5 (SCL) |
-| 1 | Battery 1: 2S LiPo, 7.4 V nominal, 400 mAh | Powers only the drive motor | Straight to the MD13S power input; see [power tree](02-power-and-sensors.md#power) |
-| 1 | Battery 2: 2S LiPo, 7.4 V nominal, 400 mAh | Powers the Uno; the Uno's regulator makes 5 V for the sensors and the Pixy2 | Main power switch, then the Uno's VIN |
-| 1 | Main power switch | Rule 9.10: one switch turns the car on | Between battery 2 and the Uno's VIN |
-| 1 | Start switch or push button | Rule 9.11: one start button | A2 to GND |
-| 1 set | Printed body and sensor brackets | Mounting | [`Models/BlueWave_main_body_v2.3mf`](../Models/BlueWave_main_body_v2.3mf): main body, two ultrasonic brackets, one ultrasonic and Pixy2 bracket, one Pixy2 bracket |
+| Chassis | WLtoys 1:28, model 284131, four-wheel drive, with its stock tyres, 130-size motor, micro servo, propshaft and differentials | drive and steering | 125 g with motor and servo (EST) |
+| Computer | Raspberry Pi 5 with the Active Cooler | perception, planning, control | 66 g (EST) |
+| Controller board | Hiwonder RRC Lite (STM32F407), stock firmware | servo, IMU, buzzer, keys; powers the Pi | 32 g (vendor) |
+| Motor driver | Cytron MD13S (6–30 V, 13 A) | PWM and direction drive of the motor | 20 g |
+| Lidar | LDROBOT LD19 with its USB serial adapter | 360° range scan | 47 g without cable (vendor) |
+| Camera | Angstrong HP60C RGB-D, USB-C | colour of signs and limitations | 56.2 g (EST) |
+| Battery | Hiwonder 7.4 V 2200 mAh 10C (2 × 18650, protection board), DC 5.5 × 2.5 mm charge lead, 8.4 V 2 A charger | power | 105 g (EST) |
+| Power switch | 16 mm latching push switch | the one power switch | 12 g (EST) |
+| Start button | 12 mm momentary push button | the one start button | 5 g (EST) |
+| Cables | USB-C to USB-C rated 5 A (board to Pi); USB cables for lidar and camera; Grove cable to the MD13S; jumper for the body strap | | |
+| Printed body | 5 PETG parts, see [Models](../Models/README.md) | body, lidar bay, camera mount | 157 g of PETG (EST) |
 
-<p align="center">
-  <img src="components.jpg" width="560" alt="The parts before assembly: the RC chassis, the Pixy2 in its box, an HC-SR04, the 2S LiPo, the Cytron MD13S, the BNO055 breakout, the Arduino Uno R3, the steering servo and jumper wires">
-</p>
+## Printed parts
+
+Five parts, PETG, 0.4 mm nozzle; settings and files in [Models](../Models/README.md). Print the tower with its brim
+and the support enforcer under its foot; parts 02, 05 and 07 need no supports. Print time for parts 02, 04, 05 and 07 is
+about 353 min (EST, slicer).
 
 ## Wiring
 
-<p align="center">
-  <a href="../Schemes/wiring_schematic.png"><img src="../Schemes/wiring_schematic.png" width="100%" alt="Wiring schematic: the Arduino Uno R3 with the front HC-SR04 on D13 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
-</p>
+Pin table and schematic: [Schemes](../Schemes/README.md). The short version:
 
-<p align="center">
-  <img src="diagrams/wiring_pinmap.png" width="760" alt="Wiring pin map: each HC-SR04 TRIG and ECHO pin, the start switch on A2, MD13S PWM on D3 and DIR on D8, servo on D10, BNO055 on A4 and A5, Pixy2 on the ICSP header, and where these pins sit on the Uno R3">
-</p>
+1. Pack positive → power switch → one splice to the RRC Lite power input and the MD13S V+. Pack negative → one splice
+   to both.
+2. RRC Lite 5 V USB-C output → Pi 5 USB-C, with a 5 A cable.
+3. Pi GPIO12 (pin 32) → MD13S PWM, GPIO16 (pin 36) → MD13S DIR, pin 34 → MD13S signal ground.
+4. Start button between GPIO17 (pin 11) and GND (pin 9). Body strap between GPIO5 (pin 29) and GND (pin 30).
+5. Steering servo on RRC Lite PWM port 3, with the port's supply jumper at 5 V (measure 4.8–5.2 V before plugging the
+   servo).
+6. RRC Lite, LD19 and HP60C to the Pi's USB ports.
 
-<details>
-<summary>Pin table (identical in both sketches)</summary>
+## Software set-up
 
-| Function | Uno pin | Mode | Source line |
-|---|---|---|---|
-| HC-SR04 left TRIG / ECHO | D4 / D5 | NewPing | [51](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L51) |
-| HC-SR04 right TRIG / ECHO | D2 / D9 | NewPing | [52](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L52) |
-| HC-SR04 front TRIG / ECHO | D13 / D7 | NewPing, 400 cm limit | [53](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L53) |
-| Steering servo signal | D10 | Servo library | [54](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L54) |
-| MD13S PWM / DIR | D3 / D8, DIR HIGH = forward | `analogWrite` / `digitalWrite` | [55](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L55) |
-| Start switch | A2 to GND | `INPUT_PULLUP` | [56](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L56) |
-| BNO055 SDA / SCL | A4 / A5 | I2C, 25 ms bus timeout with reset | [299](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L299) |
-| Pixy2 | ICSP header: MOSI D11, MISO D12, SCK D13 | SPI | Pixy2 library `Link2SPI` |
-| Serial debug | D0 / D1 | 115200 baud | [296](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L296) |
-| Free | A0, A1, A3, D6 | - | - |
+Commands run on the laptop from `src/`, in Git Bash or cmd; `py -3` is the Windows Python launcher (`python3`
+elsewhere). Every command is described in [src/README.md](../src/README.md#running-on-the-robot).
 
-</details>
+### Raspberry Pi 5, once
 
-The schematic, the pin map and the table above are the wiring reference for this car. [`Schemes/`](../Schemes/README.md) holds the schematic, its editable SVG source, a ground table, and the June 2026 Fritzing drawing in an archive folder. The supply side is also on the [power tree](02-power-and-sensors.md#power):
+1. On a fresh Raspberry Pi OS Lite (64-bit) card, run `os/setup_bluewave_os.sh`: it installs `python3-numpy`,
+   `python3-opencv`, `python3-serial` and `python3-lgpio` from apt, the udev rule, and the development and race
+   services. On Hiwonder's stock card, run `os/install_on_stock.sh` instead; it keeps Hiwonder's container, which holds
+   the HP60C driver our code reads the colour stream from.
+2. The RRC Lite keeps Hiwonder's firmware. Nothing is compiled or flashed: the programs are Python and load at the start
+   of a run.
 
-- Battery 1 connects straight to the Cytron MD13S power input and powers only the drive motor.
-- Battery 2 goes through the main power switch to the Uno's VIN. The Uno's on-board regulator makes 5 V, and the sensors and the Pixy2 (through the ICSP header) take their 5 V from the Uno, and so does the steering servo.
-- The Uno drives the MD13S PWM input from D3 and DIR from D8.
+### Each session
 
-One rule applies to every wiring job: motor current stays on battery 1 and never returns through the Uno header, and after any wiring fault we measure 5 V to GND with the power off.
+1. `py -3 tools/bw.py deploy` copies `bluewave/`, `programs/`, `race/` and `profiles/` to the car.
+2. `py -3 tools/bw.py body wltoys_bw2` applies the car's calibration file and checks the body strap.
+3. With the car still: `py -3 tools/bw.py preflight pitch` with one sign 500 mm ahead of the bumper, then
+   `py -3 tools/bw.py preflight` until every row says GO.
+4. Development runs: `py -3 tools/bw.py run BEST_OPEN_14s --wait-button` or `py -3 tools/bw.py run obs_v17 --wait-button`,
+   then `py -3 tools/bw.py pull RUN_ID` and `py -3 tools/bw.py analyze latest`.
+5. After any change to the car, repeat the calibrations in [Power and sensors](02-power-and-sensors.md#calibration)
+   and write the new numbers into `profiles/wltoys_bw2.json`.
 
-## Build and upload
+### Race mode
 
-We upload from the Arduino IDE, so the IDE's compiler is our reference. An earlier park build fitted in flash with PlatformIO's flags but not in the IDE ([decision log](04-engineering-decisions.md#decision-log)).
+1. Choose the programs and the round:
+   `py -3 tools/bw.py apply race.program= race.programs.open=BEST_OPEN_14s race.programs.obstacle=obs_v17 race.challenge=open`
+   (`race.challenge=obstacle` for the Obstacle round).
+2. `py -3 tools/bw.py mode race`, then switch the car off.
+3. Place the car and switch on. At boot `os/bluewave-mode.sh` runs `rfkill block all` and starts `race/race_main.py`,
+   which loads the program, computes what it can before the car moves, and beeps twice (READY). Nothing moves until the
+   start button is pressed and released.
+4. The run is written to `runs/<time>-race-<program>.jsonl` on the car. A long press of the board's second key returns
+   to development mode (radios on).
 
-### Software versions
+### Laptop tools
 
-Installed on our development PC on 15 September 2026:
+| Command (from `src/`) | What it does |
+|---|---|
+| `py -3 -m pip install -r requirements.txt` | the simulator's packages (numpy, OpenCV, SciPy for the plant fit) |
+| `py -3 tools/bw.py status` | pack voltage and board state |
+| `py -3 tools/bw.py stop` | stops the car |
+| `py -3 tools/sim_run.py <program> --profile wltoys_bw2 --mat1001 ...` | the simulator with the mat-fitted plant |
+| `py -3 tools/fit_plant.py --bias-from corners` | refits the plant from run logs |
 
-| Item | Version | Used for |
-|---|---|---|
-| Arduino IDE | 2.3.10 (bundled `arduino-cli` 1.5.1) | Build and upload |
-| Arduino AVR Boards core | 1.8.8 | Board `arduino:avr:uno` |
-| Servo | 1.3.0 | Steering servo |
-| Wire | bundled with the core | I2C to the BNO055 |
-| Adafruit BNO055 | 1.6.4 | IMU |
-| Adafruit Unified Sensor | 1.1.15 | Required by Adafruit BNO055 |
-| Adafruit BusIO | 1.17.4 | Installed with the Adafruit libraries |
-| NewPing | 1.9.7 | HC-SR04 timing |
-| Pixy2 | no version metadata | Pixy2 Arduino library, installed by hand into the libraries folder |
+## Bench check before a round
 
-The upload laptop must have the same versions; step 1 of the bench check compares them.
+| Step | Pass when |
+|---|---|
+| Pack voltage, car still | 7.4 V or more |
+| Gyro bias, car still | measured and stored for the session |
+| Camera pitch: one sign centred, its near face 500 mm from the front bumper, car still | GO |
+| Lidar: scan direction and offset match the calibration | no halt at program start |
+| Colours under the venue light | red, green and magenta limitations each found on a test frame |
+| Start position | in the start section (Open) or in the lot parallel to the wall (Obstacle) |
+| Race mode | two beeps, then still until the start button |
 
-### Steps
-
-1. **Board core.** In the Boards Manager install *Arduino AVR Boards* 1.8.8. Select *Arduino Uno*.
-2. **Libraries.** In the Library Manager install the versions in the table. Copy the Pixy2 Arduino library folder into `Documents/Arduino/libraries/`, then rename `ZumoBuzzer.cpp` and `ZumoMotors.cpp` in that folder to `ZumoBuzzer.cpp.bak` and `ZumoMotors.cpp.bak`.
-3. **Open a sketch.** `src/Open_Challenge/Open_Challenge.ino` for the Open Challenge or `src/Obstacle_Challenge/Obstacle_Challenge.ino` for the Obstacle Challenge. The folder name matches the file name, as the IDE requires.
-4. **Check the start mode.** Line 36 in Open and line 62 in Obstacle must read `#define PRACTICE 0`. `PRACTICE 1` also starts the car 3 s after power-up, which breaks rule 9.11. We use it only on a practice table.
-5. **Verify.** The output must match the sizes below.
-6. **Upload.** Connect the Uno over USB, select its port, press *Upload*.
-7. **Pixy2 signatures.** In PixyMon, train signature 1 on a red pillar, 2 on a green pillar and 3 on a magenta limiter, under the light where the car will run ([calibration](02-power-and-sensors.md#calibration-procedures)).
-8. **Bench check** below.
-
-### Expected sizes
-
-Compiled on 15 Sep 2026 with the IDE's own `arduino-cli` 1.5.1 and AVR core 1.8.8, from the files in `src/`, each with a fresh build folder:
-
-| Build | `Open_Challenge.ino` | `Obstacle_Challenge.ino` |
-|---|---|---|
-| Stock compiler flags, Zumo files renamed (steps 1-5) | 15,136 B (46 %), RAM 721 B | 29,604 B (91 %), RAM 818 B |
-| Stock compiler flags, Pixy2 library as downloaded | 16,810 B (52 %), RAM 778 B | 31,278 B (96 %), RAM 875 B |
-| Our PC's extra flags, Zumo files renamed | 14,630 B (45 %), RAM 721 B | 28,682 B (88 %), RAM 818 B |
-
-The Pixy2 Arduino library ships two extra source files, `ZumoBuzzer.cpp` and `ZumoMotors.cpp`. Neither sketch calls them, but with the files in place each build is 1,674 B of flash and 57 B of RAM larger. Both sketches still fit either way.
-
-Our development PC also has `platform.local.txt` in `Arduino15/packages/arduino/hardware/avr/1.8.8/`, which adds `-mcall-prologues -mrelax`. Neither sketch needs that file. If a build reports a different size on another PC, check the Zumo files and this file first.
-
-### From a terminal
-
-The same build with the `arduino-cli` bundled in the IDE (Windows path shown):
-
-```sh
-CLI="C:/Users/<you>/AppData/Local/Programs/Arduino IDE/resources/app/lib/backend/resources/arduino-cli.exe"
-"$CLI" compile --fqbn arduino:avr:uno src/Obstacle_Challenge
-"$CLI" upload  --fqbn arduino:avr:uno -p COM5 src/Obstacle_Challenge
-```
-
-Replace `COM5` with the Uno's port. To reproduce the stock-flag sizes on a PC that has `platform.local.txt`, add `--build-property "compiler.c.extra_flags=" --build-property "compiler.cpp.extra_flags=" --build-property "compiler.c.elf.extra_flags="` and a fresh `--build-path`.
-
-## Ten-minute bench check
-
-Car on a stand with all four wheels off the table, both batteries charged and battery 1 connected to the MD13S, serial monitor at 115200 baud.
-
-| # | Time | Check | Pass |
-|---|---|---|---|
-| 1 | 1 min | Library versions on the upload laptop (Library Manager, or `arduino-cli lib list`) | Versions match the table above |
-| 2 | 1 min | Verify the sketch | Sizes match the table above; `#define PRACTICE 0` |
-| 3 | 1 min | Upload, then switch on with the main switch | One servo wiggle. Two wiggles repeating: BNO055 not answering, check A4/A5 |
-| 4 | 1 min | Obstacle sketch: read the serial monitor | `WAIT L .. R .. F .. yaw ..` every 400 ms |
-| 5 | 1 min | Hand 20 cm in front of each sonar in turn; nose square to a wall at a taped 50 cm | `L`, `R` and `F` each change; `F` reads about 51 |
-| 6 | 1 min | Turn the car clockwise by hand | `yaw` increases |
-| 7 | 1 min | Wait 5 s after power-on | Wheels do not turn |
-| 8 | 1 min | Change the A2 switch | Obstacle: `outer wall = LEFT/RIGHT` prints, then the servo alternates full locks. Open: the drive wheels turn |
-| 9 | 1 min | PixyMon with a red, a green and a magenta object at 900 mm | Boxes with signatures 1, 2 and 3 |
-| 10 | 1 min | Voltage of battery 1 and battery 2 with a meter, written on the test sheet | Two numbers: battery 1 so speed results can be matched to charge, battery 2 because a flat battery 2 resets the Uno |
+The [test sheet](test-sheet.md) has one row per round.
 
 ## How we test
 
-1. Bench checks above, before every session.
-2. Seeded batches in our simulator, `real2`, each change compared against the previous version on the same seeds ([how we tune](03-software-and-strategy.md#how-we-tune)).
-3. Webots replays of selected simulated runs, to watch a failure in 3D.
-4. The mat. New sketches run in practice time first; the fallback rule is in the [risk table](04-engineering-decisions.md#risks-and-mitigations).
+| Level | Tool | What it gives |
+|---|---|---|
+| Component tests on the car | duty sweep, coast, turn radius, servo sweep, camera pitch, lidar tilt, field check, still check | the calibration numbers in `profiles/wltoys_bw2.json` |
+| Unit tests | development test suite, run on 2026-10-01: test_units 23 of 23, test_body 19 of 19, test_fast_drive 11 of 11, test_wltoys 29 of 29 | the code paths without the car |
+| Calibrated simulator | `tools/sim_run.py --mat1001`: the plant fitted to 20 mat run logs of 2026-09-30 and 2026-10-01, a rendered camera, the field with chosen corridors and signs | program changes compared before a mat run |
+| Simulation queue | at most 3 real-time simulations at once, started only below 80 % CPU; each result stamped TRUSTED or SUSPECT | results that are not distorted by a loaded machine |
+| Mat runs | one change per run, same start pose, known pack; stop after two similar failures or a pack under 7.4 V; about 60 s between runs | the results below |
+| After each run | the run log; a crash map (where on the field and in which program state an incident happened); the IMU black box (contact or jolt) | what to change next |
 
-A mat test of an Obstacle sketch is 20 runs from legal random starts. For each run we record the exit, laps, pillars touched and park result, and we report the success rate.
+The simulator had to pass a gate before we used it: it must reproduce mat results it was not fitted to choose. It
+reproduced `open_v2_25s` blocking clockwise after one corner and `open_v4` and `BEST_OPEN` finishing clean. The old,
+unfitted plant had passed `open_v2_25s` clockwise, which the mat did not.
 
 ## Results on the mat
 
-| Date | Code | What happened |
-|---|---|---|
-| June 2026 | National-round code | 1st place, 61 points, Kuwait national round |
-| Before Sep 2026 | Motor test | PWM 15 does not start the car from rest, 18 creeps, 25 always moves it |
-| 2 Sep 2026 | `obstacle_kuwait`, as listed in our notes | Three full Obstacle laps with one light touch on one pillar |
-| 6 Sep 2026 | 6 September parking build | Lot exit worked (our notes: excellent); best Obstacle driving so far, with light scrapes; did not park (lap counter, fixed as fix 26) |
-| By 11 Sep 2026 | `open_kuwait`, PWM 30 | Three Open laps in about 23 s |
-| 14 Sep 2026 | Finals build of that day | The car did not move; four causes found and fixed ([version history](04-engineering-decisions.md#version-history)) |
+Practice mat, all corridors 1000 mm, 2026-09-30 and 2026-10-01. Times are the program's own clock. Pack = first
+voltage in the log.
+
+### Open Challenge (3 laps, 12 of 12 corners, stop inside the start section in every row)
+
+| Program | Run ID | Direction | Time | Pack |
+|---|---|---|---|---|
+| **`BEST_OPEN_14s`** (`open_v7`, preset `l2`) | `20261001-161301.412-open_v7` | CCW | **14.7 s** | 8.05 V |
+| `open_v7` `l2`, trim −4.6° | `20261001-161351.882-open_v7` | CCW | 15.0 s | 8.05 V |
+| `open_v7` `l1` | `20261001-161218.085-open_v7` | CCW | 16.0 s | 8.06 V |
+| `open_v7` `fast7` | `20261001-161418.641-open_v7` | CCW | 16.3 s | 8.06 V |
+| `open_v6` (`BEST_OPEN`) | `20261001-011031.386-open_v6` | CCW | 18.7 s | 7.04 V |
+| `open_v5_18s` | `20261001-010507.423-open_v5` | CW | 18.8 s | 7.10 V |
+| `open_v4` | `20261001-001646.802-open_v4` | CW | 23.3 s | 6.40 V |
+| `open_v4` | `20261001-005127.677-open_v4` | CW | 26.3 s | 7.28 V |
+| `open_v4` | `20261001-005755.103-open_v4` | CCW | 28.6 s | 7.18 V |
+| `open_v2_25s` | `20260930-235056.569-open_fast_v2` | CCW | 25.2 s | 7.01 V |
+
+The 14.7 s run in numbers: top speed 1.39 m/s, peak horizontal acceleration 0.56 g, control loop 99th percentile
+32.0 ms, speed observer median error 0.01 m/s, stop at 1541 mm from the wall ahead inside the 1182–1957 mm start
+window.
+
+### Obstacle Challenge (start in the lot, 3 laps, 6 signs, parallel park; counter-clockwise; all 4 corners in the lot in every row)
+
+| Program | Run ID | Time | Pack |
+|---|---|---|---|
+| **`obs_v17`** | `20261001-222840.106-obs_v17` | **55.8 s** | 8.25 V |
+| `obs_v13` | `20261001-203331.245-obs_v13` | 57.6 s | 6.80 V |
+| `obs_v4` | `20261001-171309.381-obs_v4` | 67.6 s | 7.17 V |
+| `obs_v12` | `20261001-202156.652-obs_v12` | 68.2 s | 7.00 V |
+| `obs_v3` | `20261001-165354.604-obs_v3` | 69.4 s | 7.45 V |
+| `obs_v3` | `20261001-165946.260-obs_v3` | 71.2 s | 7.36 V |
+| `obs_v5` | `20261001-173009.016-obs_v5` | 72.6 s | 6.99 V |
+| `obs_v11` | `20261001-201055.680-obs_v11` | 73.3 s | 7.10 V |
+
+Sign layout on the mat in these runs: 1.0 green, 1.2 red, 2.0 green, 2.2 red, 3.0 green, 3.2 green. On 2026-10-01,
+8 of 18 Obstacle runs ended with a full park; the other 10 were development runs listed in
+[Engineering decisions](04-engineering-decisions.md#version-history).
 
 ## Simulation results
 
-> The simulator is harsher than the real car and passes one of its three fidelity gates (table below). We use its numbers only to compare code versions.
+SIM, calibrated plant `plant_mat1001`, one run each, all TRUSTED by the simulation queue.
 
-### What the simulator is
-
-`real2` compiles the unchanged `.ino` with a PC compiler and runs it against a model of our car. Only `while(1);` is rewritten, to a halt. The model has:
-
-- the 200 × 125 mm outline, side sonars at 39 and 41 degrees;
-- HC-SR04 acoustics, including a 38-60 ms hold when no echo returns;
-- a Pixy2 at 60 frames per second, a BNO055 with drift and noise, the time cost of serial printing;
-- tyre grip and wall contact.
-
-Each seed randomises the turning radius (±15 %), speed (±12 %), break-away (PWM 16-18), servo speed, start pose and sonar dropout. The simulator runs in our development workspace.
-
-### Fidelity gates
-
-The gates test whether the model reproduces what the real car did (calibration F3, 60 seeds from 10,500,000).
-
-| Gate | Real car | Target | Simulator | Verdict |
-|---|---|---|---|---|
-| `open_kuwait`, 3 laps | Reliable | ≥ 80 % | 33/60 = 55 % (clockwise 77 %, counter-clockwise 24 %) | Fail |
-| `obstacle_kuwait`, 3 laps, no pillar moved | Three laps, one light touch, 2 Sep 2026 | ≥ 60 % | 1/60 = 2 % | Fail |
-| 6 September build, lot exit | Worked on 6 Sep 2026 | ≥ 80 % | 58/60 = 97 % | Pass |
-
-Both failed gates score below the real car, 55 % for Open and 2 % for Obstacle, so the simulator is harsher than the car.
-
-### The v20 sketches
-
-| Sketch | Test | Result (simulation) |
-|---|---|---|
-| Open v20 | Paired with `open_kuwait` on the same seeds | 37/40 against 21/40 |
-| Open v20 | Final file, 40 fresh seeds from 9,100,000 | 36/40; lap-3 median 25.6 s; 0.1 wall grazes per run |
-| Open v20 | All 32 draw cells (16 corridor combinations × 2 directions), 320 runs | 287/320 = 90 % scored 30/30; lap-3 median 26.0 s; 0.14 grazes per run |
-| Open v20 | Calibration F3, 60 seeds | 55/60 = 92 % |
-| Obstacle v20 | 60 lot starts from 9,200,000 | Exit 60/60; three laps 1/60; endings: wrong-side pass 35, reversed 8, limiter 10 |
-| Obstacle v20 | 120 lot starts from 10,500,000, F3 | Exit 119/120; three laps 12/120; of those, 3 partial parks and 0 full |
-| Obstacle v20 | Park only, from the lap-3 handover pose, 16 runs | 4 full parks; limiter touched in about half |
-
-The 37/40 comes from the paired comparison during development; the final file on fresh seeds scored 36/40, and that is the number we quote for v20. The gap between 1/60 and 12/120 three-lap Obstacle rounds comes from the seed blocks, not from the calibration.
-
-<details>
-<summary>Where Open v20 fails: 33 of 320 runs</summary>
-
-| Failure | Runs |
-|---|---|
-| Wall crash mid-round | 11 |
-| Wrong turn direction | 8 |
-| At the first corner (5 stuck, 1 crash) | 6 |
-| Three laps but stopped outside the start section (27 points) | 6 |
-| Other | 2 |
-
-| Weakest corridor cell | Direction | Success |
-|---|---|---|
-| 600-1000-1000-600 | Counter-clockwise | 7/11 |
-| 600-1000-1000-1000 | Clockwise | 7/10 |
-| 600-1000-600-1000 | Counter-clockwise | 8/11 |
-
-</details>
-
-### Webots replays
-
-Webots draws the rulebook field and moves the car along a path logged by `real2`. It is a kinematic replay with no physics, and the verdict on screen is copied from our arena scorer. The seven v20 replays:
-
-1. Open, clockwise (seed 7100007)
-2. Open, counter-clockwise (seed 7100003)
-3. Obstacle, three laps, no park, counter-clockwise (seed 6200015)
-4. Obstacle, three laps, no park, clockwise (seed 6200035)
-5. Obstacle, the typical failure: inner-row pillar right after a corner (seed 6100004)
-6. Park only, full park, clockwise (seed 8100000)
-7. Park only, partial park, counter-clockwise (seed 8100007)
-
-The replay worlds are in our development workspace.
-
-## Arena page
-
-[`docs/arena/`](arena/README.md) holds `index.html`, an interactive three.js model of the 2026 field, and a README. It builds random draws with the rulebook procedures, cites every dimension to its rulebook page, and checks our 200 × 125 mm footprint against the start zone and the 300 mm lot. It draws the field; it does not simulate driving and it is not a test result. It is live at https://blluewave.github.io/WRO-Future-Engineers-2026/docs/arena/.
-
-## Versioning and releases
-
-The first 22 commits in this repository are dated 1-4 June 2026. The work from the national round to the v20 sketches of 15 September 2026 was done in our local workspace and committed to `main` in September 2026. Every commit keeps its original date.
-
-Annotated tags record versions without rewriting history:
-
-```sh
-git tag -a v1.0-june-2026 87508ae -m "June 2026 repository"
-git tag -a v2.0-asia-final main -m "v20 sketches, PRACTICE 0"
-git push origin v1.0-june-2026 v2.0-asia-final
-```
-
-Each tag gets a GitHub Release whose notes list the sketches it holds, their flash sizes, and what was tested on the mat and in simulation.
-
-## How to reproduce every number
-
-| Number | Page | How we got it | How to reproduce it |
+| Program, direction | MAT | SIM on the mat's layout (4 × 1000 mm) | SIM on random corridors |
 |---|---|---|---|
-| 200 × 125 mm | [Mobility](01-mobility.md#mass-and-dimensions) | Team measurement, 14 Sep 2026 | Steel rule across the widest points, brackets included |
-| Lot 300 mm, 50 mm per end, 75 mm across | [Mobility](01-mobility.md#what-the-size-does-to-the-parking-lot) | Rulebook p.8 with our length | 1.5 × 200; (300 - 200) / 2; 200 - 125 |
-| Break-away PWM 15, 18, 25 | [Mobility](01-mobility.md#break-away-and-the-stiction-kick) | Motor test on the car | From rest on the mat, raise PWM from 10 in steps of 1; record the first value that rolls, in both directions |
-| Three Open laps in about 23 s | [Mobility](01-mobility.md#speed) | Stopwatch, `open_kuwait` at PWM 30 | Time three laps; write down the corridor draw and the direction |
-| 998 mm/s at PWM 30 (867-1176) | [Mobility](01-mobility.md#speed) | Simulator fit to the 23 s run | Direct check: time 1 m at PWM 18, 25, 30 and 55, forward and reverse, on a full and a flat battery |
-| Park turning radius 170 mm | [Mobility](01-mobility.md#steering-and-ackermann-geometry) | Park model value, `R_PARK_MM` | Servo at 170, push the car slowly through a full circle, mark the rear-axle centre, halve the diameter; repeat at servo 10. Or R = L / tan δ from the wheelbase and the inner-wheel angle |
-| Flash 15,136 B and 29,604 B, RAM 721 B and 818 B | [Expected sizes](#expected-sizes) | IDE `arduino-cli` 1.5.1, AVR core 1.8.8, stock flags, Pixy2 Zumo files renamed, 15 Sep 2026 | [From a terminal](#from-a-terminal) |
-| About 235 mA through the Uno's regulator | [Power and sensors](02-power-and-sensors.md#current-budget) | Datasheet figures for the Pixy2 and HC-SR04, an estimate for the Uno board | Meter in series between the main power switch and the Uno's VIN, Obstacle sketch in WAIT so the sonars ping. The motor runs from battery 1, so its current is not in this reading |
-| HC-SR04 34 mm, 2.3 % long, 23 ms timeout | [Power and sensors](02-power-and-sensors.md#hc-sr04) | Datasheet burst and NewPing constants | 343 m/s × 200 µs / 2; 58.3 / 57; 400 × 57 µs |
-| Side sonars at about 40 degrees | [Power and sensors](02-power-and-sensors.md#placement-and-the-40-degree-side-sonars) | Team drawing of the nose, 14 Sep 2026 | Protractor from the nose axis to each sensor face normal |
-| Pixy2 13683, 28574 and 0.19 degrees per px | [Power and sensors](02-power-and-sensors.md#pixy2) | 60 × 40 degree lens, 316 × 208 px frame, 50 × 100 mm pillar | 158 / tan 30° × 50 and 104 / tan 20° × 100; check with a pillar at 500 mm: about 27 px wide |
-| Side-sonar fits A and B | [Power and sensors](02-power-and-sensors.md#calibration-procedures) | Simulator fits | Rear axle 300 mm and 400 mm from a parallel wall; A = 100 / (cm400 - cm300), B = 300 - A × cm300 |
-| Outer-wall pick 30/30 at a 40 mm gap | [Power and sensors](02-power-and-sensors.md#calibration-procedures) | Simulation | 10 starts in the lot at 40 mm, count correct `outer wall` printouts |
-| Front wall to limiter 1.0 m and 1.7 m | [Software and strategy](03-software-and-strategy.md#why-the-front-wall) | Team measurement on a mat | Tape from the far wall to the downstream limiter's far face, lot on each side |
-| Stop marks 820 mm and 1520 mm | [Software and strategy](03-software-and-strategy.md#the-stop-mark) | `markMm()` | 980 - 200 + 40; (3000 - 340 - 980) - 200 + 40 |
-| Every simulation rate: 37/40, 36/40, 287/320, 12/120, 4/16, 28/40, 22 to 5 of 30 | [Software and strategy](03-software-and-strategy.md), [Engineering decisions](04-engineering-decisions.md), [Simulation results](#simulation-results) | `real2`, seed blocks listed above | Run `real2` on the same seed blocks in our development workspace |
-| Fidelity gates 55 %, 2 % and 97 % | [Fidelity gates](#fidelity-gates) | `real2`, calibration F3, 60 seeds from 10,500,000 | Compare the model with the car: log one real counter-clockwise Open round (left, right, front at every corner); read one side sonar alone against a wall at 150, 300, 450, 600 and 800 mm, 50 pings each, then again with all three firing |
+| `open_v2_25s` CW | blocked after 1 corner, 11.6 s | blocked after 1 corner, 9.2 s | blocked after 1 corner, 9.3 s (seed 1) |
+| `open_v4` CCW | 28.6 s | 30.8 s, 0 contacts | 30.8 s (seed 5) |
+| `open_v4` CW | 23.3 s / 26.3 s | 30.6 s, 0 contacts | 38.8 s (seed 1) |
+| `BEST_OPEN` CCW | 18.7 s | 20.1 s, 0 contacts | 20.2 s (seed 5) |
+| `BEST_OPEN` CW | not run on the mat (the CW 18.8 s run was `open_v5_18s`) | 18.2 s, 0 contacts | blocked at 31.1 s on 1000/600/600/600 (seed 1) |
 
-<sub>[Back to the README](../README.md) · Previous: [Engineering decisions](04-engineering-decisions.md)</sub>
+`open_v7` with its `fast7` preset in the same simulator, seeds 1 to 6 in both directions on the mat's layout: 12 of 12 clean runs, 14.0–14.4 s (SIM); with the `l2` preset we race, 14.7 s counter-clockwise and 14.9 s clockwise (SIM). On random corridors it stayed clean, with 600 mm to 600 mm corners slower (up to 25 s, SIM). The last row matters for the event: in SIM `BEST_OPEN` blocked on narrow corridors, while `open_v7` stayed clean.
+
+## Versioning
+
+- Each program version is a separate file with one named change in its header. Proven versions are frozen: their
+  SHA-256 is recorded and the file is never edited again; a faster version is a new file.
+- Printed parts follow the same rule: a part that has been printed is never changed; a new version is a new file.
+- The calibration file keeps the date and the test behind each measured number in its notes.
+- Releases of this repository are tagged; the release notes name the programs and the body version of each tag.
+
+## How to reproduce each number
+
+| Number | Where it comes from | How to repeat it |
+|---|---|---|
+| 14.7 s Open | run `20261001-161301.412-open_v7` | `py -3 tools/bw.py run BEST_OPEN_14s` in the start section; the run log's `end` event |
+| 55.8 s Obstacle with park | run `20261001-222840.106-obs_v17` | `py -3 tools/bw.py run obs_v17` with the car in the lot; the `end` event (reason `parked`, corners in 4) |
+| Speed line 5.276 × (duty − 0.1012), rms 0.075 m/s | `profiles/plant_mat1001.json` | `py -3 tools/fit_plant.py --bias-from corners --no-save` over the run logs |
+| Effective wheelbase 137–281 mm | same file, `wb_curve` | same fit; the 137 mm point from the turn-radius test at 0.2 m/s |
+| Brake 2.08 m/s² | same file, `brake_decel` | same fit; stop test from 0.48 m/s for the ≥ 1.6 m/s² lower bound |
+| Steering 30° left, 22° right, trim −4° | profile notes, program headers | servo sweep and turn-radius test; a straight run at each trim |
+| Camera pitch 19.61° | run parameters of 2026-10-01 | `py -3 tools/bw.py preflight pitch` with a sign 500 mm ahead |
+| Lidar 598–599 rpm, loop 99th percentile 32.0 ms | telemetry and `loop_stats` of the runs above | any run log |
+| Size 224.8 × 111.0 × 157.2 mm | the BW-2 CAD model | measure the car (to be done before the event) |
+| SIM tables | the simulator with `--mat1001` | `py -3 tools/sim_run.py open_v7 --profile wltoys_bw2 --mat1001 --open --corridors 1000,1000,1000,1000 --seed 5` |
+
+<sub>[Back to the README](../README.md)</sub>

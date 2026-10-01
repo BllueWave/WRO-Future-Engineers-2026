@@ -1,198 +1,223 @@
 # Systems thinking and engineering decisions
 
-This page gives the reason for each main part and the trade-off we accepted with it, then logs 17 decisions: 8 settled on the mat, 5 in simulation, 2 by both, 1 by our measurements and the rulebook, 1 by a compile.
-Each decision names the alternative we tried and the number that decided it.
+Appendix C criterion 4. The constraints we worked under, the decisions we made and the data behind them, what we
+learned on the mat, how the programs evolved, and the risks that remain.
 
-<sub>[Back to the README](../README.md) · Criterion 4 of 5 · Previous: [Software and strategy](03-software-and-strategy.md) · Next: [Build, test and reproduce](05-build-test-reproduce.md)</sub>
+Tags: **MAT** measured on the car; **FIT** fitted from mat run logs; **SIM** simulator. A run ID names the log file of
+that run. Pack voltages are the first reading in each log.
 
-## Evidence
+## Summary
 
-| Claim | Where to check |
-|---|---|
-| Each main part has a reason and a trade-off | [Why we chose these parts](#why-we-chose-these-parts) |
-| The motor has its own battery, so its current dips never reach the Uno's supply | [Power supply](02-power-and-sensors.md#supply); [diagrams/power_tree.png](diagrams/power_tree.png) |
-| Ten reverted versions (8-17) led to our named-mechanism rule | [Version history](#version-history) |
-| The corner vote: 37/40 against 21/40 (simulation) | [Decision log](#decision-log); corner code at [Open_Challenge.ino lines 228-232](../src/Open_Challenge/Open_Challenge.ino#L228-L232) |
-| The 6 September build never parked because its lap total was zeroed 50 degrees rotated | Fix at [Obstacle_Challenge.ino line 409](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L409) |
-| Obstacle v20 completes three laps in 12 of 120 simulated rounds | [Simulation results](05-build-test-reproduce.md#simulation-results) |
-| Flash is the tightest constraint: 29,604 of 32,256 B | Compile output, [expected sizes](05-build-test-reproduce.md#expected-sizes) |
-| On 14 Sep 2026 the car did not move, for four reasons we found and fixed | [Version history](#version-history) |
-
-## Why we chose these parts
-
-| Part | Why we chose it | Trade-off we accepted |
-|---|---|---|
-| WLtoys 1:28-class RC chassis | It comes with four wheels, a gearbox and an Ackermann steering linkage, so one drive motor and one steering servo meet rule 11.3 (p.23) with no drivetrain of our own. At 200 × 125 mm the car is 100 mm shorter and 75 mm narrower than the 300 × 200 mm limit. | The brushed motor needs PWM 25 to start from rest: PWM 15 does not move the car and 18 only creeps, so the code adds a 70 ms kick at PWM 55. The chassis has no wheel encoder, so the park measures its step length with the front sonar and closes every arc on the IMU. |
-| Arduino Uno R3 as the only controller | One Uno R3 runs each challenge sketch in a fixed loop, starts the moment it is powered, uploads from the Arduino IDE in seconds, and has a library for each part that needs one: Servo, Adafruit BNO055 over Wire, NewPing and Pixy2. | 32,256 B of flash, and our Obstacle sketch uses 29,604 B (91 %). 2,048 B of RAM, so the camera must send block lists, not images. The Servo library takes Timer1, which leaves D3 as the one free PWM pin, so the motor driver takes speed on one PWM line and direction on a digital line. |
-| 3 × HC-SR04 ultrasonic sensors | Each one uses two digital pins and reads the distance in whole centimetres up to 400 cm through NewPing, whatever the light. The front unit faces the wall ahead square on, which is what the 48 cm corner trigger, the Open finish and the park stop mark use. | Echoes return poorly at oblique angles: in a 1000 mm corridor the inner 40-degree unit often hears nothing, and the car rides 250-300 mm off the outer wall (simulation). A ping with no echo can wait about 23 ms. Nothing nearer than about 34 mm reads, so inside the parking bay the car steers on the IMU heading. |
-| Pixy2 camera | It finds the trained colour signatures (1 red, 2 green, 3 magenta) on its own processor and sends only block records over SPI: signature, x, width and height. A block's x gives the pillar's bearing and its size gives the range. | A 60-degree horizontal view: after a corner the first pillar can sit outside it until the car is close (simulation). The signatures are trained again under each venue's light in practice time. |
-| BNO055 IMU | It fuses its sensors on its own chip and sends one heading over I2C (A4, A5). That heading counts the 12 corners, ends the lot exit at 50 degrees, drives the U-turn guard and closes every park arc. | In the default NDOF mode the magnetometer is part of the fusion, so a magnetic field can move the heading; the corner count keeps 20 degrees of margin for that. A failed I2C read can show as a heading of exactly 0.0, so the code keeps the previous heading and resets a stuck bus after 25 ms. |
-| Two batteries | Battery 1 connects straight to the Cytron MD13S power input and feeds only the drive motor. Battery 2 goes through the main power switch to the Uno's VIN, and the Uno's regulator makes 5 V for the sensors and the Pixy2. The motor's current dips on battery 1, including the 70 ms kick at PWM 55, never reach the Uno's supply. | Two packs to charge and check before every round. A flat battery 2 resets the Uno even when battery 1 is full. Battery 1 has no switch in its line, so the MD13S has power whenever battery 1 is connected. |
-
-## System map
-
-<p align="center">
-  <img src="diagrams/system_overview.png" width="760" alt="System overview: three HC-SR04 sonars, the Pixy2 camera, the BNO055 IMU and the start switch feed the Arduino Uno R3, which drives the Cytron MD13S and drive motor and the steering servo; battery 1 feeds the MD13S, and battery 2 feeds the Uno's VIN through the main power switch">
-</p>
-
-### One Obstacle round across the subsystems
-
-1. Power on. The main switch connects battery 2 to the Uno's VIN. `setup()` centres the servo, holds the motor at 0, tries the BNO055 three times and starts the Pixy2. One servo wiggle means every part answered.
-2. WAIT. The three sonars and the IMU print every 400 ms. A change on A2 starts the round.
-3. Side pick. The side sonars average for 500 ms. The shorter side is the outer wall, which seeds the software's turn direction.
-4. EXIT. The servo alternates full locks, the MD13S drives 200 ms legs at PWM 18, and the BNO055 ends the exit at 50 degrees. The exit rotation goes into the lap total.
-5. LAPS. Side sonars give the lane error for the servo. The front sonar triggers corners and checks pillar range. The Pixy2 picks a ladder step. The BNO055 counts corners, which also tells the lap-1 map which straight the car is on.
-6. Handover. The BNO055 total is within 8 degrees of 1080 and the Pixy2 has been clear for 5 frames.
-7. APPROACH. The front sonar tracks the far wall to the stop mark, the wall-side sonar holds the lane, and the BNO055 holds the heading.
-8. PARK. The front sonar measures the real step length and the along-lot position. The BNO055 closes every arc. A geometry model decides whether each move fits in the lot.
-9. DONE. Motor 0, servo 90.
-
-### Where the subsystems interact
-
-| Chain | What happens | What we did |
-|---|---|---|
-| Sonar angle → lost-echo copy → camera view | The inner 40-degree unit goes silent in a 1000 mm corridor, the copy makes the lane error zero, the car rides 250-300 mm off the outer wall, and the next pillar sits outside the 60-degree view (simulation) | Obstacle: our next change plans the lane after each corner ([what failed](#what-failed)) |
-| Servo library → PWM pins → motor driver | The Servo library's Timer1 removes PWM from D9 and D10; sonars and SPI used D5, D6, D11 when we chose the driver | D3 was the one PWM pin left, so a PWM plus direction driver (MD13S) |
-| Motor break-away → slow moves → battery 1 charge | PWM 15 does not start the car; park and exit moves are slow, and their speed depends on the charge of battery 1 | Kicks at PWM 55; park steps measured before use; arcs closed on the IMU |
-| Motor current → battery → Uno supply | Each motor start, including the PWM 55 kick, pulls a current dip from its battery | The motor has battery 1 to itself, so the dip never reaches battery 2, the Uno's VIN, the sensors or the Pixy2 |
-| IMU heading → lap logic → lot exit | The exit leaves the car about 50 degrees rotated | Turn total never reset; exit rotation seeded (fix 26) |
-| Flash → features → debug text | 91 % of flash used by the Obstacle sketch | A new feature must fit, or replace debug print text |
+- We changed platform on 2026-09-23 and had three weeks to the event. That, and the rule that the car may only use
+  parts the team already owns, shaped most decisions: no encoder, no new electronics.
+- The car's position comes from the lidar, so the lidar had to see the walls; its speed comes from a fitted motor
+  model, so the model had to match the mat.
+- Four measured lessons changed the programs most: the steering trim and the unequal lock, the battery compensation,
+  the stop at Q, and the camera's field of view. Each is below with its numbers and run IDs.
 
 ## Constraints
 
-| Constraint | Number | Effect on the design |
+| Constraint | Effect on the design |
+|---|---|
+| Rules 11.3, 11.5, 11.13: one driving axle, no independently connected drive motors | the kit's two-motor rear axle could not be used; WLtoys chassis with one motor and differentials |
+| Rule 11.10: no radios during a round | race mode blocks every radio before the program starts |
+| Rules 9.10, 9.11: one power switch, one start button | one latching switch, one push button on GPIO17 |
+| Only parts the team owns | no wheel encoder; the motor runs on the MD13S we already had |
+| Walls 100 mm high | lidar scan plane at 50 mm |
+| Corridors 600 or 1000 mm, drawn at random | the Open program measures each next width and plans unknown ones on 600 mm |
+| Parking lot 1.5 × the car's length | the park is planned on the car's true footprint and the real lock of each side |
+| Three weeks from platform change to event | one change per mat run, each version a new file, a simulator calibrated to the mat |
+
+## How the subsystems depend on each other
+
+| From | To | What can go wrong |
 |---|---|---|
-| Vehicle size and mass | ≤ 300 × 200 × 300 mm, ≤ 1.5 kg (rules 11.1, 11.2, p.23) | 200 × 125 mm leaves 100 mm of length and 75 mm of width |
-| Drivetrain | 4 wheels, one driving axle, one steering actuator (11.3, p.23) | RC chassis with Ackermann steering |
-| Parking lot | 1.5 × car length × 200 mm (p.8) | 300 mm lot: 50 mm per end, 75 mm across |
-| Flash | 32,256 B on the Uno | Obstacle sketch 29,604 B (91 %), or 31,278 B (96 %) if the Pixy2 library keeps its two Zumo files |
-| RAM | 2,048 B | Obstacle globals 818 B; a 316 × 208 camera frame (65,728 px) could never fit, so the Pixy2 sends block lists |
-| PWM pins | 6 on the Uno, 5 taken by sonars, servo timer and SPI | One motor channel on D3 |
-| Camera view | 60 degrees horizontal (Pixy2 datasheet) | The first pillar after a corner can be out of view |
-| Side sonar geometry | About 40 degrees from the nose | Only a bearing-free law (left minus right) works; corner ties need a vote |
-| Start procedure | One power switch, one start button (9.10, 9.11, p.17) | A2 start input; `PRACTICE 0` in `src/` |
-| Calibration | No sensor calibration in preparation time (9.9, p.17) | All calibration in practice time |
-| Toolchain | We upload from the Arduino IDE | One `.ino` per challenge; sizes checked with the IDE's own compiler |
-| Time | The v20 sketches were finished on 15 Sep 2026 | Software changes come first; a hardware change such as a rear sonar needs its own test time on the mat |
+| Lidar plane height | pose, sign positions, shield | a plane above the walls sees the room, not the field |
+| Steering trim | every arc, every park leg | an untrimmed car turns less on one side |
+| Motor model | speed observer, braking point, park legs | a model that ignores the pack's effect moves the park by tens of millimetres |
+| Camera pitch and field of view | sign colour, map look | a sign outside the frame is never read; a pitch error moves the map projection |
+| Gyro integration | pose between scans | a dropped sample turns into a heading error in a corner |
+| Board link (RRC Lite) | servo and IMU | a stalled stream leaves the wheels at their last angle |
 
 ## Decision log
 
-| Decision | Alternative we tried | Number that decided it | Evidence |
-|---|---|---|---|
-| Lane law on left minus right with the 40-degree side sonars | Laws tuned for 90-degree flank sonars | The flank-sonar laws drove into the walls on the real car; the left-minus-right law keeps the lane with the same sonars | Mat |
-| Corner direction from a vote of counted corners | Per-frame left minus right with a right-turn default | 37/40 against 21/40 successful Open rounds | Simulation |
-| Keep the corner trigger on the front sonar | An early corner cue from raw side readings | 22/30 fell to 5/30 | Simulation |
-| Front sonar trigger on D13 | A0, a free analog pin | D13 is shared with the Pixy2 SPI clock, so we tested it: the front sonar kept giving the corner trigger and pillar ranges with the Pixy2 read every loop | Mat, 15 Sep 2026 |
-| Turn total never reset, corner counted at 70 of 90 degrees | Lap closed at every 360 degrees, total zeroed after the exit | The 6 September build never parked; 360-degree closes sometimes closed lap 3 at corner 13 in simulation | Mat and simulation |
-| PWM 30, with 38 only on calm straights | PWM 37 for the whole Open round | About 20 s but 28/40, against 34/40 at PWM 30 | Simulation |
-| Avoid at PWM 25 plus a 70 ms kick at PWM 55 | Avoid at PWM 15 | PWM 15 does not start the car from rest, 18 creeps, 25 always moves it | Mat |
-| Pillar steering scale with a 0.35 floor (fix 15) | No floor (fix 25) | With no floor the car stopped avoiding pillars | Mat |
-| Each measurement in its own variable | Limiter distance written into `frontDist` (fix 13) | A limiter 20 cm away with a green pillar in view steered the car to full lock into the wall | Mat |
-| Range every block, keep the nearest; area as `long` | `blocks[0]` and a 16-bit area | `blocks[0]` is the largest blob; a serial log printed `area=-9646` for a pillar at about 30 cm | Mat serial log |
-| Park legs closed on the IMU, straight moves in measured steps | Legs that end on a sensor reading (versions 14-16) | Those parks stalled or drove into the limiter | Mat |
-| Park stop mark from the front-wall range | Side sonar or camera inside the bay | HC-SR04 floor about 34 mm; our measurements of 1.0 m and 1.7 m, matching the rulebook positions | Team measurement, datasheet, rule |
-| Solve the entry angle from the real stop pose | Fixed timed legs from a nominal pose | Earlier model: 37 mm success window against 24 mm positioning scatter | Simulation |
-| Place the car about 40 mm from the outer wall in the lot | Flush with the open edge of the lot (75 mm gap) | Exit 30/30 at 40 mm, 3/30 at 75 mm | Simulation |
-| Start on any A2 change held 30 ms | Wait for press then release | A toggle switch never started the car on 14 Sep 2026 | Mat |
-| Servo wiggle when the BNO055 fails | Silent `while(1)` | The silent hang was one of the four causes we found when the car did not move on 14 Sep 2026 | Mat |
-| One `.ino` per challenge, sized with the IDE compiler | PlatformIO build with extra flags; `.ino` stub plus `.cpp` tabs | A park build fitted only with `-mcall-prologues -mrelax` (31,724 of 32,256 B); the tab split failed in the IDE. The v20 Obstacle sketch fits at 29,604 B with stock flags | Build |
-| Simulator speed anchored to a real run | An assumed 520 mm/s at PWM 30 | That value predicted 40-48 s for three laps; the car did it in about 23 s, so we refitted to 998 mm/s | Mat and simulation |
+| We chose | Instead of | Because |
+|---|---|---|
+| WLtoys chassis, one motor, differentials | the kit's chassis | the kit drives each rear wheel with its own motor, which rules 11.5 and 11.13 do not allow |
+| MD13S driven from the Pi's GPIO | the RRC Lite's motor ports | those ports run a speed loop on an encoder; without one the board drives the motor to 100 % and a stop does not stop it |
+| Software PWM at 490 Hz | the Pi 5's hardware PWM | the hardware PWM channel returned an error on GPIO12 |
+| Lidar scan plane at 50 mm | the kit's mount | on the kit's mount the lidar read 2.5–4.3 m past the field and missed a pillar 25 cm ahead (MAT, 2026-09-22) |
+| Sign colour by bearing to the lidar pillar | range from the camera | bearing pairing does not depend on the pitch; the depth stream over-read a pillar at 1.25 m as 1.43 m |
+| Fitted speed line 5.276 × (duty − 0.1012) | the profile's first line (4.49, 0.1187) | rms error 0.075 m/s against 0.271 m/s on the same 1599 lidar speeds (FIT) |
+| A speed observer for the Open braking plan | the drive's own estimate | the drive's estimate read 1.24–1.53 times under the car at 7.1 V and the lidar speed is stale in arcs; the pre-corner brake barely fired |
+| One constant-radius arc per corner | full lock from the lane centre | full-lock corners run at 0.35–0.5 m/s |
+| Effective wheelbase taken at the present speed | one value, 210 mm | with one value every arc at 1.3–1.5 m/s came out about 30 % too wide (SIM) |
+| Plan an unmeasured corridor on 600 mm | stop and measure | the stop cost about 2.5 s; a late turn into 1000 mm is safe, an early one into 600 mm is not |
+| Steering lock per side, 30° left and 22° right | 22° both ways | corners asked 34–44° while the program capped 22°, and the car blocked (see below) |
+| Battery hold at 7.0 V in the Obstacle program | the drive's battery compensation | the compensation over-corrected this car (see below) |
+| Stop at Q on the braking distance | a fixed 50 mm lead | the car came off the last corner at 0.8–0.9 m/s and stopped 159 mm past Q (see below) |
+| A new file for each program version, proven ones frozen by SHA-256 | editing the program in place | every mat result stays reproducible; a regression can be compared with the exact file that worked |
+
+## Lessons measured on the mat
+
+### Steering trim and the unequal lock
+
+**Symptom.** `open_v2_25s` drove 25.2 s counter-clockwise (run `20260930-235056.569-open_fast_v2`, 7.01 V) but
+blocked after one corner when run clockwise (11.6 s). Clockwise runs lost about half of each right turn;
+counter-clockwise runs hid the problem because left turns still reached their radius.
+
+**Measurement.** On 2026-10-01 the wheels pointed straight ahead at a servo command of −4°, all day (MAT). The fit over
+the mat logs found the same bias: +4.05° in corners at 0.6–1.2 m/s (FIT, 2694 samples).
+
+**Change.** `open_v4` adds −4° to every steering command. Result: 12 of 12 corners driven without stopping in both
+directions: clockwise 23.3 s (run `20261001-001646.802-open_v4`, 6.40 V) and 26.3 s
+(`20261001-005127.677-open_v4`, 7.28 V), counter-clockwise 28.6 s (`20261001-005755.103-open_v4`, 7.18 V).
+
+**Second effect: the lock.** The servo is limited to ±26°. On top of the −4° trim that gives 30° at the wheels to the
+left and 22° to the right (MAT). The first Obstacle programs capped the steering at 22° both ways. At the corners every
+stop asked for 34–44°, and `obs_v2` blocked twice (runs `20261001-164201.458-obs_v2` at 0.33 laps and
+`20261001-164524.976-obs_v2` at 0.60 laps). `obs_v3` gave each side its own cap and smaller corner radii (300 and
+340 mm) and made the first full Obstacle run with a park: 69.4 s, all 4 corners in, nearest lot edge 12.7 mm (run
+`20261001-165354.604-obs_v3`, 7.45 V). `obs_v12` then planned the lot exit and the park on the per-side lock too: 7 legs
+instead of 9 each way counter-clockwise, 73.3 s to 68.2 s (run `20261001-202156.652-obs_v12`, 7.00 V).
+
+**Checked again.** `BEST_OPEN_14s` with the trim at −4.6° drove 15.0 s against 14.7 s at −4° (runs
+`20261001-161351.882-open_v7` and `20261001-161301.412-open_v7`), so −4° stayed.
+
+### Battery compensation that over-corrected
+
+**Mechanism.** The drive code multiplies the duty by v_ref / V_pack with v_ref = 8.0 V, assuming the motor slows on a
+low pack. The fit over 20 mat runs found that this car's speed per duty does not fall with the pack (exponent 0.0,
+FIT); with the compensation a 6.4 V run went faster than a 7.3 V run for the same command. At 6.1 V the compensation
+multiplies the duty by 1.31; in SIM that made the true speed 38 % higher.
+
+**Symptom on the mat.** `obs_v16` (run `20261001-204736.982-obs_v16`, 6.33 V at the start) drove fast laps (lap 3 done at 40.0 s) and stopped 34 mm from Q, but the park legs and the creep onto Q overshot by 30–150 mm
+and the park ended with 1 of 4 corners in the lot.
+
+**At the other end.** On a full pack the compensation lowers the duty. `obs_v7` at 8.09 V (run
+`20261001-190131.030-obs_v7`) lost its along-track position in lap 2 and blocked at 1.22 laps; the same code at
+7.25 V drove all three laps.
+
+**Change.** `obs_v17` holds the compensation at its 7.0 V value for the whole run, whatever the pack, and restores it at
+the end. Result at 8.25 V: 55.8 s, all signs on the correct side, full park (run `20261001-222840.106-obs_v17`). The
+Open program is not affected: it plans on the observer's true speed.
+
+### The stop at Q: short, then long
+
+The park starts from Q, the point where the lot exit ended. The car must stop there within 8 mm along the line, 12 mm
+across and 2.5° in heading.
+
+**Short.** In the 8 runs from `obs_v3` to `obs_v7` that tried to park, every realign after the first stop ended 35–76 mm
+short of Q (15 realigns, MAT), and 4 of the 8 parks were full. The forward drive along the line stops 0.25 s × v before
+the target (about 50 mm at 0.2 m/s) to leave room for coasting, but the PWM-low brake stops the car dead, so it stayed
+there. The creep that should close the gap only ran when the lateral and heading errors were already in tolerance, and
+they never were. `obs_v11` creeps onto Q after every realign: the realign errors fell to 15 and 18 mm and the park was
+full (run `20261001-201055.680-obs_v11`, 73.3 s, 7.10 V).
+
+**Off the line.** Until `obs_v12` the first stop at Q came 39–51° off the line's heading (63° in `obs_v10`, whose lot model was wrong), because the lap path already
+bends into the next corner there; the realigns took about 10 s. `obs_v13` rides Q's line straight for the final
+approach: 57.6 s with a full park (run `20261001-203331.245-obs_v13`, 6.80 V).
+
+**Long.** In that run the car came off the last corner at 0.8–0.9 m/s and stopped 159 mm past Q with the fixed 50 mm
+lead, which cost a 4.5 s realign. Fitting the stop gave 2.4 m/s². `obs_v16` fires the stop at
+v² / (2 × 2.4) + v × 0.08 s: the first stop was 34 mm off (run `20261001-204736.982-obs_v16`). In the 55.8 s run the
+first stop was 59 mm off and two realigns brought it in; the park started 5.1 s after lap 3.
+
+**Rejected.** A longer look-ahead on Q's line (`obs_v18`, team note; that run's log was not kept) reached Q 25 mm
+aside; each realign left 16 mm and then 14 mm across, over the 12 mm tolerance, and the run took 62.4 s. The lateral
+tolerance is the one that binds.
+
+### The camera could not see the sign
+
+**Symptom.** In run `20261001-174628.799-obs_v5` the green sign after corner 2 (seat 2.0) was passed on the wrong side in
+all three laps. The lidar had that seat in every lap; the camera never gave it one colour vote (the lap maps list five
+signs). The other five signs were read at the usual 1.2–1.7 m, so the pitch was not the cause, and the simulator's
+rendered camera failed the same way (seed 1), so the light was not the cause either.
+
+**Mechanism.** On the straight before corner 2 the car aims to the right to pass the red sign 1.2 on its right. The
+green sign then stays 30–60° off the camera axis, outside the ±29.3° field of view, and enters the frame only about
+250 mm away, beside the car. With no colour the car took the default lane.
+
+**Change.** `obs_v7` reads an unread sign on purpose: the nose turns toward it when it sits just past the frame edge,
+and the program counts pixels where the map projects the sign. In run `20261001-195904.068-obs_v7` the car glanced at
+that seat at a bearing of 33.2° and 1560 mm, all six signs had a colour by the end of lap 1, and all 18 passes were on
+the correct side.
+
+**What we kept from it.** When a sign is passed on the wrong side, first check whether its seat got any colour vote. If
+not, it is a field-of-view problem, not a path or colour-threshold problem.
+
+### Camera pitch
+
+The model's wedge is 16°; on the car we measured 19.61° (MAT, 2026-10-01). In SIM, 1° of pitch error moved the pose of
+our camera-based localisation by a median 116 mm, and the kit's camera mount moved about 10° in one day before we had
+the printed tower. The tower and the keyed wedge hold the camera; the pitch check before every session measures it.
+The Obstacle program pairs colours by bearing, so the pitch only affects the map look's projection.
 
 ## Version history
 
-This table comes from our firmware folders and dated notes. The work between the national round and the v20 sketches was done in our local workspace; [versioning](05-build-test-reproduce.md#versioning-and-releases) explains how it reached git.
+The Open Challenge, on the mat:
 
-| When | Version | Problem found | Change | Result |
-|---|---|---|---|---|
-| June 2026 | National-round code | - | - | 1st place, 61 points, Kuwait national round |
-| Before Sep 2026 | Fixes in `obstacle_kuwait` | Pillar area overflowed a 16-bit `int` (`area=-9646`) | Area as `long` | Kept in v20 |
-| Before Sep 2026 | Same | Wrong-side passes; our fix notes give the likely cause, signature 1 trained on red while the code treated 1 as green | Code reads red as 1, green as 2 | Kept in v20 |
-| Before Sep 2026 | Same | `blocks[0]` is the largest blob, not the nearest pillar | Every block ranged; nearest within 900 mm steers | Kept in v20 |
-| Before Sep 2026 | Same | PWM 15 could not restart a stopped car | Avoid PWM 25 plus the PWM 55 kick (fix 4) | PWM 25 always moves the car |
-| Before Sep 2026 | Versions 8-17 | All ten were worse on the mat and were reverted | Rule: no change without a named mechanism | Applied to every later change |
-| Before Sep 2026 | Parking versions 14-16 | Legs ending on sensor readings stalled or hit the limiter | Timed legs closed on the IMU heading | Became the park architecture |
-| 2 Sep 2026 | Car on `obstacle_kuwait` (per our notes) | - | - | Three full Obstacle laps with one light touch on one pillar |
-| 6 Sep 2026 | 6 September parking build | Exit worked, no park: lap total zeroed while the car was 50 degrees rotated | Fix 26: never-reset total, exit rotation seeded | Lap 3 can close; the park can arm |
-| 11 Sep 2026 | Simulator | Model car 1.9 times too slow | Speed refitted to the real 23 s run | All later simulator results use the fitted speed |
-| 14 Sep 2026 | Team drawing of the nose | Laws tuned for 90-degree side sonars hit the walls | Side units modelled at 39 and 41 degrees; only the left-minus-right law kept | Simulator uses the drawn geometry |
-| 14 Sep 2026 | Finals build of that day | Car did not move: start waited for press then release, exit PWM below 25, a park that fitted only with PlatformIO flags, silent `while(1)` on IMU failure | Start on any A2 change; IDE build; servo wiggle fault code | v20 keeps the start logic and the fault code and fits the IDE build; its exit keeps PWM 18 from the 6 September build |
-| 15 Sep 2026 | `open_v20` | Corner direction a coin toss; lap 3 sometimes closed at corner 13 (simulation) | Corner vote; 12 counted corners, then a front-range stop | 37/40 against 21/40 in simulation |
-| 15 Sep 2026 | `obstacle_v20` | 6 September build never reached its park, had no start input, turned right on every tie, ended its round on a nose-on contact | Front-wall park with a solved entry angle, lap-1 map, corner vote, stuck recovery, A2 start | Exit 119/120, three laps 12/120 in simulation |
-| 15 Sep 2026 | `src/` | Rule 9.11 | `open_v20` and `obstacle_v20` committed as `Open_Challenge.ino` and `Obstacle_Challenge.ino` with `PRACTICE 0`, nothing else changed | Compiles with the Arduino IDE compiler |
-| 15 Sep 2026 | Race builds | The front trigger moved from D6 to D13, which it shares with the Pixy2 SPI clock | Kept on D13 after a mat check; the Obstacle build we race (fixes 1-12) goes into `src/` | Obstacle laps with pillars on the mat; video linked in the README |
+| Program | Change | Result | Run |
+|---|---|---|---|
+| `open_v2_57s`, `open_v2_46s`, `open_v2_27s` | lidar laps; then the racing line | 57.5 s, 45.9 s, 27.3 s | frozen file notes |
+| `open_v2_25s` | faster arcs (planned 1.5 m/s²) | 25.2 s CCW, 7.01 V; blocked clockwise | `20260930-235056.569-open_fast_v2` |
+| `open_v4` | steering trim −4°, arcs on a 210 mm effective wheelbase | 23.3 s CW, 6.40 V; 28.6 s CCW, 7.18 V | `20261001-001646.802-open_v4`, `20261001-005755.103-open_v4` |
+| `open_v5_18s` | larger arcs, duty up to 0.5, shield on the measured brake | 18.8 s CW, 7.10 V | `20261001-010507.423-open_v5` |
+| `open_v6` (`BEST_OPEN`) | brake and lead on the lidar speed | 18.7 s CCW, 7.04 V | `20261001-011031.386-open_v6` |
+| `open_v7`, preset `l1` | speed observer, constant-deceleration brake, held arc speed, wheelbase curve, unknown corridor on 600 mm | 16.0 s CCW, 8.06 V | `20261001-161218.085-open_v7` |
+| **`BEST_OPEN_14s`** (`open_v7`, preset `l2`) | planned lateral acceleration 2.6 m/s², straights to 1.8 m/s | **14.7 s CCW, 8.05 V** | `20261001-161301.412-open_v7` |
+| `open_v7`, preset `fast7` | 3.0 m/s², straights to 2.0 m/s | 16.3 s CCW, 8.06 V: the shield braked 18 times near the walls | `20261001-161418.641-open_v7` |
 
-## What failed
+The Obstacle Challenge, on the mat, all counter-clockwise, start in the lot:
 
-### Changes that did not work
+| Program | Change | Result | Run |
+|---|---|---|---|
+| `obs_v1` | first program: lidar pose, sign seats, lane per sign, lot exit and park | blocked at 0.1 laps: a 0.14 m/s creep never moved the car, and the lot read as red signs | `20261001-163348.547-obs_v1` |
+| `obs_v2` | outer-wall band, creep at 0.20 m/s | blocked at 0.33 and 0.60 laps: 22° cap | `20261001-164201.458-obs_v2`, `20261001-164524.976-obs_v2` |
+| `obs_v3` | lock per side, corner radii 300 and 340 mm | **first full park: 69.4 s**, 7.45 V; repeat 71.2 s, 7.36 V | `20261001-165354.604-obs_v3`, `20261001-165946.260-obs_v3` |
+| `obs_v4` | faster exit legs (0.16 m/s) | 67.6 s parked, 7.17 V; two more runs ended with 3 and 1 corners in the lot | `20261001-171309.381-obs_v4` |
+| `obs_v5` | 6° of lock kept in reserve | 72.6 s parked, 6.99 V; repeat: green 2.0 wrong side, 3 corners in | `20261001-173009.016-obs_v5`, `20261001-174628.799-obs_v5` |
+| `obs_v7` | glance and map look | all signs read; Q stop short, 1 corner in | `20261001-195904.068-obs_v7` |
+| `obs_v10` | lot refined on every lap | 0 corners in: one limitation face is ambiguous between two lot positions 340 mm apart | `20261001-200413.723-obs_v10` |
+| `obs_v11` | creep onto Q after each realign | 73.3 s parked, 7.10 V | `20261001-201055.680-obs_v11` |
+| `obs_v12` | exit and park on the lock of each side (7 legs) | 68.2 s parked, 7.00 V | `20261001-202156.652-obs_v12` |
+| `obs_v13` | leave the lot turned; ride Q's line | 57.6 s parked, 6.80 V | `20261001-203331.245-obs_v13` |
+| `obs_v16` | stop at Q on the braking distance | Q within 34 mm; 1 corner in at 6.33 V | `20261001-204736.982-obs_v16` |
+| **`obs_v17`** | battery hold at 7.0 V | **55.8 s parked, 8.25 V** | `20261001-222840.106-obs_v17` |
 
-- Early corner cue (Open, simulation). Starting the turn from raw side readings as the inner side opened took one batch from 22 to 5 successful rounds out of 30. We removed it.
-- Steering scale with no floor (fix 25, mat). A pillar clipped by the frame edge reads far, so the turn scaled to nothing and the car stopped avoiding pillars. We went back to fix 15 and its 0.35 floor.
-- One variable for two subsystems (fix 13, mat). The limiter distance written into `frontDist` fed the 25 cm full-lock rule and steered the car into the wall.
-- Unreachable code (version 15). A start-in-the-lot mode printed on the serial monitor, but its arming line was never written. We now search the file for the call site after every edit.
-- The finals build of 14 September (mat). The car did not move; the four causes are in the [version history](#version-history).
+Of the 18 Obstacle runs on 2026-10-01, 8 ended with a full park. The others are the development failures in the table.
 
-### Obstacle inner-pillar failure (simulation)
+## What did not work
 
-In 23 of 24 wrong-side passes we traced, the pillar needed an inner pass: green when driving counter-clockwise, red when clockwise. Most were in the inner row, first in the straight. The mechanism is the outer-wall drift from the 40-degree sonars ([placement](02-power-and-sensors.md#placement-and-the-40-degree-side-sonars)). None of these moved the success rate, 60 seeds each:
-
-- an inward sweep after corners;
-- earlier corner triggers at 60, 70 and 80 cm;
-- engaging pillars from 1200 mm;
-- faster pillar-mode entry;
-- a 0.7 floor instead of 0.35;
-- a stronger steering ladder;
-- a bearing-offset tracking law;
-- treating a silent side as long;
-- disabling the fix-16 wall clamp.
-
-Our next attempt plans the lane after each corner instead of changing another constant.
-
-### The park (simulation)
-
-Among 12 three-lap runs out of 120 there were 3 partial parks and 0 full parks. From the lap-3 handover pose alone, 4 of 16 parks were full, and the limiter was touched in about half.
-
-### The simulator
-
-The simulator is harsher than the real car. `open_kuwait` completes 55 % of simulated rounds where the real car was reliable, and `obstacle_kuwait`, listed in our notes as the national-round code, completes 2 %. That is two of its three fidelity gates failed, so we use it only to compare code versions ([fidelity gates](05-build-test-reproduce.md#fidelity-gates)).
+| Attempt | Result | Why |
+|---|---|---|
+| Faster Open preset `fast7` on the mat | 16.3 s, slower than `l2` | the shield braked 18 times near the walls |
+| Trim −4.6° on `BEST_OPEN_14s` | 15.0 s | −4° was already right |
+| Lot refined on every lap (`obs_v10`) | 0 corners in | a single limitation face fits two lot positions 340 mm apart |
+| Quicker park legs and a shorter back-up (SIM) | lost the park in SIM | about half of the exit time is servo swings (0.66 s per full reversal at 85.6 °/s); a faster servo would gain more than faster legs |
+| Longer look-ahead to Q (`obs_v18`) | 62.4 s | the lateral error converged too slowly |
+| A three-move park | not possible in this lot | the planner's minimum is 5 legs at 30° both sides |
 
 ## Risks and mitigations
 
-| Risk | What we would see | Mitigation |
-|---|---|---|
-| `PRACTICE 1` in an official round | Car moves 3 s after power-up, breaking rule 9.11 | `src/` has `PRACTICE 0`; bench check before every round |
-| Start input does not reach A2 | Car never starts with `PRACTICE 0` | Bench check step 8: change the switch and watch the car respond |
-| BNO055 not answering | Servo wiggles twice, repeating | Visible fault code instead of a silent hang |
-| IMU mounted the other way up | Corners counted the wrong way | Clockwise hand-turn check; Obstacle detects the sign during the exit |
-| NDOF magnetometer moves the heading | Phantom or missed corner | 20 degrees of margin in the corner count; IMUPLUS mode is a [change we test next](#changes-we-test-next) |
-| Exit creeps at PWM 18, below the 25 break-away value | Car stalls in the lot | Same values as the 6 September exit that worked on the mat; we watch the first practice exits |
-| Wrong outer-wall pick | Car exits the wrong way | Place the car about 40 mm from the outer wall; check the printout |
-| Inner sonar silent in a 1000 mm corridor | Car rides off the outer wall and misses the next pillar | A corner-exit lane plan is a [change we test next](#changes-we-test-next) |
-| Park constants set in simulation | Park too shallow, too deep or touching a limiter | The car measures its own step length and closes every arc on the IMU; the [calibration procedures](02-power-and-sensors.md#calibration-procedures) set the constants in practice time |
-| Park window missed | Car would start lap 4 | Stops at the next corner in the start section |
-| Obstacle v20 drives worse than our earlier build in practice | Wrong direction or pillar hits | Test-day rule: if it drives the wrong way or hits pillars twice in practice, we switch to the earlier build |
-| Pixy2 range constants off for our lens | Pillars engage at the wrong distance | Width check in PixyMon: a pillar 500 mm straight ahead reads about 27 px wide |
-| Battery 1 charge changes speed | Timed moves behave differently on a flat motor battery | Arcs closed on the IMU, steps measured before use; battery 1 voltage written down before every session |
-| Battery 2 runs flat | The Uno resets mid-round; `setup()` sets the motor to 0 and waits for a new start input | Battery 2 voltage written down before every session ([bench check](05-build-test-reproduce.md#ten-minute-bench-check) step 10) |
-| Flash near the limit | A new feature does not fit | Size checked with the IDE compiler before upload |
-| Motor battery negative through the Uno header | Heat, burnt parts | Motor current kept on battery 1 and off the Uno header; 5 V to GND checked with power off after a fault |
+| Risk | Mitigation |
+|---|---|
+| Both main programs have been run on the mat counter-clockwise only | SIM both ways; on the mat the Open fallbacks cover both directions, `BEST_OPEN` 18.7 s CCW and `open_v5_18s` 18.8 s CW (the same settings without `v_meas_max`); clockwise mat runs of the main programs before the event |
+| Our mat had only 1000 mm corridors | SIM on random 600 / 1000 corridors; unknown widths are planned on 600 mm |
+| Camera pitch changes after a knock | keyed wedge; pitch check before each session |
+| Venue light changes the colours | hue check on arrival; colour by bearing; map look with looser limits |
+| Lot length set by the judges differs from our model | the lot's position is refined from the limitations seen on the last lap |
+| Servo or board link stalls | watchdogs reopen the board; standing steering limited to 12° |
+| Pack voltage | battery hold in the Obstacle program; runs started at 7.4 V or more |
+| Race-mode start path | rehearse the full race-mode start on the practice mat before the event |
+| Mass and height only from CAD | weigh and measure the car before the event; both have a large margin to rules 11.1 and 11.2 |
 
-## v20 status
+## Next steps
 
-| Part | State on 15 Sep 2026 | Evidence |
-|---|---|---|
-| `src/Open_Challenge/Open_Challenge.ino` (`open_v20`) | Frozen, `PRACTICE 0`, compiles at 15,136 B | Simulation: 36/40 on fresh seeds, 287/320 across all draw cells |
-| `src/Obstacle_Challenge/Obstacle_Challenge.ino` (`obstacle_v20`) | Frozen, `PRACTICE 0`, compiles at 29,604 B | Simulation: exit 119/120, three laps 12/120 |
-| Front-wall park | Part of the Obstacle sketch; park constants set in simulation | Simulation: 4 full parks in 16 park-only runs |
-| `open_v21` | In development: a fixed path at each corner, a stronger direction choice, a mid-straight stop on the front sensor | These pages describe v20 |
+1. Clockwise mat runs of `BEST_OPEN_14s` and `obs_v17`.
+2. Runs with 600 mm corridors on the practice mat.
+3. Full race-mode rehearsal: radios off, start button only.
+4. Weigh the car and measure its height.
+5. Re-centre the servo horn for a more equal lock, then re-measure trim and lock before any program uses it.
 
-## Changes we test next
-
-Each candidate names the mechanism it addresses before we write any code.
-
-| Candidate | Mechanism it addresses | Test before it ships |
-|---|---|---|
-| BNO055 in IMUPLUS mode, `bno.begin(OPERATION_MODE_IMUPLUS)` | A magnetic field moving the NDOF heading and counting a phantom corner | Heading drift over 3 minutes standing, and 12-corner counts, in both modes |
-| Corner-exit lane plan for Obstacle, from the lap-1 map or the camera during the turn | Outer-wall drift puts the first pillar outside the camera view | 60 lot-start seeds against v20, then practice runs |
-| Rear-facing HC-SR04 on two free pins (TRIG and ECHO from A0, A1, A3, D6) | The park's reverse leg is dead-reckoned into a 37 mm window | Park-only runs in simulation, then on the mat |
-
-<sub>[Back to the README](../README.md) · Previous: [Software and strategy](03-software-and-strategy.md) · Next: [Build, test and reproduce](05-build-test-reproduce.md)</sub>
+<sub>[Back to the README](../README.md)</sub>
