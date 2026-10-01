@@ -1,323 +1,198 @@
 # Source code
 
-`src/` holds the two sketches our car runs on its Arduino Uno, one per challenge. Both use the same pins and the same wall-balance steering law. The reasoning behind the laws is in [docs/03-software-and-strategy.md](../docs/03-software-and-strategy.md); test results and the simulator's limits are in [docs/05-build-test-reproduce.md](../docs/05-build-test-reproduce.md).
+This folder is the software of our car: a WLtoys 1:28 chassis (284131) carrying a Raspberry Pi 5, a Hiwonder RRC Lite
+board (steering servo, IMU, buzzer), an LDROBOT LD19 lidar, an Angstrong HP60C RGB-D camera and a Cytron MD13S motor
+driver. Everything is Python 3. It runs on the Pi 5; the laptop tools deploy it, start runs, pull the run logs back and
+run the same program files in a simulator.
 
-- [`Open_Challenge/Open_Challenge.ino`](Open_Challenge/Open_Challenge.ino): 283 lines, working name `open_v20`, built on `open_kuwait` (named in its header).
-- [`Obstacle_Challenge/Obstacle_Challenge.ino`](Obstacle_Challenge/Obstacle_Challenge.ino): 598 lines, the Obstacle build we race. It is the national-round `obstacle_kuwait` with fixes 1-12: signature map (1 red, 2 green), nearest-pillar lock with a 250 mm switch margin, pillar distance from blob size refined by the front sonar, x-ladder steering (red 40/60/78, green 140/120/102), fast entry under 550 mm, side-wall veto at 16 cm, proportional front avoid from 48 to 18 cm, U-turn guard, stiction kick and a 5-degree scan weave. Tested on our mat on 15 September 2026 ([video](https://youtube.com/shorts/RS68H3QMw6s)).
+The tree is the code as deployed for our practice-mat session of 1 October 2026, the session in which both competition
+programs below set their times. One default differs from that deployment: race mode's default programs
+(`race.programs` in `bluewave/params.py`) now name the two programs below. The Arduino code of our previous car stays
+in the git history of this repository.
 
-Both sketches have the front sonar trigger on D13. The v20 Obstacle development build, with the lot exit and the front-wall park, is kept at the tag [`v2.0-asia-final`](https://github.com/BllueWave/WRO-Future-Engineers-2026/tree/v2.0-asia-final/src); the design pages describe it, and their Obstacle line links point to that tag.
+The design reasoning is in [docs/03-software-and-strategy.md](../docs/03-software-and-strategy.md); the test method and
+results are in [docs/05-build-test-reproduce.md](../docs/05-build-test-reproduce.md).
 
-## Build and upload
+## Layout
 
-We compile with Arduino IDE 2.3.10 (its bundled arduino-cli 1.5.1), the Arduino AVR Boards 1.8.8 package and the board Arduino Uno (`arduino:avr:uno`).
+```
+src/
+  programs/            the competition programs, one file each, loaded by name
+    BEST_OPEN_14s.py     Open Challenge
+    obs_v17.py           Obstacle Challenge
+    _library.json        the console's program list: rank, status and the team's mat notes (Arabic)
+  bluewave/            the robot package: drivers, perception, localisation, safety, run logs, simulator, console
+  race/race_main.py    race mode: radios off, one START button, then the program
+  profiles/            wltoys_bw2.json = this car's calibration; plant_mat1001.json = the simulator's mat-fitted plant
+  tools/               laptop side: bw (deploy, run, test, pull), sim_run, fit_plant, lib_push
+  os/                  Raspberry Pi setup: systemd services, udev rule, sudo rules
+  requirements.txt     laptop packages
+  requirements-robot.txt  Pi packages
+```
 
-| Library | Version we build with | Used for |
+| folder | files | lines |
 |---|---|---|
-| Servo | 1.3.0 | Steering servo on D10 |
-| Wire (in the AVR core) | 1.0 | BNO055 over I2C |
-| Adafruit BNO055 | 1.6.4 | Heading |
-| Adafruit Unified Sensor | 1.1.15 | `sensors_event_t`, needed by Adafruit BNO055 |
-| Adafruit BusIO | 1.17.4 | Needed by Adafruit BNO055 |
-| NewPing | 1.9.7 | The three HC-SR04 sensors |
-| Pixy2 | Arduino library ZIP from pixycam.com | Pixy2 camera |
-| SPI (in the AVR core) | 1.0 | Pixy2 link |
+| `bluewave/` | 43 Python files + `ui/index.html` (the web console) | 20,772 Python |
+| `programs/` | 2 programs + the library seed | 1,998 + 1,945 |
+| `race/` | `race_main.py` | 128 |
+| `tools/` | 11 Python files | 4,296 |
+| `os/` | 10 files | 306 |
 
-1. In Boards Manager, install Arduino AVR Boards 1.8.8.
-2. In Library Manager, install `Adafruit BNO055` (it offers Unified Sensor and BusIO with it), `NewPing` and `Servo`.
-3. Add the Pixy2 Arduino library zip from the Pixy2 downloads on pixycam.com with Sketch > Include Library > Add .ZIP Library. Then rename `ZumoBuzzer.cpp` and `ZumoMotors.cpp` in the library folder to `.cpp.bak`. Neither sketch calls them. With both files left in, each build grows by 1,674 B: Open to 16,810 B, Obstacle to 31,278 B (96 %).
-4. Open the sketch folder, choose the board and the port, and upload.
-5. Open Serial Monitor at 115200 baud. What each line means is under [Serial output](#serial-output).
+`src/` has the same layout as the `mentorpi/` folder of our robot repository, so the commands below and the relative
+paths the tools use resolve from `src/`. Some code comments name design notes of the robot repository (`docs/*_SPEC.md`,
+`plans/*.json`, `3d/...`) that are not part of this tree.
 
-The same build from a terminal:
+### The `bluewave` package
+
+| module | what it does |
+|---|---|
+| `hw.py` | `Robot`: the one object a program drives. The simulator builds the same object, so a program file runs unchanged on the car and on the laptop. |
+| `rrc.py` | RRC Lite serial driver at 1,000,000 baud: servo pulses, IMU stream, buzzer, keys. |
+| `motor.py` | MD13S drive: PWM on GPIO12, DIR on GPIO16, software PWM through `lgpio`. A separate guardian process zeroes the PWM if the program process dies. |
+| `speed.py` | Speed without a wheel encoder: the lidar pose plus a duty-to-speed line fitted on the mat. |
+| `lidar.py`, `lidar_perc.py` | LD19 driver; walls, pillars and parking limitations from one revolution. |
+| `loc.py`, `globloc.py` | Particle filter; whole-field position search from still views. |
+| `field.py`, `seats.py` | The field map with the 24 legal sign positions; each sign's position from the lidar and its colour from the camera. |
+| `camera.py`, `vision.py` | Frame grabber (the HP60C colour stream) and the colour masks. |
+| `park.py` | Parallel-parking legs planned on the car's true footprint. |
+| `shield.py` | Lidar safety layer: every drive command is checked against the free space before it reaches the motor. |
+| `blackbox.py`, `runlog.py` | 50 Hz IMU record and the run file (one JSON line per event or telemetry sample). |
+| `analyze.py`, `report_html.py` | After a run: where and why the car touched something, as text and as an HTML report. |
+| `params.py`, `paramstore.py`, `progmeta.py` | Robot parameters with defaults, history and undo; profiles; program metadata and presets. |
+| `mock.py` | The simulator: lidar, camera image, IMU and drive with the same interfaces as the hardware. |
+| `tests.py`, `tests_cal.py` | Component and calibration tests run from the console or `bw test` (duty sweep, coast, turn radius, camera pitch, lidar tilt, field check). |
+| `agent.py`, `hub.py`, `*_api.py`, `ui/` | Development server (FastAPI, port 8000) and the web console. Used in dev mode only. |
+| `depth_bridge.py`, `ros_bridge.py` | Run inside Hiwonder's ROS 2 container: the HP60C depth stream, and read-only ROS topics for Foxglove or RViz. |
+
+## The competition programs
+
+Best runs on our practice mat, 1 October 2026 (all four corridors 1000 mm). Times are the program's own clock.
+
+| challenge | file | result | direction | pack at start | run |
+|---|---|---|---|---|---|
+| Open | `programs/BEST_OPEN_14s.py` | 3 laps in 14.7 s, 12/12 corners, stopped inside the start section, no contact | counter-clockwise | 8.05 V | `20261001-161301.412-open_v7` |
+| Obstacle | `programs/obs_v17.py` | 3 laps and a parallel park in 55.8 s, all four car corners inside the lot | counter-clockwise | 8.25 V | `20261001-222840.106-obs_v17` |
+
+`BEST_OPEN_14s.py` is `open_v7` with its preset `l2` (planned lateral acceleration 2.6 m/s^2, speed cap 1.8 m/s) made
+the defaults; the mat run was filed under `open_v7`. Neither program has been run clockwise on the mat yet.
+
+**Open, `BEST_OPEN_14s.py`.** The lidar scan is rotated into the corridor frame by the gyro yaw. Each corner is one
+constant-radius 90-degree arc from lane to lane, as wide as the inner wall allows, driven at
+sqrt(planned lateral acceleration x radius). Lap 1 measures every corridor's width; laps 2 and 3 plan each corner from
+that map before it is in sight. The speed comes from the mat-fitted duty line, corrected by the change of the front-wall
+distance; braking to the arc speed follows a constant-deceleration plan (1.8 m/s^2). The car stops inside the start
+section on the planned front-wall distance.
+
+**Obstacle, `obs_v17.py`.** Pose: every scan's wall points are fitted to the known field walls (point-to-line ICP,
+seeded by the gyro and the speed). Signs: lidar pillar clusters are snapped to the 24 legal positions and coloured by the
+camera, matched by bearing, so the camera pitch does not enter the colour decision; red is passed on its right, green
+on its left. Path: one lane per sign, checked against signs, inner wall and lot, followed by pure pursuit from the rear
+axle. The lot exit and the park are planned on the measured steering lock of each side (30 degrees left, 22 degrees
+right). The park starts with a braked stop at a fixed point beside the lot and is counted as parked only when all four
+corners are inside. The program does not implement a direction change after the second lap.
+
+### The program contract
+
+Each program is one file with a `DEFAULTS` dict, optional `PRESETS`, and
+
+```python
+def run(robot, params, log, stop, hook=None): ...
+```
+
+- `robot` is `bluewave.hw.Robot` (on the car or in the simulator).
+- `params` is layered: `DEFAULTS` < the chosen preset < the robot's per-program parameters < the run's own `k=v`.
+- `log(dict)` writes one JSON event to the run file.
+- `stop` is a `threading.Event`; the program returns when it is set.
+
+The run file lands in `runs/<time>-<program>.jsonl` on the robot, with the parameters and robot parameters in its first
+line, so a run can be traced to the exact numbers it ran on.
+
+## Car interface
+
+Values from `profiles/wltoys_bw2.json`; the full harness is in [Schemes/](../Schemes/).
+
+| signal | Pi 5 header pin | GPIO / port | note |
+|---|---|---|---|
+| motor PWM | 32 | GPIO12 | 490 Hz software PWM (`drive.pwm.hw_pwm` 0) |
+| motor DIR | 36 | GPIO16 | DIR low = forward (`drive.pwm.dir_forward_high` false) |
+| START button | 11, GND 9 | GPIO17 | internal pull-up; read as the RRC's KEY1 |
+| body strap | 29, GND 30 | GPIO5 | jumper present = this chassis (`bodyid.py`) |
+| steering servo | - | RRC Lite PWM port 3 | centre 1441 us, 22.4 us per degree |
+| RRC Lite | USB | `/dev/rrc` | udev rule in `os/99-bluewave.rules` |
+
+Drive safety in the profile: PWM-low brake on every stop, a 200 ms command watchdog (`drive.pwm.watchdog_ms`), motor cut
+after 0.8 s of stall (`drive.stall_s`).
+
+## Running on the robot
+
+The commands run on the laptop from `src/`, in Git Bash or cmd (PowerShell rejects the `<` redirections used in
+`os/`). The robot address and the optional console token come from the environment, never from a file in this tree:
+
+| variable | default | meaning |
+|---|---|---|
+| `BW_HOST` | `bluewave.local` | robot address |
+| `BW_PORT` | `8000` | dev server port |
+| `BW_USER` | `bluewave` | SSH user (key login; `bw.py` uses `~/.ssh/bluewave_ed25519` when it exists) |
+| `BW_TOKEN` | empty | console token, if the robot sets one |
+
+1. **Set up the Pi once.** On a fresh Raspberry Pi OS Lite (64-bit) card: `os/setup_bluewave_os.sh` (installs the
+   packages, the udev rule, the dev and race services). On Hiwonder's stock card: `os/install_on_stock.sh` (keeps
+   Hiwonder's container for the HP60C driver and adds the dev server).
+2. **Deploy:** `py -3 tools/bw.py deploy` copies `bluewave/`, `programs/`, `race/` and `profiles/` to the robot and
+   restarts the dev server. It refuses while a program drives the car.
+3. **Select the car's profile:** `py -3 tools/bw.py body wltoys_bw2` (applies the profile, checks the body strap and the
+   lidar fingerprint, restarts the server).
+4. **Calibrate with the car still:** `py -3 tools/bw.py preflight pitch` with one pillar 500 mm ahead of the bumper,
+   then `py -3 tools/bw.py preflight` until every row says GO (battery, board, gyro bias, camera, lidar, body).
+   The camera pitch is measured on the car, not taken from the CAD: the profile carries the 16-degree wedge angle, the
+   car ran on 19.61 degrees measured on 1 October 2026.
+5. **Run:** `py -3 tools/bw.py run BEST_OPEN_14s --wait-button` or `py -3 tools/bw.py run obs_v17 --wait-button`; the car
+   waits for its START button. Ctrl-C stops it.
+6. **Read the run back:** `py -3 tools/bw.py runs`, `py -3 tools/bw.py pull RUN_ID`,
+   `py -3 tools/bw.py analyze latest`.
+
+`py -3 tools/bw.py help` lists the other commands (live telemetry, component tests, parameters, presets, logs).
+
+### Race mode
+
+Rule 11.10 wants every radio off during a run, and rules 9.10 and 9.11 allow one power switch and one start button.
+Race mode is that path, on the card set up by `os/setup_bluewave_os.sh`:
+
+1. Choose the programs and the challenge:
+   `py -3 tools/bw.py apply race.program= race.programs.open=BEST_OPEN_14s race.programs.obstacle=obs_v17 race.challenge=open`
+   (`race.challenge=obstacle` for the Obstacle round).
+2. `py -3 tools/bw.py mode race`, then power-cycle the car.
+3. At boot `os/bluewave-mode.sh` blocks every radio (`rfkill block all`) and starts `race/race_main.py`. It loads the
+   program and computes what can be computed before the car moves, beeps twice (READY), and waits for START. Then it
+   runs the program and writes `runs/<time>-race-<program>.jsonl`.
+4. Holding the second RRC key long returns to dev mode (radios on, dev server started).
+
+## Running in the simulator
 
 ```sh
-arduino-cli compile --fqbn arduino:avr:uno src/Open_Challenge
-arduino-cli compile --fqbn arduino:avr:uno src/Obstacle_Challenge
+py -3 -m pip install -r requirements.txt
+py -3 tools/sim_run.py BEST_OPEN_14s --profile wltoys_bw2 --mat1001 --open --corridors 1000,1000,1000,1000 --seed 5
+py -3 tools/sim_run.py obs_v17 --profile wltoys_bw2 --mat1001 --lot --lot-start --seed 2
 ```
 
-Measured on 15 September 2026 with the IDE's own arduino-cli. The Uno has 32,256 B of flash and 2,048 B of RAM.
-
-| Sketch | Flash, standard IDE flags, Zumo files renamed | Flash, our PC's extra flags | RAM used by globals |
-|---|---|---|---|
-| Open_Challenge | 15,136 B (46 %) | 14,630 B (45 %) | 721 B (35 %) |
-| Obstacle_Challenge | 16,138 B (50 %) | 15,726 B (48 %) | 689 B (33 %) |
-
-Our development PC has a `platform.local.txt` in the AVR core folder that adds `-mcall-prologues -mrelax`. An earlier park build needed it to fit in flash. Both v20 sketches build without it, so another PC needs no extra file.
-
-Two Uno details matter if a pin is moved. The Servo library takes Timer1, which removes PWM from D9 and D10: the servo is on D10, D9 is only an echo input, and the motor PWM is on D3 (Timer2, about 490 Hz). Pixy2 talks SPI at 2 MHz through the ICSP header, which shares D11, D12 and D13, and the sketches use those pins for nothing else.
-
-## Pin map
-
-The pins are the same in both sketches ([Open lines 30-35](Open_Challenge/Open_Challenge.ino#L30-L35), [Obstacle lines 51-56](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L51-L56)). The drawing is [docs/diagrams/wiring_pinmap.svg](../docs/diagrams/wiring_pinmap.svg).
-
-| Part | Signal | Pin | Code object |
-|---|---|---|---|
-| HC-SR04, left front corner | TRIG / ECHO | D4 / D5 | `sonarLeft` (NewPing, 400 cm limit) |
-| HC-SR04, right front corner | TRIG / ECHO | D2 / D9 | `sonarRight` |
-| HC-SR04, nose | TRIG / ECHO | D13 / D7 | `sonarFront` |
-| Steering servo | Signal | D10 | `steeringServo` |
-| Cytron MD13S motor driver | PWM / DIR | D3 / D8, DIR HIGH = forward | `runMotor()` |
-| Start switch, other side to GND | Input with internal pull-up | A2 | `waitStart()` |
-| BNO055 IMU | SDA / SCL | A4 / A5 | `bno`, I2C address 0x28 |
-| Pixy2 camera | SPI | ICSP header | `pixy` |
-| USB serial | RX / TX | D0 / D1 | Debug print |
-
-Every law uses one servo convention: above 90 steers left, below 90 steers right. The lap laws stay within 30 to 160. The Obstacle lot exit and park use full lock at 10 (right) and 170 (left).
-
-## Open_Challenge.ino
-
-There is one `loop()` and no state machine beyond the `started` flag.
-
-```mermaid
-flowchart TD
-    S["setup(): motor off, servo 90, BNO055, one wiggle"] --> W{"A2 changed,<br/>held 30 ms"}
-    W -- no --> W
-    W -- yes --> P["Ping left, right, front<br/>fill lost echoes, filter"]
-    P --> H["BNO055 heading<br/>count a corner at 70 of 90 deg"]
-    H --> F{"Corner 12 counted,<br/>finish reached"}
-    F -- yes --> X["Motor 0, servo 90, halt"]
-    F -- no --> A{"Front at<br/>48 cm or less"}
-    A -- yes --> AV["Front avoid, PWM 25"]
-    A -- no --> PID["Wall balance PID, PWM 30<br/>PWM 38 on a calm mapped straight"]
-    AV --> K["Stiction kick, servo limit, motor"]
-    PID --> K
-    K --> P
-```
-
-### Functions by job
-
-| Job | Function | Parts and pins |
-|---|---|---|
-| Motor output | [`runMotor()`](Open_Challenge/Open_Challenge.ino#L98-L101) | MD13S: D8 direction, D3 PWM |
-| One distance reading | [`getStableDistance()`](Open_Challenge/Open_Challenge.ino#L91-L96): 3 ms pause, one `ping_cm()`; no echo or over 400 cm returns -1 | Any HC-SR04 |
-| Angle wrap to ±180° | [`wrap180()`](Open_Challenge/Open_Challenge.ino#L103-L107) | None |
-| Ready and fault signal | [`signalServo()`](Open_Challenge/Open_Challenge.ino#L109-L115): n wiggles of ±25°, 180 ms each way | Servo, D10 |
-| Start-up | [`setup()`](Open_Challenge/Open_Challenge.ino#L117-L138) | All |
-| Start switch | [`waitStart()`](Open_Challenge/Open_Challenge.ino#L140-L152) | A2 |
-| Lap law | [`loop()`](Open_Challenge/Open_Challenge.ino#L154-L283) | All |
-
-### Start-up and start
-
-- `setup()` turns the motor off, centres the servo, opens Serial at 115200 and starts I2C with a 25 ms timeout that resets a stuck bus.
-- `bno.begin()` gets 3 tries, 300 ms apart. If the BNO055 never answers, the servo wiggles twice, forever. Otherwise: 1 s pause, external crystal on, `pixy.init()` (the library waits up to 5 s for the camera), then one wiggle means ready.
-- `waitStart()` reads the A2 level on its first call and starts the round on any change that holds for 30 ms, so a push button and a toggle both work. That first call comes right after the ready wiggle, so the switch must be changed after the wiggle.
-
-### What one pass of `loop()` does
-
-1. Sensing ([lines 161-173](Open_Challenge/Open_Challenge.ino#L161-L173)). Left, right and front are pinged in turn. A silent side copies the other side. If both are silent, the last filtered value stays (60 cm before any reading). The filter is `lpf = 0.9 * new + 0.1 * lpf`, so 90 % of each new reading passes.
-2. Heading and corners ([lines 175-184](Open_Challenge/Open_Challenge.ino#L175-L184)). The BNO055 Euler heading is read. A value of exactly 0.0 while the previous heading was more than 20° from 0 is treated as a failed I2C read and replaced. Wrapped heading changes add up in `turnAccum`, which is never reset. Corner `quad` counts when `|turnAccum| >= 90 * quad + 70`, at 70 of its 90°.
-3. Finish ([lines 191-202](Open_Challenge/Open_Challenge.ino#L191-L202)). After corner 12 the front must read more than 180 cm twice in a row (looking down the start straight), then 150 cm or less twice in a row. The car stops there, or 700 ms after corner 12 if that comes first: motor 0, servo 90, `3 laps completed`, halt.
-4. Corner vote ([lines 204-210](Open_Challenge/Open_Challenge.ino#L204-L210)). When a corner counts, its section timer restarts and it votes +1 if the last front avoid turned left, -1 if right.
-5. Camera call ([line 212](Open_Challenge/Open_Challenge.ino#L212)). `pixy.ccc.getBlocks()` waits for the next camera frame. Open ignores the blocks; the call keeps the loop timing of the build it came from.
-6. Steering and speed ([lines 214-259](Open_Challenge/Open_Challenge.ino#L214-L259)), below.
-7. Output ([lines 261-275](Open_Challenge/Open_Challenge.ino#L261-L275)). The servo command is limited to 30-160. Any motor command from 1 to 29 PWM becomes 55 for its first 70 ms, then for 70 ms of every 500 ms (the stiction kick). Then the motor runs forward.
-8. Debug print ([lines 277-282](Open_Challenge/Open_Challenge.ino#L277-L282)).
-
-### Steering law
-
-**Front avoid**, when the front reads 1 to 48 cm ([lines 218-238](Open_Challenge/Open_Challenge.ino#L218-L238)). The motor runs at PWM 25. Urgency `u = (48 - front) / 30`, limited to 0.25-1. The servo goes to `90 + 70u` for a left turn or `90 - 60u` for a right turn. The side is chosen again on every pass:
-
-1. If `|lpfLeft - lpfRight| > 3` cm, turn to the longer side.
-2. Otherwise, if the corner vote is not tied, turn the way most corners have turned.
-3. Otherwise, if `|sideMem| >= 4` cm, turn to the side `sideMem` favours. `sideMem` is a slow average of L - R (`0.9 * old + 0.1 * new`) kept in wall-balance mode, so before the first corner it holds the loops just before the trigger.
-4. Otherwise turn right.
-
-Once the car has turned 100° inside one avoid, the servo returns to 90. The PID memory is cleared.
-
-**Wall balance PID** in all remaining passes ([lines 239-247](Open_Challenge/Open_Challenge.ino#L239-L247)). Error `e = lpfLeft - lpfRight` in cm, servo `= 90 + 0.6 e + 0.05 * (e - last e)`. KI is 0, so `I_MAX` 80 has no effect.
-
-**Straight map** ([lines 248-258](Open_Challenge/Open_Challenge.ino#L248-L258)). "Mid-straight" means more than 700 ms after the corner and the front reading over 150 cm. In lap 1 (corners 0-3) each straight records its largest `|e|` while mid-straight. In laps 2-3 (corners 4-11) the car runs at PWM 38 while mid-straight, if that straight's lap-1 maximum stayed under 25 cm and `|e|` is under 18 cm now. The command drops back to PWM 30 as soon as the front reads 150 cm or less.
-
-## Obstacle_Challenge.ino
-
-`loop()` ([lines 1079-1103](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1079-L1103)) dispatches on `state` (enum at [line 165](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L165)).
-
-```mermaid
-stateDiagram-v2
-    [*] --> ST_WAIT: setup() done, one wiggle
-    ST_WAIT --> ST_EXIT: A2 change held 30 ms, then 500 ms outer-wall pick
-    ST_EXIT --> ST_LAPS: heading 50 deg out or 20 cycles, then 800 ms straight
-    ST_LAPS --> ST_APPROACH: 12 corners, within 8 deg of parallel, PID mode, 5 frames with no pillar
-    ST_LAPS --> ST_DONE: 13th corner, or a wall within 48 cm over 1.2 s after corner 12
-    ST_APPROACH --> ST_PARK: front range reaches the stop mark
-    ST_APPROACH --> ST_DONE: 15 s cap
-    ST_PARK --> ST_DONE: parkRun() returns
-```
-
-In `ST_DONE` the motor stays at 0 and the servo at 90. The car never starts a fourth lap.
-
-### Functions by job
-
-| Job | Functions | Parts and pins |
-|---|---|---|
-| Hardware access | [`runMotor`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L227-L230), [`getStableDistance`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L232-L237), [`readYaw`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L241-L253), [`signalServo`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L280-L286) | MD13S D3/D8, the 3 HC-SR04, BNO055 A4/A5, servo D10 |
-| Heading math | [`wrap180`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L259-L263), [`rightTurnSince`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L266), [`parkHeading`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L854) | BNO055 |
-| Camera helpers | [`signDistance`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L268-L274), [`looksLikeBarrier`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L276-L278) | Pixy2 |
-| Start | [`setup`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L289-L313), [`waitStart`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L316-L337), [`parkPickSide`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L340-L362) | A2, left and right HC-SR04 |
-| Lot exit | [`startTick`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L366-L415) | Servo, MD13S, BNO055 |
-| Lap count | [`lapsCount`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L418-L425) | BNO055 |
-| Lap law | [`lapStep`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L430-L707) | All sensors, servo, MD13S |
-| Approach to the lot | [`lotMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L712), [`markMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L714), [`laneHeading`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L717-L724), [`approachStep`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L726-L823) | Front and wall-side HC-SR04, BNO055, servo, MD13S |
-| Averaged ranges for the park | [`frontMeanMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L829-L837), [`wallMeanMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L839-L847), [`sideToWallMm`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L849-L851) | Front and wall-side HC-SR04 |
-| Park geometry, no hardware | [`lotFar`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L858), [`arcUpdate`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L860-L865), [`segLimClear`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L867-L871), [`bayClear`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L874-L896), [`maxLeg`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L900-L912) | None |
-| Park motion | [`parkArcTo`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L916-L949), [`parkStep`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L951-L960), [`parkRun`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L962-L1076) | Servo at lock, MD13S, BNO055, front and wall-side HC-SR04 |
-
-### Start and outer-wall pick
-
-`setup()` and `waitStart()` work as in Open. While waiting, `waitStart()` also prints the three ranges and the heading every 400 ms. After the start, `parkPickSide()` stops the car for 500 ms and averages both side sensors. The shorter side is the outer wall (`parkWallLeft`). It seeds the turn vote `dirVote` with 2 votes: wall on the left means clockwise, so right turns. It also stores the start heading `startYaw0`, which the approach and the park use as "parallel to the lot".
-
-### Lot exit: `startTick()`
-
-One cycle is 4 steps: 220 ms pause with the wheels at the wall-side lock, 200 ms reverse at PWM 18, 220 ms pause at the other lock, 200 ms forward at PWM 18. Cycles repeat until the heading is 50° from the start or 20 cycles have run. Then the car drives 800 ms straight at PWM 18.
-
-If the exit turned at least 20°, it sets `headingSign`. The nose must have turned away from the wall, so the sign of the measured turn shows whether the heading grows clockwise (+1) or the BNO055 is mounted the other way up (-1). The exit's rotation is copied into `turnAccum`, so the lap counter includes it (FIX 26).
-
-### Lap law: one pass of `lapStep()`
-
-1. Sensing ([lines 431-443](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L431-L443)), the same as Open.
-2. Heading and corners ([lines 445-446](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L445-L446)). `readYaw()` has Open's 0.0 guard. `lapsCount()` counts a corner at 70 of its 90° and never resets the total.
-3. Which straight ([lines 449-457](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L449-L457)). The straight number is `(|turnAccum| + 45) / 90`, and the car counts as lined up with it within 30°. With the lot on the right, straight 0 is never mapped: its pillars are behind the camera when lap 1 leaves the lot.
-4. New corner ([lines 459-478](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L459-L478)). The corner votes by its measured rotation: -1 for right, +1 for left. In laps 2-3, if lap 1 recorded a pillar colour for this straight, the first colour becomes a side bias for up to 1.6 s.
-5. Pixy2 pipeline ([lines 480-539](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L480-L539)), below.
-6. Mode manager ([lines 541-564](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L541-L564)). PID mode switches to PIXY mode after 2 frames in a row with a pillar, if 280 ms have passed since the last switch or the pillar is 550 mm or nearer. PIXY mode returns to PID after 3 frames without one and 280 ms. At the switch into PIXY mode in lap 1, the colour is stored for the current straight (up to 2 colours).
-7. End of the laps ([lines 566-587](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L566-L587)): the two exits of `ST_LAPS` in the diagram.
-8. Control output ([lines 589-665](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L589-L665)). The first matching branch runs.
-   - PIXY mode with a pillar this frame:
-     - the servo moves toward the ladder target by at most 6° per pass;
-     - a front reading of 25 cm or less snaps it to full lock on the target side (FIX 6);
-     - if the side sensor on the turn side reads under 25 cm, the command may go no further than `90 + (target - 90) * room`, with `room = (side - 16) / 9` limited to 0-1 (FIX 9 and FIX 16);
-     - PWM 25 when the front reads 48 cm or less, else PWM 30.
-   - Front avoid, front 1 to 48 cm:
-     - the same urgency law as Open;
-     - `|L - R| > 3` cm picks the longer side, otherwise the sign of `dirVote`;
-     - after 100° of turn inside one avoid, the servo holds 90 for 400 ms, then the avoid counts again from the new heading.
-   - Wall balance PID:
-     - the same gains as Open;
-     - the mapped bias holds `L - R = +20` cm for red (right of the lane centre) and `-20` cm for green, while the heading is within 12° of the straight and until the camera takes a pillar;
-     - with no pillar in view and `|e|` under 6 cm, a ±5° sine weave with a 1.3 s period sweeps the camera;
-     - in laps 2-3, a straight where lap 1 saw no pillar runs at PWM 36 while the front reads over 130 cm, `|e|` is under 20 cm and no pillar is in view.
-9. Output ([lines 667-699](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L667-L699)). Servo limit 30-160, the stiction kick as in Open, then the stuck check: if the last valid front reading (under 200 ms old) was 15 cm or less and the heading has not moved 3° for 0.7 s, the car steers the other way (servo 30 or 160) and reverses (PWM 55 for 70 ms, PWM 30 for 450 ms, 120 ms stop).
-
-### Pixy2 pipeline
-
-For up to 8 blocks per frame ([lines 486-513](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L486-L513)):
-
-- Only signature 1 (red) and 2 (green) count. Signature 3 is declared and not used.
-- A red or green blob with an area of at least 600 px and a width/height ratio of at least 1.4 has the shape of a barrier, not a pillar, and is skipped.
-- Blobs with an area under 200 px, or with x outside 20-300, are skipped.
-- Range in mm is `min(13683 / width, 28574 / height)`, capped at 4,000. The two constants are the 50 × 100 mm pillar times the focal length in pixels from Pixy2's 60 × 40° field of view on its 316 × 208 frame.
-- Only pillars at 900 mm or nearer engage. The nearest wins, and a locked colour changes only if the other pillar is more than 250 mm nearer.
-
-If the pillar is within 45 px of the image centre, the front HC-SR04 may replace the camera range when it reads under 1.5 m, at most 60 mm farther and less than 400 mm nearer. So the sonar can shorten the range but not push it out.
-
-Steering ladder ([lines 525-533](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L525-L533)). Red is passed on its right, so the car steers right of it; green on its left.
-
-| Pillar | Pixy x (centre 158) | Servo target |
-|---|---|---|
-| Green | under 120 / 120-169 / 170 and over | 140 / 120 / 102 |
-| Red | over 200 / 151-200 / 150 and under | 40 / 60 / 78 |
-
-Beyond 550 mm the target is scaled toward 90 by `k = (900 - range) / 350`, with a floor of 0.35 (FIX 15), so a far pillar still gets at least 35 % of the turn.
-
-### Approach: `approachStep()`
-
-The approach starts with the car stopped. It has no pillar logic; the laps hand over only after 5 frames with no pillar.
-
-- Stop mark. The front range at which to stop is `lot distance - 200 - (-40)` mm. With `LOT_RIGHT_MM` 980 that is 820 mm for a lot on the right. With `LOT_LEFT_MM` = 3000 - 340 - 980 = 1,680, it is 1,520 mm for a lot on the left.
-- First measurement. Five front and five wall-side pings, 30 ms apart. If the front already reads less than 100 mm beyond the first stop point (the mark, or 950 mm with the lot on the left), the car reverses onto the mark. With the lot on the right this also needs more than 1 s of straight since corner 12, because a short reading right after the corner is the limiter tip.
-- Lane keeping. Target heading = `0.10 deg/mm x (wall distance - 320 mm)`, limited to ±10°. Servo = 90 ± 2.2 × heading error. PWM 25, with 55 for the first 70 ms of each leg. A side reading more than 80 mm from the lane estimate is ignored unless 5 in a row disagree.
-- Far-wall tracker. Each front reading must fall within `150 + 0.2 dt` mm of the range predicted from the closing speed (0.2-1.5 mm/ms). This rejects limiter-tip echoes. Two readings of 250 mm or less force a reverse onto the mark.
-- Lot on the right. Drive on until the tracked wall is within 60 mm of the mark with the heading within 12°, or 120 mm past it. Then `ST_PARK`.
-- Lot on the left. Drive on to 950 mm, then reverse until two readings reach the mark (60 mm lead). Then `ST_PARK`.
-
-### Park: `parkRun()`
-
-Every arc is closed on the BNO055 heading. The arcs of steps C and E and the straight steps of D are sized in a clearance model before they are driven. The model is the 200 × 125 mm car rectangle against the wall and the two 20 mm limiters of the 300 × 200 mm lot, sampled 6 points per edge ([`bayClear()`](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L874-L896)).
-
-<details>
-<summary>The park, step by step (B to F)</summary>
-
-| Step | Lines | What the car does |
-|---|---|---|
-| B, mark | [970-985](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L970-L985) | Up to 10 straight steps until the front range is within 30 mm of the mark. Then 4 steps back and 4 forward measure the real step length from the front range (kept if 5-150 mm, default 45 mm) |
-| Pose | [987-997](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L987-L997) | x from the front range and the lot distance, y from `wallMeanMm()` (or the approach's lane estimate), heading from the IMU relative to `startYaw0` |
-| Target | [999-1004](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L999-L1004) | The nominal end of the entry: from the 320 mm lane and the mark, a 50° reverse arc of radius 170 mm plus a 160 mm straight, with 12 mm biases along and into the lot |
-| Entry angle | [1005-1017](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1005-L1017) | Tries 36-64° in 1° steps from the measured pose and keeps the angle whose arc plus straight lands closest to the target along the lot |
-| C, arc in | [1019-1024](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1019-L1024) | Reverse at the wall-side lock to the entry angle, cut to what keeps 12 mm clearance in the model, minus 2.5° slack when cut |
-| D, straight in | [1026-1040](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1026-L1040) | Up to 10 reverse steps until the depth target is reached, each checked for 12 mm clearance first |
-| E, square up | [1042-1060](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1042-L1060) | Up to 14 cycles of a forward and a reverse arc of at most 6° each, until the heading is within 3° of parallel. The leg with more room in the model goes first |
-| F, centre | [1062-1070](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L1062-L1070) | With the heading within 8°, up to 4 steps to bring the downstream limiter to 30-75 mm from the front sensor |
-
-`parkArcTo()` sets the lock, waits 220 ms, drives at PWM 18 and stops when `heading + turn rate x 150 ms` reaches the target, or after 2.6 s. If the heading has not moved 0.3° after 150 ms, it kicks once at PWM 55 for 60 ms. After the stop it waits until the heading changes by less than 0.15° in 70 ms and returns the measured rotation.
-
-`parkStep()` centres the servo (220 ms settle if it was at a lock), drives 25 ms at PWM 55 and 25 ms at PWM 22, stops, and settles for 380 ms.
-
-</details>
-
-## Constants to calibrate
-
-### Before every official round, both sketches
-
-- `PRACTICE` must be 0. With 0, the car must stay still after power-up until A2 changes.
-- Train Pixy2 in PixyMon under the venue light: signature 1 red, 2 green, 3 magenta.
-- Place the Obstacle car about 40 mm from the outer wall, the same gap every attempt. `parkPickSide()` decides the lot side from the two side sensors at rest; in simulation the pick was right in 30 of 30 runs at that gap.
-- With the car on the bench, turn it clockwise by hand: `yaw` in the `WAIT` line should rise. Obstacle can correct the sign during the exit, but only if the exit turns at least 20°.
-
-### Park geometry, Obstacle
-
-The [source header](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L31-L38) gives the mat procedure for the first five constants.
-
-| Constant | Line | Value | Basis | How to set it on a mat |
-|---|---|---|---|---|
-| `R_PARK_MM` | [127](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L127) | 170 | Park model | Rear-axle turning radius at servo 170 and at 10: drive one slow full-lock circle and halve the diameter. One constant serves both locks, so check that the two agree |
-| `CAR_NOSE_MM` | [129](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L129) | 168 | Simulator fit of the real exit | Rear axle centre to the front bumper |
-| `SIDE_A_L`, `SIDE_B_L` | [135](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L135) | 5.16, 202.5 | Simulator fit | Car parallel to the wall, rear axle 300 mm and then 400 mm from it; read the left sensor in the `WAIT` line. `A = 100 / (cm400 - cm300)`, `B = 300 - A * cm300` |
-| `SIDE_A_R`, `SIDE_B_R` | [136](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L136) | 13.02, -50.2 | Simulator fit | The same with the right sensor. The two corner sensors map differently, so both need their own fit |
-| `LOT_RIGHT_MM` | [131](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L131) | 980 | Set from our measurement of about 1.0 m | Tape from the far wall to the far face of the downstream limiter, lot on the car's right. `LOT_LEFT_MM` follows from it |
-| `PARK_LANE_MM` | [137](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L137) | 320 | Set in code; the limiter tips are 200 mm from the wall | Check on the mat that the approach clears the limiters at this rear-axle distance from the outer wall |
-| `FRONT_SETBACK_MM` | [133](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L133) | 0 | 0 means flush with the nose | How far the front sensor face sits behind the nose |
-| `CAR_LEN_MM`, `CAR_WID_MM` | [128](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L128) | 200, 125 | Our measurement | Remeasure if the body changes. The lot length is 1.5 × the car length |
-
-### Camera range, Obstacle
-
-`DIST_K_W` 13683 and `DIST_K_H` 28574 ([line 77](https://github.com/BllueWave/WRO-Future-Engineers-2026/blob/v2.0-asia-final/src/Obstacle_Challenge/Obstacle_Challenge.ino#L77)) come from the datasheet field of view. To check them on the car, put a pillar 500 mm straight ahead: PixyMon should show a blob about 27 px wide and 57 px tall. If it does not, set `K = measured px x true distance in mm`.
-
-<details>
-<summary>Values carried over from earlier builds that ran on the mat</summary>
-
-| Constant | Open | Obstacle | Meaning |
-|---|---|---|---|
-| `MOTOR_SPEED` | 30 | 30 | Lap PWM out of 255 |
-| `MOTOR_SPEED_AVOID` | 25 | 25 | Avoid PWM. On this car PWM 15 does not start from rest, 18 creeps, 25 always moves |
-| `MOTOR_KICK`, `KICK_MS`, `REKICK_MS` | 55, 70, 500 | 55, 70, 500 | Stiction kick |
-| `FRONT_AVOID_CM`, `AVOID_FULL_CM` | 48, 18 | 48, 18 | Avoid starts at 48 cm, full urgency at 18 cm |
-| `KP`, `KD`, `KI` | 0.6, 0.05, 0 | 0.6, 0.05, 0 | Wall balance gains |
-| `ALPHA` | 0.9 | 0.9 | Weight of each new sonar reading |
-| `CENTER_ANGLE`, limits | 90, 30-160 | 90, 30-160 | Wheels must point straight at 90 |
-| `UTURN_LIMIT_DEG` | 100 | 100 | Turn inside one avoid before the servo centres |
-| `PARK_SPEED`, `PARK_LOCK_L`, `PARK_LOCK_R` | - | 18, 170, 10 | Lot exit PWM and locks |
-| `EXIT_TARGET_DEG`, `EXIT_MAX_CYCLES` | - | 50, 20 | Lot exit end |
-| `PIXY_ENGAGE_MM`, `PIXY_FAST_ENTRY_MM`, `PIXY_MIN_COMMIT` | - | 900, 550, 0.35 | Camera engagement and FIX 15 floor |
-| `WALL_LIMIT_CM`, `WALL_VETO_CM` | - | 25, 16 | FIX 16 wall clamp |
-| `SERVO_SLEW_DEG_PER_STEP` | - | 6 | Servo slew in PIXY mode |
-| `DIR_TRUST_CM` | 3 (inline) | 3 | Side difference that decides a corner; the kuwait sketches used the same 3 cm |
-
-Set in simulation: Open `MOTOR_SPEED_FAST` 38, `CALM_ERR_CM` 25, `FAST_ERR_CM` 18, `FAST_FRONT_CM` 150, `FINISH_FRONT_CM` 150, `FINISH_MS` 700; Obstacle `BIAS_CM` 20, `BIAS_MS` 1600, `MOTOR_SPEED_FAST` 36, `FAST_FRONT_CM` 130, the `STUCK_*` group and every approach and park constant above.
-
-</details>
-
-## Serial output
-
-Both sketches print at 115200 baud. A range of -1 means no echo.
-
-| Sketch | Line | When | Fields |
-|---|---|---|---|
-| Open | `lpfLeft lpfRight front servo yaw quad mode` | Every pass | Filtered side ranges (cm), front (cm), servo (°), heading (°), corners counted, `PID` / `AVOID` / `FAST` |
-| Open | `3 laps completed` | At the stop | |
-| Obstacle | `WAIT L .. R .. F .. yaw ..` | Every 400 ms before the start | Raw ranges (cm) and heading; use it for the heading check and the side-sensor fits |
-| Obstacle | `outer wall = LEFT L=.. R=..` | After the 500 ms pick | Chosen side and the two averages (cm) |
-| Obstacle | `SECTION n map n=.. first=.. seen=..` | Each counted corner | Corner number, pillars mapped for this straight, first colour (1 red, 2 green), whether lap 1 saw a pillar there |
-| Obstacle | `lpfLeft lpfRight front servo yaw quad mode` | Every lap pass | As Open, mode `PID` / `PIXY` / `AVOID` |
-| Obstacle | `APPROACH phase F .. wall .. rt ..` | Every approach pass | 0 forward / 1 reverse, front range (mm), lane estimate (mm), heading from parallel (°) |
-| Obstacle | `PARK pose x .. y .. h .. step ..` | After step B | Pose in the lot frame (mm, °) and the measured step (mm) |
-| Obstacle | `PARKED` | End of the park | |
+- `--profile wltoys_bw2` builds the simulated car from this car's profile (body, sensors, steering limits).
+- `--mat1001` replaces the simulator's drive and steering with `profiles/plant_mat1001.json`, fitted by
+  `tools/fit_plant.py` to 20 mat run logs of 30 September and 1 October 2026: speed = 5.276 m/s per unit duty x
+  (duty - 0.1012), rms error 0.075 m/s over 1,599 lidar speed samples; PWM-low brake 2.08 m/s^2; speed lag 0.56 s;
+  steering bias +4.05 degrees; effective wheelbase 137 mm at 0.2 m/s rising to 280.7 mm at 1.7 m/s (2,694 corner
+  samples). The car understeers more as it goes faster, and the fitted curve is what the simulated car steers with.
+- `--open` draws 600 / 1000 mm corridors from the seed (`--corridors S,E,N,W` fixes them); `--lot --lot-start` places
+  the parking lot and starts the car in it; `--cw` runs clockwise; `--seeds 1-8` runs a batch, one line each;
+  `--runfile DIR` writes a run file the analyzer reads; `--fault '{...}'` injects a fault mid-run (camera pitch jump, lidar dropout, battery sag, frozen camera, stuck wall
+  reading).
+- Each run prints the program's events, one JSON line each, then a `RESULT` line: reason, laps, seconds, contacts,
+  wrong-side passes, park corners inside, maximum lateral acceleration.
+
+The simulator finds bugs and regressions before the mat. It does not prove a program: a result counts when the car
+repeats it on the mat.
+
+## Configuration and secrets
+
+No network name, password, key or token is stored in this tree. The robot address, SSH user and console token come
+from the environment variables above or from an untracked `.robot.json` beside `tools/` (listed in `.gitignore`). SSH
+uses key login only.

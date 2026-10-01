@@ -1,0 +1,528 @@
+{
+ "desc": "The WLtoys car's simulator truth fitted to the MAT 2026-09-30/10-01 run logs by tools/fit_plant.py (sim_run --mat1001).  Over the profile's mock.plant: the drive (slope / intercept at v_ref, vbat_exp, tau_s, the PWM-low brake_decel), the steering bias, the speed-dependent effective wheelbase; vbat 7.1 = the pack of the 18.7-18.8 s BEST_OPEN runs.  robot_set = the mat's robot params the repo profile lacks.  SIM, not the judge.",
+ "source": {
+  "runs": [
+   "mentorpi_deploy_1002b/runs/20260930-185833.383-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002e/runs/20260930-212801.067-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002f/runs/20260930-213734.339-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002g/runs/20260930-224325.683-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002i/runs/20260930-225412.833-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002j/runs/20260930-230316.770-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002l/runs/20260930-232119.403-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002l/runs/20260930-233152.668-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002l/runs/20260930-234059.826-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002l/runs/20260930-234447.957-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002m/runs/20260930-235056.569-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002m/runs/20260930-235610.893-open_v2_25s.jsonl",
+   "mentorpi_deploy_1002n/runs/20260930-235903.291-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002o/runs/20261001-000246.275-open_fast_v2.jsonl",
+   "mentorpi_deploy_1002o/runs/20261001-001646.802-open_v4.jsonl",
+   "mentorpi_deploy_1002p/runs/20261001-005127.677-open_v4.jsonl",
+   "mentorpi_deploy_1002p/runs/20261001-005755.103-open_v4.jsonl",
+   "mentorpi_deploy_1002p/runs/20261001-010056.512-open_v5.jsonl",
+   "mentorpi_deploy_1002p/runs/20261001-010507.423-open_v5.jsonl",
+   "mentorpi_deploy_1002p/runs/20261001-011031.386-open_v6.jsonl"
+  ],
+  "generator": "mentorpi/tools/fit_plant.py",
+  "profile": "profiles/wltoys_bw2.json mock.plant"
+ },
+ "plant": {
+  "mass_g": 726.0,
+  "cg_h_mm": 56.3,
+  "cg_x_mm": 59.5,
+  "track_mm": 64.24,
+  "lock_deg": 29.96,
+  "intercept": 0.1012,
+  "breakaway": 0.1362,
+  "slope": 5.276,
+  "brake_tau_s": 0.0,
+  "tau_s": 0.56,
+  "servo_dps": 85.6,
+  "lidar_cap_mm": 2200.0,
+  "start_jolt_g": 0.5,
+  "vbat": 7.1,
+  "duty_meas_max": 0.0,
+  "slope_hi_share": 1.0,
+  "v_emf_cap": 2.97,
+  "mu": 0.7,
+  "vbat_exp": 0.0,
+  "brake_decel": 2.08,
+  "steer_bias_deg": 4.05,
+  "wb_curve": [
+   [
+    0.2,
+    137.0
+   ],
+   [
+    0.6,
+    227.8
+   ],
+   [
+    1.0,
+    217.7
+   ],
+   [
+    1.4,
+    270.2
+   ],
+   [
+    1.7,
+    280.7
+   ]
+  ]
+ },
+ "robot_set": {
+  "steer.max_deg": 26,
+  "camera.latency_s": 0.09
+ },
+ "scene": {
+  "latency_s": 0.09
+ },
+ "fit": {
+  "drive": {
+   "n": 1599,
+   "rms_mps": 0.075,
+   "median_mps": -0.002,
+   "rms_old_line_mps": 0.271,
+   "per_run": [
+    {
+     "run": "20260930-185833.383-open_fast_v2",
+     "n": 55,
+     "bat": 7.07,
+     "rms": 0.146,
+     "bias": -0.002,
+     "v_lidar_med": 0.38,
+     "lidar_over_cmd": 0.84
+    },
+    {
+     "run": "20260930-212801.067-open_fast_v2",
+     "n": 82,
+     "bat": 6.67,
+     "rms": 0.103,
+     "bias": 0.019,
+     "v_lidar_med": 0.6,
+     "lidar_over_cmd": 1.16
+    },
+    {
+     "run": "20260930-213734.339-open_fast_v2",
+     "n": 147,
+     "bat": 8.07,
+     "rms": 0.096,
+     "bias": 0.004,
+     "v_lidar_med": 0.7,
+     "lidar_over_cmd": 1.05
+    },
+    {
+     "run": "20260930-224325.683-open_fast_v2",
+     "n": 158,
+     "bat": 8.02,
+     "rms": 0.081,
+     "bias": 0.003,
+     "v_lidar_med": 0.69,
+     "lidar_over_cmd": 1.11
+    },
+    {
+     "run": "20260930-225412.833-open_fast_v2",
+     "n": 180,
+     "bat": 7.83,
+     "rms": 0.052,
+     "bias": 0.008,
+     "v_lidar_med": 0.71,
+     "lidar_over_cmd": 1.01
+    },
+    {
+     "run": "20260930-230316.770-open_fast_v2",
+     "n": 134,
+     "bat": 7.69,
+     "rms": 0.053,
+     "bias": -0.014,
+     "v_lidar_med": 0.73,
+     "lidar_over_cmd": 1.0
+    },
+    {
+     "run": "20260930-232119.403-open_fast_v2",
+     "n": 125,
+     "bat": 7.37,
+     "rms": 0.053,
+     "bias": -0.017,
+     "v_lidar_med": 0.86,
+     "lidar_over_cmd": 1.23
+    },
+    {
+     "run": "20260930-233152.668-open_fast_v2",
+     "n": 82,
+     "bat": 7.21,
+     "rms": 0.05,
+     "bias": 0.021,
+     "v_lidar_med": 0.88,
+     "lidar_over_cmd": 1.43
+    },
+    {
+     "run": "20260930-234059.826-open_fast_v2",
+     "n": 73,
+     "bat": 7.11,
+     "rms": 0.038,
+     "bias": -0.006,
+     "v_lidar_med": 0.94,
+     "lidar_over_cmd": 1.52
+    },
+    {
+     "run": "20260930-234447.957-open_fast_v2",
+     "n": 45,
+     "bat": 7.07,
+     "rms": 0.123,
+     "bias": 0.028,
+     "v_lidar_med": 0.95,
+     "lidar_over_cmd": 1.38
+    },
+    {
+     "run": "20260930-235056.569-open_fast_v2",
+     "n": 69,
+     "bat": 7.0,
+     "rms": 0.047,
+     "bias": 0.033,
+     "v_lidar_med": 0.94,
+     "lidar_over_cmd": 1.49
+    },
+    {
+     "run": "20260930-235610.893-open_v2_25s.",
+     "n": 6,
+     "bat": 6.93,
+     "rms": 0.048,
+     "bias": 0.031,
+     "v_lidar_med": 0.43,
+     "lidar_over_cmd": 0.79
+    },
+    {
+     "run": "20260930-235903.291-open_fast_v2",
+     "n": 60,
+     "bat": 6.88,
+     "rms": 0.04,
+     "bias": 0.001,
+     "v_lidar_med": 0.87,
+     "lidar_over_cmd": 1.67
+    },
+    {
+     "run": "20261001-000246.275-open_fast_v2",
+     "n": 71,
+     "bat": 6.81,
+     "rms": 0.05,
+     "bias": 0.007,
+     "v_lidar_med": 0.88,
+     "lidar_over_cmd": 1.46
+    },
+    {
+     "run": "20261001-001646.802-open_v4.json",
+     "n": 53,
+     "bat": 6.39,
+     "rms": 0.059,
+     "bias": -0.033,
+     "v_lidar_med": 1.06,
+     "lidar_over_cmd": 1.67
+    },
+    {
+     "run": "20261001-005127.677-open_v4.json",
+     "n": 71,
+     "bat": 7.26,
+     "rms": 0.093,
+     "bias": -0.083,
+     "v_lidar_med": 0.9,
+     "lidar_over_cmd": 1.42
+    },
+    {
+     "run": "20261001-005755.103-open_v4.json",
+     "n": 75,
+     "bat": 7.18,
+     "rms": 0.063,
+     "bias": -0.037,
+     "v_lidar_med": 0.9,
+     "lidar_over_cmd": 1.44
+    },
+    {
+     "run": "20261001-010056.512-open_v5.json",
+     "n": 71,
+     "bat": 7.14,
+     "rms": 0.063,
+     "bias": -0.032,
+     "v_lidar_med": 0.87,
+     "lidar_over_cmd": 1.41
+    },
+    {
+     "run": "20261001-010507.423-open_v5.json",
+     "n": 17,
+     "bat": 7.09,
+     "rms": 0.061,
+     "bias": 0.031,
+     "v_lidar_med": 0.63,
+     "lidar_over_cmd": 0.82
+    },
+    {
+     "run": "20261001-011031.386-open_v6.json",
+     "n": 25,
+     "bat": 7.04,
+     "rms": 0.144,
+     "bias": 0.156,
+     "v_lidar_med": 1.32,
+     "lidar_over_cmd": 1.08
+    }
+   ]
+  },
+  "steer": {
+   "n": 2824,
+   "delay_s": 0.05,
+   "bias_deg": 4.05,
+   "bias_straights": 5.07,
+   "bias_corners": 4.05,
+   "bias_from": "corners",
+   "small_angle_wb_mm": 326,
+   "rms_rad_per_m": 0.1013,
+   "per_run": [
+    {
+     "run": "20260930-185833.383-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 8.24,
+     "n": 94
+    },
+    {
+     "run": "20260930-212801.067-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 4.81,
+     "n": 77
+    },
+    {
+     "run": "20260930-213734.339-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 5.47,
+     "n": 235
+    },
+    {
+     "run": "20260930-224325.683-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 5.41,
+     "n": 289
+    },
+    {
+     "run": "20260930-225412.833-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 5.41,
+     "n": 301
+    },
+    {
+     "run": "20260930-230316.770-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 5.24,
+     "n": 178
+    },
+    {
+     "run": "20260930-232119.403-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 5.16,
+     "n": 154
+    },
+    {
+     "run": "20260930-233152.668-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 3.43,
+     "n": 114
+    },
+    {
+     "run": "20260930-234059.826-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 3.54,
+     "n": 325
+    },
+    {
+     "run": "20260930-234447.957-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 4.12,
+     "n": 58
+    },
+    {
+     "run": "20260930-235056.569-open_fast_v2",
+     "dir": "ccw",
+     "trim": null,
+     "bias": 2.89,
+     "n": 103
+    },
+    {
+     "run": "20260930-235903.291-open_fast_v2",
+     "dir": "cw",
+     "trim": -5,
+     "bias": 5.52,
+     "n": 50
+    },
+    {
+     "run": "20261001-000246.275-open_fast_v2",
+     "dir": "cw",
+     "trim": -4,
+     "bias": -30.86,
+     "n": 163
+    },
+    {
+     "run": "20261001-001646.802-open_v4.json",
+     "dir": "cw",
+     "trim": -4.0,
+     "bias": -8.35,
+     "n": 125
+    },
+    {
+     "run": "20261001-005127.677-open_v4.json",
+     "dir": "cw",
+     "trim": -4.0,
+     "bias": 5.09,
+     "n": 162
+    },
+    {
+     "run": "20261001-005755.103-open_v4.json",
+     "dir": "ccw",
+     "trim": -4.0,
+     "bias": 5.9,
+     "n": 173
+    },
+    {
+     "run": "20261001-010056.512-open_v5.json",
+     "dir": "ccw",
+     "trim": -4.0,
+     "bias": 5.68,
+     "n": 157
+    }
+   ]
+  },
+  "wheelbase": {
+   "n": 2694,
+   "rms_rad_s": 0.124,
+   "curve": [
+    [
+     0.2,
+     137.0
+    ],
+    [
+     0.6,
+     227.8
+    ],
+    [
+     1.0,
+     217.7
+    ],
+    [
+     1.4,
+     270.2
+    ],
+    [
+     1.7,
+     280.7
+    ]
+   ],
+   "bins": [
+    {
+     "v": 0.35,
+     "n": 149,
+     "L": 267,
+     "left": 267,
+     "right": null
+    },
+    {
+     "v": 0.45,
+     "n": 360,
+     "L": 256,
+     "left": 256,
+     "right": null
+    },
+    {
+     "v": 0.55,
+     "n": 300,
+     "L": 226,
+     "left": 225,
+     "right": 228
+    },
+    {
+     "v": 0.65,
+     "n": 227,
+     "L": 222,
+     "left": 223,
+     "right": 207
+    },
+    {
+     "v": 0.75,
+     "n": 350,
+     "L": 210,
+     "left": 217,
+     "right": 196
+    },
+    {
+     "v": 0.85,
+     "n": 443,
+     "L": 218,
+     "left": 214,
+     "right": 221
+    },
+    {
+     "v": 0.95,
+     "n": 782,
+     "L": 221,
+     "left": 222,
+     "right": 217
+    },
+    {
+     "v": 1.05,
+     "n": 261,
+     "L": 231,
+     "left": 222,
+     "right": 241
+    },
+    {
+     "v": 1.15,
+     "n": 57,
+     "L": 231,
+     "left": 225,
+     "right": 240
+    },
+    {
+     "v": 1.25,
+     "n": 46,
+     "L": 262,
+     "left": 249,
+     "right": 263
+    },
+    {
+     "v": 1.35,
+     "n": 63,
+     "L": 263,
+     "left": 266,
+     "right": 262
+    },
+    {
+     "v": 1.45,
+     "n": 80,
+     "L": 270,
+     "left": 271,
+     "right": 270
+    },
+    {
+     "v": 1.55,
+     "n": 65,
+     "L": 275,
+     "left": 275,
+     "right": 282
+    },
+    {
+     "v": 1.65,
+     "n": 20,
+     "L": 279,
+     "left": 279,
+     "right": null
+    }
+   ]
+  }
+ }
+}

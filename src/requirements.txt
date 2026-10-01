@@ -1,0 +1,6 @@
+# Laptop side: the simulator (tools/sim_run.py), the plant fit (tools/fit_plant.py) and the programs' imports.
+# tools/bw.py and tools/lib_push.py use the Python standard library only.
+# The simulator runs of 2026-10-01 used Python 3.13.7, numpy 2.3.5, OpenCV 5.0.0 and scipy 1.16.3 on Windows 11.
+numpy
+opencv-python
+scipy        # tools/fit_plant.py only

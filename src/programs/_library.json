@@ -1,0 +1,35 @@
+{
+ "_about": "Seed of the console's PROGRAMS library (read-only, shipped with the code). The robot saves the team's notes, ratings, status, tags and ranks beside params.json as library.json; a saved field wins over this seed (tools/lib_push.py pushes this seed's rank / rating / status / challenge to a running robot so its store matches). rank 1 = the top of the console's list; programs without a rank are listed below the ranked ones (then rating, then name). Keys starting with _ are ignored.",
+ "BEST_OPEN_14s": {
+  "rank": 1,
+  "rating": 5,
+  "status": "best",
+  "challenge": "open",
+  "tags": [
+   "BEST",
+   "MAIN",
+   "FINAL-OPEN",
+   "fastest",
+   "mat-proven",
+   "frozen"
+  ],
+  "note": "الأوبن الأساسي - أحسن وأسرع واحد (قرار فواز 2026-10-01).\nعلى الحلبة: 14.7 ثانية، 3 لفات، 12/12 زاوية وهي ماشية، وقف داخل منطقة البداية، بدون صدمة (عكس عقارب الساعة، بطارية 8.05 V).\n= open_v7 بإعداد l2. التجارب: l1 16.0 / l2 14.7 / l2+trim-4.6 15.0 / fast7 16.3 (أبطأ: الحماية فرملت 18 مرة).\nالرن: 20261001-161301.412-open_v7. مع عقارب الساعة: ما انجرّب بعد. الاحتياط المضمون للجهتين: BEST_OPEN (18.8)."
+ },
+ "obs_v17": {
+  "rank": 2,
+  "rating": 5,
+  "status": "best",
+  "challenge": "obstacle",
+  "tags": [
+   "BEST",
+   "MAIN-OBSTACLE",
+   "mat-proven",
+   "ccw",
+   "any-battery",
+   "map-read",
+   "smooth-exit",
+   "q-line"
+  ],
+  "note": "الأوبستكل الأساسي - الأسرع (2026-10-01 22:28، عكس عقارب الساعة، بطارية فل 8.29 V).\n55.8 ثانية كاملة: طلوع سموث، 3 لفات كل الأعمدة صح، صفر وقفات، وصف كامل (الزوايا الأربع داخل).\n= obs_v16 + bat_hold: السيارة تمشي كأن البطارية 7.0 V أي شحن كان (تعويض البطارية كان يزيد القوة 31% على 6.1 V فتطلع حركات الصف غلط، ويقللها على الفل). على البطارية الفل ما ضاع باللفة الثانية (الليدار 97%).\nالأوقات: خروج 7.4 ث، الوصول لـQ 4.8 ث، حركات الصف 10.6 ث. الرن: 20261001-222840.106-obs_v17."
+ }
+}

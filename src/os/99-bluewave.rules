@@ -1,0 +1,8 @@
+# RRC Lite controller (CH9102 USB-serial, 1a86:55d4) -> /dev/rrc, and keep ModemManager off it
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d4", MODE="0666", SYMLINK+="rrc", ENV{ID_MM_DEVICE_IGNORE}="1"
+# The lidar adapter is NOT matched here on purpose: its USB id is not documented for the A1.  Use its stable
+# /dev/serial/by-id/... path (printed by setup_bluewave_os.sh) in params.lidar.device.
+# The WLtoys build's motor PWM (bluewave/motor.py): /sys/class/pwm writable by group gpio, including the pwmN a
+# program exports at run time.  [EST] Raspberry Pi OS's 99-com.rules does the same for older paths; check with
+# `ls -l /sys/class/pwm/pwmchip*/` -- if it stays root-only, motor.py falls back to lgpio software PWM.
+SUBSYSTEM=="pwm", ACTION=="add", RUN+="/bin/sh -c 'chgrp -R gpio /sys%p && chmod -R g+w /sys%p'"

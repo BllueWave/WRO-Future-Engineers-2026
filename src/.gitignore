@@ -1,0 +1,11 @@
+# per-machine and per-run files: never committed
+.robot.json
+params.json
+params_history/
+presets.json
+profiles.json
+library.json
+runs/
+.mock/
+__pycache__/
+*.pyc

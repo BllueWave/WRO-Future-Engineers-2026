@@ -1,0 +1,11 @@
+# Raspberry Pi 5 side.  os/setup_bluewave_os.sh and os/install_on_stock.sh install these; do not pip-install the
+# first four on the Pi: they come prebuilt from apt (python3-numpy python3-opencv python3-serial python3-lgpio) and the
+# venv is created with --system-site-packages so it sees them.
+numpy
+opencv-python
+pyserial
+lgpio
+# from pip, inside the venv: the dev server and the web console (bluewave/agent.py, port 8000)
+fastapi
+uvicorn[standard]
+python-multipart

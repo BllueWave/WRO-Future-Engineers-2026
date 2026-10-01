@@ -1,0 +1,17 @@
+[Unit]
+Description=BlueWave dev agent (console + API on :8000) -- DEV mode only
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=bluewave
+WorkingDirectory=/home/bluewave/bluewave
+ExecStart=/home/bluewave/venv/bin/uvicorn bluewave.agent:app --host 0.0.0.0 --port 8000 --log-level warning
+# the WLtoys build: a hardware PWM keeps driving after its program dies -- duty 0 whatever happened (no-op on the rrc drive)
+ExecStopPost=/home/bluewave/venv/bin/python -m bluewave.motor --off
+Restart=on-failure
+RestartSec=2
+Nice=-5
+
+[Install]
+WantedBy=multi-user.target

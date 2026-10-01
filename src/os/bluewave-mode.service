@@ -1,0 +1,11 @@
+[Unit]
+Description=BlueWave boot mode: dev (agent, Wi-Fi) or race (radios off, race program)
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/bluewave-mode.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

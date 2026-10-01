@@ -1,0 +1,13 @@
+[Unit]
+Description=BlueWave race program -- radios OFF, waits for the start button (WRO FE 9.11, 11.10)
+
+[Service]
+User=bluewave
+WorkingDirectory=/home/bluewave/bluewave
+ExecStart=/home/bluewave/venv/bin/python -m race.race_main
+# the WLtoys build: a hardware PWM keeps driving after its program dies -- duty 0 whatever happened (no-op on the rrc drive)
+ExecStopPost=/home/bluewave/venv/bin/python -m bluewave.motor --off
+Restart=no
+Nice=-10
+CPUSchedulingPolicy=fifo
+CPUSchedulingPriority=50
