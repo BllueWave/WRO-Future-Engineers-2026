@@ -1,50 +1,21 @@
 # Vehicle photos
 
-The car we race, with the body and every sensor fitted. Click a photo for the full-size file.
+Section 7 of the 2026 rules asks for photos of the car from every side, from the top and from the bottom. This page
+holds the six photos of the car as it races: WLtoys chassis, BW-2 body, LD19 lidar and HP60C camera fitted.
 
-## Sides
+The photos are being taken. Until each file is added, its cell below says so; we do not put a CAD render in place of a
+photo. The CAD renders of the body are on the [Models](../Models/README.md) page, marked as renders.
 
-<table>
-  <tr>
-    <th width="50%">Left</th>
-    <th width="50%">Right</th>
-  </tr>
-  <tr>
-    <td><a href="left.jpg"><img src="left.jpg" width="100%" alt="Left side of the Blue Wave car"></a></td>
-    <td><a href="right.jpg"><img src="right.jpg" width="100%" alt="Right side of the Blue Wave car"></a></td>
-  </tr>
-  <tr>
-    <td>Left corner HC-SR04 (D4/D5) and the Pixy2 bracket over the nose. The Uno's USB-B port is reachable through an opening in the side of the body, so sketches upload with the body on.</td>
-    <td>Right corner HC-SR04 (D2/D9) and the Pixy2 ribbon cable. The chassis gear train shows under the body.</td>
-  </tr>
-</table>
+| View | File | What it should show | Status |
+|---|---|---|---|
+| Front | `front.jpg` | camera on the tower, lidar bay, nose | photo to be added |
+| Back | `back.jpg` | rear of the shell and the chassis | photo to be added |
+| Left | `left.jpg` | full left side: shell, tower, camera mast, wheels | photo to be added |
+| Right | `right.jpg` | full right side: shell, tower, camera mast, wheels | photo to be added |
+| Top | `top.jpg` | roof of the shell, tower and camera from above | photo to be added |
+| Bottom | `bottom.jpg` | underside of the chassis: motor, propshaft, steering linkage | photo to be added |
 
-## Front, back and bottom
-
-<table>
-  <tr>
-    <th width="34%">Front</th>
-    <th width="33%">Back</th>
-    <th width="33%">Bottom</th>
-  </tr>
-  <tr>
-    <td><a href="front.jpg"><img src="front.jpg" width="100%" alt="Front of the Blue Wave car"></a></td>
-    <td><a href="back.jpg"><img src="back.jpg" width="100%" alt="Back of the Blue Wave car"></a></td>
-    <td><a href="bottom.jpg"><img src="bottom.jpg" width="100%" alt="Underside of the Blue Wave car"></a></td>
-  </tr>
-  <tr>
-    <td>Pixy2 on its bracket above the nose. The front HC-SR04 (D13/D7) looks straight ahead; the two corner HC-SR04s point outward at about 40° from the axis.</td>
-    <td>The main power switch sits in the rear vents. The Cytron MD13S motor driver is mounted under the rear of the body.</td>
-    <td>Chassis plate with the drive motor in the centre and the Ackermann steering knuckles at the front. All six sonar transducers sit ahead of the front wheels.</td>
-  </tr>
-</table>
-
-| View | File |
-|---|---|
-| Front | [`front.jpg`](front.jpg) |
-| Back | [`back.jpg`](back.jpg) |
-| Left | [`left.jpg`](left.jpg) |
-| Right | [`right.jpg`](right.jpg) |
-| Bottom | [`bottom.jpg`](bottom.jpg) |
+How we take them: the car on a plain background, the camera level with the car's centre for the four sides, straight
+down for the top, the car on its roof for the bottom, the same light for all six, cropped to the car.
 
 <sub>[Back to the README](../README.md)</sub>

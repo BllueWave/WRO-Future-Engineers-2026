@@ -1,67 +1,52 @@
 # Wiring
 
 <p align="center">
-  <a href="wiring_schematic.png"><img src="wiring_schematic.png" width="100%" alt="Wiring schematic of the competition car: the Arduino Uno R3 with the front HC-SR04 on D13 and D7, the left one on D4 and D5, the right one on D2 and D9, the BNO055 on A4 and A5, the Pixy2 on the ICSP header, the steering servo on D10, the Cytron MD13S on D3 and D8 and the start switch on A2; the Uno 5 V rail feeds the sonars, the BNO055 and the servo; battery 2 reaches the Uno VIN through the main power switch; battery 1 feeds the MD13S power input, and the MD13S drives the motor"></a>
+  <a href="wiring_schematic.png"><img src="wiring_schematic.png" width="100%" alt="Wiring schematic: 7.4 V pack, 16 mm power switch, positive and negative splices to the RRC Lite and the Cytron MD13S; RRC Lite 5 V USB-C to the Raspberry Pi 5; Pi GPIO12 and GPIO16 to the MD13S PWM and DIR; MD13S to the drive motor; RRC Lite PWM port 3 to the steering servo; start button on GPIO17; body strap on GPIO5; LD19 lidar and HP60C camera on the Pi's USB ports"></a>
 </p>
 
-One sheet with every wire of the competition car: signal, supply and ground, between the Arduino Uno R3, the three HC-SR04 sonars, the BNO055, the Pixy2, the steering servo, the Cytron MD13S, the drive motor, the start switch, the main power switch and both batteries. The pins are the ones in `Open_Challenge.ino` and `Obstacle_Challenge.ino`, which are identical. A hop marks two wires that cross without connecting; a dot marks a junction.
+Every electrical connection of the car: power, signal and ground, between the battery, the power switch, the RRC Lite
+board, the Raspberry Pi 5, the Cytron MD13S motor driver, the drive motor, the steering servo, the LD19 lidar, the
+HP60C camera, the start button and the body strap. The pin values are the ones in the car's calibration file
+`src/profiles/wltoys_bw2.json`, which the code reads.
 
-| File | What it is |
-|---|---|
-| [`wiring_schematic.png`](wiring_schematic.png) | The schematic above, 3840 × 2214 px |
-| [`wiring_schematic_source.svg`](wiring_schematic_source.svg) | Editable source of the same sheet: every wire, junction and crossing in plain SVG |
-| [`archive_june_2026/`](archive_june_2026/) | The June 2026 Fritzing drawing, kept as a record (see below) |
-
-Other views of the same wiring: [pin map](../docs/diagrams/wiring_pinmap.png), [power tree](../docs/diagrams/power_tree.png), [system overview](../docs/diagrams/system_overview.png).
-
-## Pin map
-
-| Component | Pins | Notes |
-|---|---|---|
-| HC-SR04 left | TRIG D4, ECHO D5 | Slanted front-left corner, about 40 degrees from the nose axis |
-| HC-SR04 right | TRIG D2, ECHO D9 | Slanted front-right corner, about 40 degrees from the nose axis |
-| HC-SR04 front | TRIG D13, ECHO D7 | Centred on the nose, straight ahead |
-| Steering servo | Signal D10 | Servo library; 90 straight, above 90 steers left |
-| Cytron MD13S | PWM D3, DIR D8 | DIR HIGH = forward |
-| Start switch | A2 to GND | Internal pull-up; any change held 30 ms starts the round |
-| BNO055 | SDA A4, SCL A5 | I2C with a 25 ms bus timeout |
-| Pixy2 | ICSP header: MOSI D11, MISO D12, SCK D13 | SPI; powered from the Uno 5 V through the ICSP header |
-| Serial | D0, D1 | 115200 baud, debug output |
-| Free | A0, A1, A3, D6 | - |
-
-D11, D12 and D13 carry the Pixy2 link. The front trigger moved from D6 to D13 on 15 September 2026 and shares that pin with the SPI clock; on the mat the front sonar still reads correctly.
+The drawing's source is [`wiring_schematic.svg`](wiring_schematic.svg). Other views of the same wiring: [pin map](../docs/diagrams/wiring_pinmap.png), [power tree](../docs/diagrams/power_tree.png),
+[system overview](../docs/diagrams/system_overview.png).
 
 ## Power
 
-| Supply | Connection | Feeds |
+| From | To | Notes |
 |---|---|---|
-| Battery 1, 2S LiPo, 7.4 V nominal | Straight to the Cytron MD13S power input | The drive motor only |
-| Battery 2 | Main power switch (rule 9.10), then the Uno's VIN | The Uno; its on-board regulator makes 5 V |
-| Uno 5 V | 5 V rail from the Uno; the Pixy2 through the ICSP header | The three HC-SR04, the BNO055, the steering servo and the Pixy2 |
+| Pack + (7.4 V, 2200 mAh) | 16 mm latching power switch | the only power switch (rule 9.10) |
+| Power switch | positive splice → RRC Lite power input and MD13S V+ | |
+| Pack − | negative splice → RRC Lite ground and MD13S V− | one negative point for both |
+| RRC Lite 5 V 5 A USB-C output | Raspberry Pi 5 USB-C | use a cable rated 5 A: a 3 A cable cut the Pi's USB ports to 0.6 A |
+| Pi 5 USB-A | LD19 (through its USB serial adapter), HP60C | powered by the Pi |
+| Charge lead (DC 5.5 × 2.5 mm) | pack | charge at 8.4 V 2 A with the power switch off |
 
-## Grounds
+The motor current returns through the MD13S power negative, not through the Pi's signal ground. Do not unplug the MD13S
+negative alone while the signal cable is connected.
 
-| Ground | Connects to |
-|---|---|
-| Battery 2 negative | Uno GND |
-| Sonars, BNO055, servo, start switch | Uno GND |
-| MD13S logic GND | Uno GND, so PWM and DIR share a reference with the Uno |
-| Battery 1 negative | MD13S power input only |
+## Signals
 
-Motor current stays on battery 1 and never returns through the Arduino header. A black lead once connected near the Uno power header was followed by heat and a burnt component, so only the signal ground runs between the MD13S and the Uno.
+Pin numbers are the Raspberry Pi 5 header pins (1–40).
 
-## The June 2026 drawing
+| Component | Connection | Setting in the calibration file |
+|---|---|---|
+| Cytron MD13S PWM | Pi pin 32, GPIO12 | 490 Hz software PWM |
+| Cytron MD13S DIR | Pi pin 36, GPIO16 | low = forward |
+| Cytron MD13S signal ground | Pi pin 34 | |
+| Drive motor | MD13S motor output | PWM low = brake |
+| Start button (12 mm, momentary) | Pi pin 11, GPIO17, and pin 9, GND | internal pull-up; press and release |
+| Body strap (jumper) | Pi pin 29, GPIO5, and pin 30, GND | present = this chassis |
+| Steering servo | RRC Lite PWM port 3, supply jumper at 5 V | centre 1441 µs, 22.4 µs per degree, 853–2194 µs |
+| RRC Lite | Pi USB-A to the board's USB-C serial port | 1,000,000 baud |
+| LD19 lidar | Pi USB-A through the lidar's USB serial adapter | 230,400 baud |
+| HP60C camera | Pi USB-A to the camera's USB-C | |
 
-[`archive_june_2026/Schematic_Wiring_Diagram.pdf`](archive_june_2026/Schematic_Wiring_Diagram.pdf) is a one-page Fritzing drawing from June 2026. It draws fewer parts than the finals sketches use:
+## Wiring rules we keep
 
-| In the PDF | In the finals sketches |
-|---|---|
-| Arduino Uno, Cytron MD13S, DC motor, servo, breadboard | Same parts, plus the ones below |
-| 2 HC-SR04 | 3 HC-SR04, including the front unit on D13/D7 |
-| No Pixy2 | Pixy2 on the ICSP header (SPI) |
-| No BNO055 | BNO055 on A4 (SDA) and A5 (SCL) |
-| No start switch | Start switch from A2 to GND |
-| Servo signal drawn to the analog header (A0) | Servo signal on D10 |
-| Two 3.7 V 110 mAh cells | Two batteries: battery 1 (2S LiPo, 7.4 V nominal) straight to the MD13S power input; battery 2 through the main power switch to the Uno's VIN |
+- Every stop in the code sets the PWM to zero and then drives DIR low.
+- The servo port's supply jumper must be at 5 V; measure 4.8–5.2 V before plugging the servo.
+- The RRC Lite's motor ports are not used: they expect a motor with an encoder.
 
 <sub>[Back to the README](../README.md)</sub>

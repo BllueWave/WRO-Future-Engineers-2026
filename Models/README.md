@@ -1,42 +1,58 @@
-# 3D models
+# 3D models: the BW-2 body
 
-[`BlueWave_main_body_v2.3mf`](BlueWave_main_body_v2.3mf) is our print project for the body shell and the sensor brackets, version 2. It is a Bambu Studio 02.01.01.52 project saved on 20 November 2025, with five parts on one plate.
+The body of our car is BW-2, designed by the team for the WLtoys 1:28 chassis and the MentorPi electronics, and printed
+in PETG. Five printed parts are on the car. GitHub shows each STL file in a 3D viewer when you open it.
 
-<img src="BlueWave_main_body_v2_plate.png" width="360" alt="Plate preview from the project file: the body shell and its sensor brackets in red PETG">
+<p align="center">
+  <img src="../docs/images/bw2_render_exploded.jpg" width="760" alt="Exploded CAD render of the BW-2 body: deck, frame and battery tray, tower with the lidar bay and camera mast, 16 degree camera wedge, shell">
+  <br><sub>CAD render, not a photo.</sub>
+</p>
 
-*Plate preview stored in the project file.*
+## Printed parts on the car
 
-The raised "AUMers" lettering and the logo on this body are from AUMers, the name our club and team used before we competed as Blue Wave. The design is ours; the same lettering shows on the printed shell in `docs/components.jpg`.
+Material PETG, 0.4 mm nozzle. Print times and masses are slicer estimates. The colour is the one we printed; the file
+names keep the colour of the CAD model so that they still match the SHA-256 hashes we recorded for each printed file.
 
-## Parts in the file
+| File | Part | Printed colour | Layer / walls / infill | Supports | Time | Mass |
+|---|---|---|---|---|---|---|
+| `01_D1_deck_darkgrey.stl` | deck that mounts on the chassis; unchanged from our first body version | blue | | | | 40.9 g |
+| `02_L1_frame_battery_tray_darkgrey.stl` | frame and battery tray, with the Pi 5 bosses and the battery bay | white | 0.2 mm / 4 / 40 % | none | 42 min | 14.0 g |
+| `04_tower_blue.stl` | tower: camera mast and lidar bay in one print, with 4 lapped datum pads | blue | 0.2 mm / 4 / 40 %, 5 mm brim | enforcer under the foot; blockers in the bores and the cable channel | 115 min | 33.3 g |
+| `05_shell_blue.stl` | shell: one print, flat roof, 1.2 mm skin | blue | 0.2 mm / 3 lines of 0.40 mm / 15 % | none | 164 min | 60.6 g |
+| `07_cam_wedge_16deg_darkgrey.stl` | camera wedge, 16° | dark grey | 0.12 mm / 5 / 50 % | none | 32 min | 7.9 g |
 
-Sizes are the bounding boxes of the meshes stored in the file, in each part's own axes.
+Total: 157 g of PETG; 353 min of printing for parts 02, 04, 05 and 07.
 
-| Part name in the file | Copies | Bounding box (mm) | Triangles | Part |
-|---|---|---|---|---|
-| `wro main body v2.step` | 1 | 79.0 × 123.0 × 58.0 | 52,418 | Body shell |
-| `us bracket wro v2.step` | 2 | 32.7 × 47.4 × 19.0 | 7,256 each | Ultrasonic sensor bracket |
-| `us brackeetXpixy v2.step` | 1 | 49.3 × 15.3 × 23.5 | 8,344 | Ultrasonic sensor and Pixy2 bracket |
-| `pixy bracket wro.step` | 1 | 49.3 × 6.7 × 29.7 | 3,008 | Pixy2 bracket |
+## What the parts set
 
-The two ultrasonic brackets and the combined bracket give three ultrasonic mounts, the same count as the HC-SR04 sensors on the car. Where each sensor points is in [docs/02-power-and-sensors.md](../docs/02-power-and-sensors.md).
+| Feature | Value | Set by |
+|---|---|---|
+| Lidar scan plane | 50.0 mm above the mat, below the top of the 100 mm walls | tower (lidar bay) |
+| Lidar position | centre line, 152.0 mm ahead of the rear axle | tower |
+| Camera lens | 149.4 mm ahead of the rear axle, 138.28 mm above the mat | tower (mast) |
+| Camera pitch | 16° in the model; 19.61° measured on the car | wedge on the mast |
+| Overall size | 224.8 × 111.0 × 157.2 mm | whole body |
 
-## Print settings
+All values are from the CAD model except the measured pitch. Why these positions: [Mobility](../docs/01-mobility.md#the-bw-2-body)
+and [Power and sensors](../docs/02-power-and-sensors.md#sensors).
 
-These are the values saved in `Metadata/project_settings.config`. Supports are the only setting we changed from the Bambu preset.
+## Design checks
 
-| Setting | Value |
+Run on the full CAD assembly on 2026-09-25 before printing:
+
+| Check | Result |
 |---|---|
-| Printer | Bambu Lab X1 Carbon, 0.4 mm nozzle |
-| Process preset | 0.24mm Draft @BBL X1C |
-| Layer height | 0.24 mm, first layer 0.20 mm |
-| Walls | 2 loops, 4 top and 3 bottom shell layers |
-| Sparse infill | 15 %, grid pattern |
-| Supports | On, tree (auto), 35° overhang threshold |
-| Build plate | Textured PEI, auto brim 5 mm |
-| Filament | Generic PETG, 1.75 mm, colour #F72323 |
-| Temperatures | Nozzle 255 °C, plate 70 °C |
+| Clearance between parts | 91 part pairs, no violation; tightest gap 0.35 mm |
+| Contacts | 93 contacts, no part floating |
+| Print files | every file a closed single solid |
+| Camera view | clear of the body by 22.1 mm |
+| Cable routes | 18 of 18 clear |
+| Screw access | every screw head reachable in build order |
+| Size rule 11.1 | 224.8 × 111.0 × 157.2 mm against 300 × 200 × 300 mm |
 
-## Opening the file
+## Rule we keep for printed files
 
-Bambu Studio 02.01.01.52 or newer opens the project with the plate and the settings above. A `.3mf` is a zip archive with the meshes in `3D/Objects/object_1.model` to `object_4.model`, so any 3MF reader opens the geometry; only Bambu Studio reads the print settings. The saved filament colour is red, and the car we race has an orange body ([Mobility](../docs/01-mobility.md#what-changed-since-june)).
+A file that has been printed is never edited. A changed part is a new file with a new name, printed and recorded
+again. This keeps every printed part traceable to the exact file it came from.
+
+<sub>[Back to the README](../README.md)</sub>

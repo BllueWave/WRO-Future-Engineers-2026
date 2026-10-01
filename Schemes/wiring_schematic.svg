@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1296pt" height="748.8pt" viewBox="0 0 1296 748.8" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-01T23:43:51.976676</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.7, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 748.8 
+L 1296 748.8 
+L 1296 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="line2d_1">
+    <path d="M 127.346087 357.662118 
+L 127.346087 314.496 
+L 249.057391 314.496 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #c62828; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 370.768696 314.496 
+L 431.624348 314.496 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #c62828; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 431.624348 314.496 
+L 431.624348 271.329882 
+L 512.765217 271.329882 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #c62828; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 431.624348 314.496 
+L 431.624348 505.660235 
+L 512.765217 505.660235 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #c62828; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 208.486957 450.160941 
+L 391.053913 450.160941 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 391.053913 450.160941 
+L 391.053913 561.159529 
+L 512.765217 561.159529 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 391.053913 450.160941 
+L 391.053913 369.995294 
+L 472.194783 369.995294 
+L 472.194783 289.829647 
+L 512.765217 289.829647 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 127.346087 554.992941 
+L 127.346087 480.993882 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke-dasharray: 6.66,2.88; stroke-dashoffset: 0; stroke: #5a6b80; stroke-width: 1.8"/>
+   </g>
+   <g id="line2d_9">
+    <path d="M 512.765217 184.997647 
+L 472.194783 184.997647 
+L 472.194783 169.581176 
+L 438.386087 169.581176 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #1560bd; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_10">
+    <path d="M 715.617391 197.330824 
+L 871.137391 197.330824 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #e07a10; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_11">
+    <path d="M 715.617391 258.996706 
+L 871.137391 258.996706 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #6a3fb5; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_12">
+    <path d="M 871.137391 505.660235 
+L 715.617391 505.660235 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #1560bd; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_13">
+    <path d="M 871.137391 536.493176 
+L 715.617391 536.493176 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #1560bd; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_14">
+    <path d="M 871.137391 567.326118 
+L 715.617391 567.326118 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_15">
+    <path d="M 587.144348 598.159059 
+L 587.144348 650.575059 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #c62828; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_16">
+    <path d="M 641.238261 598.159059 
+L 641.238261 650.575059 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_17">
+    <path d="M 1046.942609 255.913412 
+L 1114.56 255.913412 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #6a3fb5; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_18">
+    <path d="M 1046.942609 391.578353 
+L 1114.56 391.578353 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #6a3fb5; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 1046.942609 548.826353 
+L 1114.56 548.826353 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #1560bd; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_20">
+    <path d="M 1046.942609 585.825882 
+L 1114.56 585.825882 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_21">
+    <path d="M 931.993043 616.658824 
+L 931.993043 659.824941 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #1560bd; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_22">
+    <path d="M 986.086957 616.658824 
+L 986.086957 659.824941 
+" clip-path="url(#p5bb50ca136)" style="fill: none; stroke: #0b1b2e; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_2">
+    <path d="M 52.966957 482.2272 
+L 201.725217 482.2272 
+Q 209.839304 482.2272 209.839304 474.827294 
+L 209.839304 363.828706 
+Q 209.839304 356.4288 201.725217 356.4288 
+L 52.966957 356.4288 
+Q 44.85287 356.4288 44.85287 363.828706 
+L 44.85287 474.827294 
+Q 44.85287 482.2272 52.966957 482.2272 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 52.966957 642.558494 
+L 201.725217 642.558494 
+Q 209.839304 642.558494 209.839304 635.158588 
+L 209.839304 561.159529 
+Q 209.839304 553.759624 201.725217 553.759624 
+L 52.966957 553.759624 
+Q 44.85287 553.759624 44.85287 561.159529 
+L 44.85287 635.158588 
+Q 44.85287 642.558494 52.966957 642.558494 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 255.81913 346.562259 
+L 364.006957 346.562259 
+Q 372.121043 346.562259 372.121043 339.162353 
+L 372.121043 289.829647 
+Q 372.121043 282.429741 364.006957 282.429741 
+L 255.81913 282.429741 
+Q 247.705043 282.429741 247.705043 289.829647 
+L 247.705043 339.162353 
+Q 247.705043 346.562259 255.81913 346.562259 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 519.526957 309.562729 
+L 708.855652 309.562729 
+Q 716.969739 309.562729 716.969739 302.162824 
+L 716.969739 172.664471 
+Q 716.969739 165.264565 708.855652 165.264565 
+L 519.526957 165.264565 
+Q 511.41287 165.264565 511.41287 172.664471 
+L 511.41287 302.162824 
+Q 511.41287 309.562729 519.526957 309.562729 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 296.389565 210.897318 
+L 431.624348 210.897318 
+Q 439.738435 210.897318 439.738435 203.497412 
+L 439.738435 135.664941 
+Q 439.738435 128.265035 431.624348 128.265035 
+L 296.389565 128.265035 
+Q 288.275478 128.265035 288.275478 135.664941 
+L 288.275478 203.497412 
+Q 288.275478 210.897318 296.389565 210.897318 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 519.526957 599.392376 
+L 708.855652 599.392376 
+Q 716.969739 599.392376 716.969739 591.992471 
+L 716.969739 487.160471 
+Q 716.969739 479.760565 708.855652 479.760565 
+L 519.526957 479.760565 
+Q 511.41287 479.760565 511.41287 487.160471 
+L 511.41287 591.992471 
+Q 511.41287 599.392376 519.526957 599.392376 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 539.812174 725.807435 
+L 688.570435 725.807435 
+Q 696.684522 725.807435 696.684522 718.407529 
+L 696.684522 656.741647 
+Q 696.684522 649.341741 688.570435 649.341741 
+L 539.812174 649.341741 
+Q 531.698087 649.341741 531.698087 656.741647 
+L 531.698087 718.407529 
+Q 531.698087 725.807435 539.812174 725.807435 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 877.89913 617.892141 
+L 1040.18087 617.892141 
+Q 1048.294957 617.892141 1048.294957 610.492235 
+L 1048.294957 197.330824 
+Q 1048.294957 189.930918 1040.18087 189.930918 
+L 877.89913 189.930918 
+Q 869.785043 189.930918 869.785043 197.330824 
+L 869.785043 610.492235 
+Q 869.785043 617.892141 877.89913 617.892141 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #eef3f9; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 1121.321739 303.396141 
+L 1249.794783 303.396141 
+Q 1257.90887 303.396141 1257.90887 295.996235 
+L 1257.90887 215.830588 
+Q 1257.90887 208.430682 1249.794783 208.430682 
+L 1121.321739 208.430682 
+Q 1113.207652 208.430682 1113.207652 215.830588 
+L 1113.207652 295.996235 
+Q 1113.207652 303.396141 1121.321739 303.396141 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 1121.321739 432.894494 
+L 1249.794783 432.894494 
+Q 1257.90887 432.894494 1257.90887 425.494588 
+L 1257.90887 357.662118 
+Q 1257.90887 350.262212 1249.794783 350.262212 
+L 1121.321739 350.262212 
+Q 1113.207652 350.262212 1113.207652 357.662118 
+L 1113.207652 425.494588 
+Q 1113.207652 432.894494 1121.321739 432.894494 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 1121.321739 605.558965 
+L 1249.794783 605.558965 
+Q 1257.90887 605.558965 1257.90887 598.159059 
+L 1257.90887 524.16 
+Q 1257.90887 516.760094 1249.794783 516.760094 
+L 1121.321739 516.760094 
+Q 1113.207652 516.760094 1113.207652 524.16 
+L 1113.207652 598.159059 
+Q 1113.207652 605.558965 1121.321739 605.558965 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 884.66087 725.807435 
+L 1033.41913 725.807435 
+Q 1041.533217 725.807435 1041.533217 718.407529 
+L 1041.533217 665.991529 
+Q 1041.533217 658.591624 1033.41913 658.591624 
+L 884.66087 658.591624 
+Q 876.546783 658.591624 876.546783 665.991529 
+L 876.546783 718.407529 
+Q 876.546783 725.807435 884.66087 725.807435 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #f4f7fb; stroke: #0b1b2e; stroke-width: 1.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="127.346087" y="401.353944" transform="rotate(-0 127.346087 401.353944)">Battery pack</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="127.346087" y="422.93438" transform="rotate(-0 127.346087 422.93438)">7.4 V, 2200 mAh</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="127.346087" y="445.134098" transform="rotate(-0 127.346087 445.134098)">2 × 18650</text>
+   </g>
+   <g id="text_4">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="127.346087" y="580.185003" transform="rotate(-0 127.346087 580.185003)">Charge lead</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="127.346087" y="601.765439" transform="rotate(-0 127.346087 601.765439)">DC 5.5 × 2.5 mm</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="127.346087" y="623.965157" transform="rotate(-0 127.346087 623.965157)">8.4 V 2 A, power switch off</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="309.913043" y="307.048112" transform="rotate(-0 309.913043 307.048112)">Power switch</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="309.913043" y="328.58558" transform="rotate(-0 309.913043 328.58558)">16 mm latching</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="219.48256" transform="rotate(-0 614.191304 219.48256)">Hiwonder RRC Lite</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="241.020027" transform="rotate(-0 614.191304 241.020027)">STM32F407, stock firmware</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="263.219745" transform="rotate(-0 614.191304 263.219745)">IMU 50 Hz, buzzer, keys</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="364.006957" y="141.12392" transform="rotate(-0 364.006957 141.12392)">Steering servo</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="364.006957" y="162.704357" transform="rotate(-0 364.006957 162.704357)">WLtoys micro servo</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="364.006957" y="184.904074" transform="rotate(-0 364.006957 184.904074)">centre 1441 µs, 22.4 µs/°</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="364.006957" y="207.103792" transform="rotate(-0 364.006957 207.103792)">853–2194 µs</text>
+   </g>
+   <g id="text_16">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="511.076246" transform="rotate(-0 614.191304 511.076246)">Cytron MD13S</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="532.699651" transform="rotate(-0 614.191304 532.699651)">motor driver, 6–30 V, 13 A</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="554.899368" transform="rotate(-0 614.191304 554.899368)">PWM low = brake</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="577.099086" transform="rotate(-0 614.191304 577.099086)">DIR low = forward</text>
+   </g>
+   <g id="text_20">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="669.643501" transform="rotate(-0 614.191304 669.643501)">Drive motor</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="691.180968" transform="rotate(-0 614.191304 691.180968)">130-size brushed, propshaft</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="614.191304" y="713.380686" transform="rotate(-0 614.191304 713.380686)">to both differentials</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="959.04" y="375.454273" transform="rotate(-0 959.04 375.454273)">Raspberry Pi 5</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="959.04" y="397.03471" transform="rotate(-0 959.04 397.03471)">with Active Cooler</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="959.04" y="441.434145" transform="rotate(-0 959.04 441.434145)">header pins 1–40</text>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="227.499124" transform="rotate(-0 1185.558261 227.499124)">LD19 lidar</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="249.036592" transform="rotate(-0 1185.558261 249.036592)">360°, about 10 Hz</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="271.23631" transform="rotate(-0 1185.558261 271.23631)">USB serial adapter</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="293.436027" transform="rotate(-0 1185.558261 293.436027)">230,400 baud</text>
+   </g>
+   <g id="text_30">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="373.647265" transform="rotate(-0 1185.558261 373.647265)">HP60C camera</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="395.184733" transform="rotate(-0 1185.558261 395.184733)">RGB-D, colour used</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="417.384451" transform="rotate(-0 1185.558261 417.384451)">USB-C</text>
+   </g>
+   <g id="text_33">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="543.228442" transform="rotate(-0 1185.558261 543.228442)">Start button</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="564.76591" transform="rotate(-0 1185.558261 564.76591)">12 mm momentary</text>
+   </g>
+   <g id="text_35">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="1185.558261" y="586.965627" transform="rotate(-0 1185.558261 586.965627)">rule 9.11</text>
+   </g>
+   <g id="text_36">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="959.04" y="684.708673" transform="rotate(-0 959.04 684.708673)">Body strap</text>
+   </g>
+   <g id="text_37">
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b1b2e" x="959.04" y="706.28911" transform="rotate(-0 959.04 706.28911)">jumper: present = this chassis</text>
+   </g>
+   <g id="text_38">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #c62828" x="134.107826" y="309.665768" transform="rotate(-0 134.107826 309.665768)">pack +</text>
+   </g>
+   <g id="text_39">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #c62828" x="377.530435" y="308.432451" transform="rotate(-0 377.530435 308.432451)">+ splice</text>
+   </g>
+   <g id="text_40">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #c62828" x="438.386087" y="266.499651" transform="rotate(-0 438.386087 266.499651)">power in</text>
+   </g>
+   <g id="text_41">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #c62828" x="438.386087" y="500.830004" transform="rotate(-0 438.386087 500.830004)">V+</text>
+   </g>
+   <g id="text_42">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="215.248696" y="445.33071" transform="rotate(-0 215.248696 445.33071)">pack −</text>
+   </g>
+   <g id="text_43">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="323.436522" y="469.997063" transform="rotate(-0 323.436522 469.997063)">− splice</text>
+   </g>
+   <g id="text_44">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="438.386087" y="556.329298" transform="rotate(-0 438.386087 556.329298)">V−</text>
+   </g>
+   <g id="text_45">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="475.575652" y="304.732498" transform="rotate(-0 475.575652 304.732498)">GND</text>
+   </g>
+   <g id="text_46">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #5a6b80" x="134.107826" y="525.496357" transform="rotate(-0 134.107826 525.496357)">charge</text>
+   </g>
+   <g id="text_47">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1560bd" x="441.766957" y="163.517627" transform="rotate(-0 441.766957 163.517627)">PWM port 3</text>
+   </g>
+   <g id="text_48">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #e07a10" x="441.766957" y="198.66718" transform="rotate(-0 441.766957 198.66718)">5 V jumper</text>
+   </g>
+   <g id="text_49">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #e07a10" x="722.37913" y="192.500592" transform="rotate(-0 722.37913 192.500592)">5 V 5 A USB-C out → Pi USB-C</text>
+   </g>
+   <g id="text_50">
+    <text style="font-size: 7.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #e07a10" x="722.37913" y="212.975114" transform="rotate(-0 722.37913 212.975114)">(cable rated 5 A)</text>
+   </g>
+   <g id="text_51">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6a3fb5" x="722.37913" y="254.166474" transform="rotate(-0 722.37913 254.166474)">USB-C serial ↔ Pi USB-A</text>
+   </g>
+   <g id="text_52">
+    <text style="font-size: 7.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6a3fb5" x="722.37913" y="272.79102" transform="rotate(-0 722.37913 272.79102)">1,000,000 baud</text>
+   </g>
+   <g id="text_53">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1560bd" x="722.37913" y="500.830004" transform="rotate(-0 722.37913 500.830004)">pin 32 GPIO12 → PWM, 490 Hz</text>
+   </g>
+   <g id="text_54">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1560bd" x="722.37913" y="531.662945" transform="rotate(-0 722.37913 531.662945)">pin 36 GPIO16 → DIR</text>
+   </g>
+   <g id="text_55">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="722.37913" y="562.495886" transform="rotate(-0 722.37913 562.495886)">pin 34 GND → signal ground</text>
+   </g>
+   <g id="text_56">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #c62828" x="590.525217" y="630.328357" transform="rotate(-0 590.525217 630.328357)">A</text>
+   </g>
+   <g id="text_57">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="644.61913" y="630.328357" transform="rotate(-0 644.61913 630.328357)">B</text>
+   </g>
+   <g id="text_58">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="668.285217" y="630.328357" transform="rotate(-0 668.285217 630.328357)">motor output</text>
+   </g>
+   <g id="text_59">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6a3fb5" x="1050.323478" y="251.08318" transform="rotate(-0 1050.323478 251.08318)">USB-A</text>
+   </g>
+   <g id="text_60">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6a3fb5" x="1050.323478" y="386.748121" transform="rotate(-0 1050.323478 386.748121)">USB-A</text>
+   </g>
+   <g id="text_61">
+    <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1560bd" x="1050.323478" y="543.996121" transform="rotate(-0 1050.323478 543.996121)">pin 11</text>
+   </g>
+   <g id="text_62">
+    <text style="font-size: 7.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1560bd" x="1050.323478" y="564.470644" transform="rotate(-0 1050.323478 564.470644)">GPIO17</text>
+   </g>
+   <g id="text_63">
+    <text style="font-size: 7.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="1050.323478" y="581.120432" transform="rotate(-0 1050.323478 581.120432)">pin 9 GND</text>
+   </g>
+   <g id="text_64">
+    <text style="font-size: 7.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1560bd" x="837.328696" y="642.786314" transform="rotate(-0 837.328696 642.786314)">pin 29 GPIO5</text>
+   </g>
+   <g id="text_65">
+    <text style="font-size: 7.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="992.848696" y="642.786314" transform="rotate(-0 992.848696 642.786314)">pin 30 GND</text>
+   </g>
+   <g id="patch_14">
+    <path d="M 431.624348 318.812612 
+C 432.879612 318.812612 434.083632 318.357786 434.971238 317.548305 
+C 435.858844 316.738825 436.357565 315.640779 436.357565 314.496 
+C 436.357565 313.351221 435.858844 312.253175 434.971238 311.443695 
+C 434.083632 310.634214 432.879612 310.179388 431.624348 310.179388 
+C 430.369084 310.179388 429.165063 310.634214 428.277458 311.443695 
+C 427.389852 312.253175 426.89113 313.351221 426.89113 314.496 
+C 426.89113 315.640779 427.389852 316.738825 428.277458 317.548305 
+C 429.165063 318.357786 430.369084 318.812612 431.624348 318.812612 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #c62828; stroke: #c62828; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 391.053913 454.477553 
+C 392.309177 454.477553 393.513198 454.022727 394.400803 453.213247 
+C 395.288409 452.403766 395.78713 451.30572 395.78713 450.160941 
+C 395.78713 449.016162 395.288409 447.918117 394.400803 447.108636 
+C 393.513198 446.299155 392.309177 445.844329 391.053913 445.844329 
+C 389.798649 445.844329 388.594629 446.299155 387.707023 447.108636 
+C 386.819417 447.918117 386.320696 449.016162 386.320696 450.160941 
+C 386.320696 451.30572 386.819417 452.403766 387.707023 453.213247 
+C 388.594629 454.022727 389.798649 454.477553 391.053913 454.477553 
+z
+" clip-path="url(#p5bb50ca136)" style="fill: #0b1b2e; stroke: #0b1b2e; stroke-linejoin: miter"/>
+   </g>
+  </g>
+  <g id="text_66">
+   <text style="font-weight: 700; font-size: 16px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0b1b2e" x="25.92" y="38.3655" transform="rotate(-0 25.92 38.3655)">Wiring schematic: BLUE WAVE, WLtoys 1:28 chassis with Raspberry Pi 5, RRC Lite and Cytron MD13S</text>
+  </g>
+  <g id="text_67">
+   <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #5a6b80" x="25.92" y="67.502438" transform="rotate(-0 25.92 67.502438)">Pin values from src/profiles/wltoys_bw2.json, which the code reads. Lines: red = battery +, black = ground, orange = 5 V, blue = signal, purple = USB, grey dashed = charge lead.</text>
+  </g>
+  <g id="text_68">
+   <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #5a6b80" x="25.92" y="88.468838" transform="rotate(-0 25.92 88.468838)">The motor current returns through the MD13S power negative, not through the Pi's signal ground. The RRC Lite's motor ports are not used. The start button uses the Pi's internal pull-up.</text>
+  </g>
+  <g id="text_69">
+   <text style="font-size: 8px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #5a6b80" x="1270.08" y="739.8144" transform="rotate(-0 1270.08 739.8144)">BLUE WAVE · WRO Future Engineers 2026</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p5bb50ca136">
+   <rect x="25.92" y="104.832" width="1244.16" height="628.992"/>
+  </clipPath>
+ </defs>
+</svg>
