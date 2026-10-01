@@ -1,149 +1,86 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="690" viewBox="0 0 1000 690" role="img" aria-labelledby="t d">
-  <title id="t">Power tree of the Blue Wave car</title>
-  <desc id="d">The car has two batteries. Motor supply: battery 1, a 2S LiPo at 7.4 V nominal, connects straight to the Cytron MD13S power input, and the MD13S drives the brushed DC motor. Logic supply: battery 2 goes through the main power switch (rule 9.10) to the Arduino Uno R3 VIN pin; the Uno's on-board regulator makes 5 V, which feeds the Pixy2 through the ICSP header, the three HC-SR04 sonars and the BNO055 IMU. The Uno drives the MD13S with signals only: PWM from D3 and DIR from D8. Motor current dips on battery 1 never reach the Uno supply. Estimated current on battery 2: Uno logic about 50 mA, Pixy2 about 140 mA, each HC-SR04 about 15 mA while pinging, about 235 mA in total.</desc>
-  <style>
-    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #1f2328; }
-    .title { font-size: 20px; font-weight: 600; }
-    .h2 { font-size: 15px; font-weight: 600; fill: #0969da; }
-    .name { font-size: 15px; font-weight: 600; }
-    .name14 { font-size: 14px; font-weight: 600; }
-    .body { font-size: 13px; fill: #1f2328; }
-    .sub { font-size: 13px; fill: #57606a; }
-    .small { font-size: 12px; fill: #57606a; }
-    .pin { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 13px; font-weight: 600; }
-    .lab { font-size: 12px; fill: #0969da; }
-    .labb { font-size: 12px; fill: #cf222e; }
-    .lab5 { font-size: 12px; fill: #bc4c00; }
-    .box { fill: #f6f8fa; stroke: #8c959f; stroke-width: 1.5; }
-    .mcu { fill: #f6f8fa; stroke: #0969da; stroke-width: 2; }
-    .reg { fill: #ffffff; stroke: #8c959f; stroke-width: 1.2; }
-    .bat { stroke: #cf222e; stroke-width: 2.5; fill: none; }
-    .v5 { stroke: #bc4c00; stroke-width: 2.5; fill: none; }
-    .sig { stroke: #0969da; stroke-width: 2; fill: none; }
-    .hb { fill: #cf222e; }
-    .h5 { fill: #bc4c00; }
-    .ha { fill: #0969da; }
-  </style>
-
-  <rect x="1" y="1" width="998" height="688" rx="12" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
-
-  <text class="title" x="32" y="42">Power tree</text>
-  <text class="sub" x="32" y="64">Two batteries: battery 1 drives the motor, battery 2 powers the Uno and its sensors.</text>
-
-  <!-- Motor supply -->
-  <text class="h2" x="32" y="104">Motor supply, battery 1</text>
-
-  <rect class="box" x="32" y="120" width="192" height="84" rx="6"/>
-  <text class="name" x="48" y="146">Battery 1</text>
-  <text class="body" x="48" y="166">2S LiPo</text>
-  <text class="small" x="48" y="186">7.4 V nominal</text>
-
-  <line class="bat" x1="224" y1="162" x2="390" y2="162"/>
-  <polygon class="hb" points="400,162 390,157 390,167"/>
-  <text class="labb" x="312" y="152" text-anchor="middle">motor power</text>
-
-  <rect class="box" x="400" y="120" width="230" height="84" rx="6"/>
-  <text class="name" x="416" y="146">Cytron MD13S</text>
-  <text class="body" x="416" y="166">motor driver</text>
-  <text class="small" x="416" y="186">power input: battery 1</text>
-
-  <line class="bat" x1="630" y1="162" x2="730" y2="162"/>
-  <polygon class="hb" points="740,162 730,157 730,167"/>
-  <text class="labb" x="685" y="152" text-anchor="middle">motor out</text>
-
-  <rect class="box" x="740" y="120" width="228" height="84" rx="6"/>
-  <text class="name" x="756" y="146">Drive motor</text>
-  <text class="body" x="756" y="166">brushed DC</text>
-
-  <!-- Signal only: Uno D3 and D8 to the MD13S -->
-  <line class="sig" x1="480" y1="312" x2="480" y2="214"/>
-  <polygon class="ha" points="480,204 475,214 485,214"/>
-  <text class="lab" x="472" y="266" text-anchor="end">D3 to PWM</text>
-  <line class="sig" x1="550" y1="312" x2="550" y2="214"/>
-  <polygon class="ha" points="550,204 545,214 555,214"/>
-  <text class="lab" x="558" y="266">D8 to DIR</text>
-
-  <!-- Logic supply -->
-  <text class="h2" x="32" y="266">Logic supply, battery 2</text>
-
-  <rect class="box" x="32" y="338" width="150" height="84" rx="6"/>
-  <text class="name" x="48" y="366">Battery 2</text>
-  <text class="sub" x="48" y="388">Uno and sensors</text>
-
-  <line class="bat" x1="182" y1="380" x2="216" y2="380"/>
-  <polygon class="hb" points="226,380 216,375 216,385"/>
-
-  <rect class="box" x="226" y="338" width="140" height="84" rx="6"/>
-  <text class="name14" x="240" y="362">Main power</text>
-  <text class="name14" x="240" y="380">switch</text>
-  <text class="small" x="240" y="404">rule 9.10</text>
-
-  <line class="bat" x1="366" y1="380" x2="390" y2="380"/>
-  <polygon class="hb" points="400,380 390,375 390,385"/>
-
-  <rect class="mcu" x="400" y="312" width="230" height="136" rx="8"/>
-  <text class="name" x="416" y="333">Arduino Uno R3</text>
-  <text class="small" x="416" y="350">powered through VIN</text>
-  <text class="pin" x="410" y="384.5">VIN</text>
-  <line class="bat" x1="440" y1="380" x2="458" y2="380"/>
-  <polygon class="hb" points="468,380 458,375 458,385"/>
-  <rect class="reg" x="468" y="361" width="112" height="38" rx="4"/>
-  <text class="small" x="524" y="375" text-anchor="middle">on-board</text>
-  <text class="name14" x="524" y="393" text-anchor="middle">5 V regulator</text>
-  <text class="small" x="416" y="434">logic about 50 mA, estimate</text>
-
-  <line class="v5" x1="580" y1="380" x2="700" y2="380"/>
-  <text class="lab5" x="665" y="372" text-anchor="middle">5 V</text>
-  <line class="v5" x1="700" y1="316" x2="700" y2="444"/>
-  <line class="v5" x1="700" y1="316" x2="730" y2="316"/>
-  <polygon class="h5" points="740,316 730,311 730,321"/>
-  <line class="v5" x1="700" y1="380" x2="730" y2="380"/>
-  <polygon class="h5" points="740,380 730,375 730,385"/>
-  <line class="v5" x1="700" y1="444" x2="730" y2="444"/>
-  <polygon class="h5" points="740,444 730,439 730,449"/>
-
-  <rect class="box" x="740" y="290" width="228" height="52" rx="6"/>
-  <text class="name" x="756" y="311">Pixy2 camera</text>
-  <text class="small" x="756" y="330">5 V through the ICSP header</text>
-
-  <rect class="box" x="740" y="354" width="228" height="52" rx="6"/>
-  <text class="name" x="756" y="375">3 × HC-SR04</text>
-  <text class="small" x="756" y="394">5 V from the Uno</text>
-
-  <rect class="box" x="740" y="418" width="228" height="52" rx="6"/>
-  <text class="name" x="756" y="439">BNO055 IMU</text>
-  <text class="small" x="756" y="458">5 V from the Uno</text>
-
-  <line x1="32" y1="490" x2="968" y2="490" stroke="#d0d7de" stroke-width="1"/>
-
-  <!-- Note -->
-  <rect x="32" y="506" width="448" height="66" rx="6" fill="#ffffff" stroke="#8c959f" stroke-width="1.5"/>
-  <rect x="32" y="506" width="5" height="66" fill="#cf222e"/>
-  <text class="body" x="52" y="534"><tspan style="font-weight:600">Two batteries:</tspan> motor current dips on battery 1</text>
-  <text class="body" x="52" y="555">never reach the Uno supply.</text>
-
-  <!-- Legend and sources -->
-  <line class="bat" x1="32" y1="602" x2="62" y2="602"/>
-  <text class="sub" x="70" y="606">battery power</text>
-  <line class="v5" x1="176" y1="602" x2="206" y2="602"/>
-  <text class="sub" x="214" y="606">5 V from the Uno</text>
-  <line class="sig" x1="344" y1="602" x2="374" y2="602"/>
-  <text class="sub" x="382" y="606">signal</text>
-  <text class="small" x="32" y="640">Supply paths: team, 15 Sep 2026.</text>
-  <text class="small" x="32" y="658">Pins: Open_Challenge.ino and Obstacle_Challenge.ino. Currents are estimates.</text>
-
-  <!-- Current estimate table -->
-  <rect x="520" y="506" width="448" height="160" rx="6" fill="#ffffff" stroke="#8c959f" stroke-width="1.5"/>
-  <text class="name14" x="536" y="531">Estimated current on battery 2</text>
-  <line x1="536" y1="543" x2="952" y2="543" stroke="#d0d7de" stroke-width="1"/>
-  <text class="body" x="536" y="566">Arduino Uno logic</text>
-  <text class="body" x="952" y="566" text-anchor="end">about 50 mA</text>
-  <text class="body" x="536" y="590">Pixy2</text>
-  <text class="body" x="952" y="590" text-anchor="end">about 140 mA</text>
-  <text class="body" x="536" y="614">3 × HC-SR04, while pinging</text>
-  <text class="body" x="952" y="614" text-anchor="end">about 15 mA each</text>
-  <line x1="536" y1="625" x2="952" y2="625" stroke="#d0d7de" stroke-width="1"/>
-  <text class="name14" x="536" y="647">Total</text>
-  <text class="name14" x="952" y="647" text-anchor="end">about 235 mA</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<title>Power tree: one 7.4 V pack for everything</title>
+<defs><marker id="a1560bd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1560bd"/></marker><marker id="ac0392b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/></marker><marker id="ad9730d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d9730d"/></marker><marker id="a1b8fc4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1b8fc4"/></marker><marker id="a6b7a8f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b7a8f"/></marker><marker id="a0b1b2e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0b1b2e"/></marker><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#c0392b" stroke-width="2" opacity=".55"/></pattern></defs>
+<rect width="1400" height="800" fill="#ffffff"/>
+<text x="40.0" y="46.0" font-size="24" font-weight="700" fill="#0b1b2e" text-anchor="start">Power tree: one 7.4 V pack for everything</text>
+<text x="40.0" y="72.0" font-size="13.5" font-weight="400" fill="#5a6b80" text-anchor="start">Sources: mentorpi/WIRING.md (path), 3d/bluewave_body/wl/research/electronics_wl.md (loads). Loads marked EST are datasheet values, not measured on this car.</text>
+<text x="1360.0" y="782.0" font-size="12" font-weight="600" fill="#5a6b80" text-anchor="end">BLUE WAVE · WRO Future Engineers 2026</text>
+<rect x="40" y="150" width="270" height="150" rx="8" fill="#fdeeee" stroke="#c0392b" stroke-width="1.6"/>
+<path d="M40,180 v-22 a8,8 0 0 1 8,-8 h254 a8,8 0 0 1 8,8 v22 z" fill="#c0392b"/>
+<text x="52.0" y="170.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Battery pack</text>
+<text x="52.0" y="200.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">7.4 V nominal, 2200 mAh (16.3 Wh)</text>
+<text x="52.0" y="219.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">2 × 18650, protection board</text>
+<text x="52.0" y="238.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">6.40–8.25 V at run starts (mat)</text>
+<rect x="40" y="380" width="270" height="104" rx="8" fill="#f2f4f7" stroke="#6b7a8f" stroke-width="1.6"/>
+<path d="M40,410 v-22 a8,8 0 0 1 8,-8 h254 a8,8 0 0 1 8,8 v22 z" fill="#6b7a8f"/>
+<text x="52.0" y="400.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Charger 8.4 V 2 A</text>
+<text x="52.0" y="430.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">DC 5.5 × 2.5 lead</text>
+<text x="52.0" y="449.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">charge with POWER off</text>
+<rect x="370" y="175" width="220" height="100" rx="8" fill="#fdeeee" stroke="#c0392b" stroke-width="1.6"/>
+<path d="M370,205 v-22 a8,8 0 0 1 8,-8 h204 a8,8 0 0 1 8,8 v22 z" fill="#c0392b"/>
+<text x="382.0" y="195.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">POWER switch</text>
+<text x="382.0" y="225.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">16 mm latching push</text>
+<text x="382.0" y="244.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">the one power switch</text>
+<rect x="650" y="175" width="170" height="100" rx="8" fill="#fdeeee" stroke="#c0392b" stroke-width="1.6"/>
+<path d="M650,205 v-22 a8,8 0 0 1 8,-8 h154 a8,8 0 0 1 8,8 v22 z" fill="#c0392b"/>
+<text x="662.0" y="195.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">+J splice</text>
+<text x="662.0" y="225.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">one ground</text>
+<text x="662.0" y="244.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">splice −J</text>
+<rect x="890" y="110" width="250" height="112" rx="8" fill="#eaf2fc" stroke="#1560bd" stroke-width="1.6"/>
+<path d="M890,140 v-22 a8,8 0 0 1 8,-8 h234 a8,8 0 0 1 8,8 v22 z" fill="#1560bd"/>
+<text x="902.0" y="130.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">RRC Lite</text>
+<text x="902.0" y="160.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">servo, IMU, buzzer, keys</text>
+<text x="902.0" y="179.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">~0.5 W  EST</text>
+<rect x="890" y="370" width="250" height="112" rx="8" fill="#fff3e6" stroke="#d9730d" stroke-width="1.6"/>
+<path d="M890,400 v-22 a8,8 0 0 1 8,-8 h234 a8,8 0 0 1 8,8 v22 z" fill="#d9730d"/>
+<text x="902.0" y="390.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">MD13S motor driver</text>
+<text x="902.0" y="420.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">PWM + DIR from the Pi 5</text>
+<text x="902.0" y="439.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">13 A continuous rating</text>
+<rect x="1180" y="110" width="190" height="112" rx="8" fill="#eaf2fc" stroke="#1560bd" stroke-width="1.6"/>
+<path d="M1180,140 v-22 a8,8 0 0 1 8,-8 h174 a8,8 0 0 1 8,8 v22 z" fill="#1560bd"/>
+<text x="1192.0" y="130.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Raspberry Pi 5</text>
+<text x="1192.0" y="160.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">USB-C 5 V 5 A</text>
+<text x="1192.0" y="179.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">5–7 W, 10 W peak  EST</text>
+<rect x="890" y="252" width="250" height="92" rx="8" fill="#fff3e6" stroke="#d9730d" stroke-width="1.6"/>
+<path d="M890,282 v-22 a8,8 0 0 1 8,-8 h234 a8,8 0 0 1 8,8 v22 z" fill="#d9730d"/>
+<text x="902.0" y="272.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Steering servo</text>
+<text x="902.0" y="302.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">5 V from RRC port 3</text>
+<text x="902.0" y="321.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">~0.3 W  EST</text>
+<rect x="1180" y="252" width="190" height="92" rx="8" fill="#e7f6fd" stroke="#1b8fc4" stroke-width="1.6"/>
+<path d="M1180,282 v-22 a8,8 0 0 1 8,-8 h174 a8,8 0 0 1 8,8 v22 z" fill="#1b8fc4"/>
+<text x="1192.0" y="272.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">LD19 lidar</text>
+<text x="1192.0" y="302.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">Pi USB</text>
+<text x="1192.0" y="321.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">0.9 W  EST</text>
+<rect x="1180" y="370" width="190" height="92" rx="8" fill="#e7f6fd" stroke="#1b8fc4" stroke-width="1.6"/>
+<path d="M1180,400 v-22 a8,8 0 0 1 8,-8 h174 a8,8 0 0 1 8,8 v22 z" fill="#1b8fc4"/>
+<text x="1192.0" y="390.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">HP60C camera</text>
+<text x="1192.0" y="420.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">Pi USB</text>
+<text x="1192.0" y="439.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">1.5 W  EST</text>
+<rect x="890" y="520" width="250" height="92" rx="8" fill="#fff3e6" stroke="#d9730d" stroke-width="1.6"/>
+<path d="M890,550 v-22 a8,8 0 0 1 8,-8 h234 a8,8 0 0 1 8,8 v22 z" fill="#d9730d"/>
+<text x="902.0" y="540.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">130 motor</text>
+<text x="902.0" y="570.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">V+ / V− of the MD13S</text>
+<text x="902.0" y="589.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">1–3 W at 10–15 % duty  EST</text>
+<polyline points="310.0,225.0 370.0,225.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="340.0" y="217.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">7.4 V</text>
+<polyline points="590.0,225.0 650.0,225.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<polyline points="820.0,225.0 855.0,225.0 855.0,166.0 890.0,166.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="872.0" y="158.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">V+</text>
+<polyline points="855.0,225.0 855.0,426.0 890.0,426.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="872.0" y="418.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">V+</text>
+<polyline points="1140.0,166.0 1180.0,166.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="1160.0" y="158.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB-C</text>
+<polyline points="1015.0,222.0 1015.0,252.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="1030.0" y="240.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">5 V</text>
+<polyline points="1275.0,222.0 1275.0,252.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="1285.0" y="240.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB</text>
+<polyline points="1370.0,166.0 1385.0,166.0 1385.0,416.0 1370.0,416.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="1385.0" y="300.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB</text>
+<polyline points="1015.0,482.0 1015.0,520.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="1030.0" y="506.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">motor</text>
+<polyline points="175.0,380.0 175.0,300.0" fill="none" stroke="#6b7a8f" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#a6b7a8f)" stroke-linejoin="round"/>
+<text x="185.0" y="352.0" font-size="12" font-weight="600" fill="#6b7a8f" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">charge lead</text>
+<text x="40.0" y="660.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">Estimated draw (datasheets): about 1.5–2.2 A typical, 4–5 A peak; about 55–75 min on the 2200 mAh pack. Not measured on this car.</text>
+<text x="40.0" y="684.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">Practice rule (mat runbook): no timed run below 7.4 V. obs_v17 holds the drive at its 7.0 V behaviour whatever the pack voltage (battery hold).</text>
+<text x="40.0" y="708.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">The Pi 5 is fed from the RRC Lite's 5 V 5 A USB-C output; a 3 A cable cuts the Pi's USB ports to 0.6 A, so the PD cable is part of the build.</text>
 </svg>

@@ -1,135 +1,124 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="610" viewBox="0 0 1000 610" role="img" aria-labelledby="t d">
-  <title id="t">System overview of the Blue Wave car</title>
-  <desc id="d">Arduino Uno R3 in the centre. Left: three HC-SR04 sonars on trig and echo pins D13/D7, D4/D5 and D2/D9, a Pixy2 camera on SPI through the ICSP header, a BNO055 IMU on I2C A4/A5 and a start switch on A2. Right: battery 1, a 2S LiPo, feeding the Cytron MD13S, the MD13S on PWM D3 and DIR D8 driving the motor, and the steering servo on D10. Battery 2 goes through the main power switch to the Uno VIN; the power tree shows both batteries.</desc>
-  <style>
-    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; fill: #1f2328; }
-    .title { font-size: 20px; font-weight: 600; }
-    .name { font-size: 15px; font-weight: 600; }
-    .sub { font-size: 13px; fill: #57606a; }
-    .pin { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 13px; }
-    .lab { font-size: 12px; fill: #0969da; }
-    .labg { font-size: 12px; fill: #57606a; }
-    .box { fill: #f6f8fa; stroke: #8c959f; stroke-width: 1.5; }
-    .mcu { fill: #f6f8fa; stroke: #0969da; stroke-width: 2; }
-    .sig { stroke: #0969da; stroke-width: 2; fill: none; }
-    .pwr { stroke: #1f2328; stroke-width: 2.5; fill: none; }
-    .ha { fill: #0969da; }
-    .hp { fill: #1f2328; }
-  </style>
-
-  <rect x="1" y="1" width="998" height="608" rx="12" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
-
-  <text class="title" x="32" y="42">System overview</text>
-  <text class="sub" x="32" y="64">Signal pins from Open_Challenge.ino and Obstacle_Challenge.ino (the same in both). Arrowheads show signal direction.</text>
-
-  <!-- Left column: inputs -->
-  <rect class="box" x="32" y="92" width="240" height="56" rx="6"/>
-  <text class="name" x="48" y="115">HC-SR04 front</text>
-  <text class="sub" x="48" y="135">centred on the nose, 0°</text>
-
-  <rect class="box" x="32" y="164" width="240" height="56" rx="6"/>
-  <text class="name" x="48" y="187">HC-SR04 left</text>
-  <text class="sub" x="48" y="207">front-left corner, ≈40°</text>
-
-  <rect class="box" x="32" y="236" width="240" height="56" rx="6"/>
-  <text class="name" x="48" y="259">HC-SR04 right</text>
-  <text class="sub" x="48" y="279">front-right corner, ≈40°</text>
-
-  <rect class="box" x="32" y="308" width="240" height="56" rx="6"/>
-  <text class="name" x="48" y="331">Pixy2 camera</text>
-  <text class="sub" x="48" y="351">red and green pillars</text>
-
-  <rect class="box" x="32" y="380" width="240" height="56" rx="6"/>
-  <text class="name" x="48" y="403">BNO055 IMU</text>
-  <text class="sub" x="48" y="423">heading, I2C address 0x28</text>
-
-  <rect class="box" x="32" y="452" width="240" height="56" rx="6"/>
-  <text class="name" x="48" y="475">Start switch</text>
-  <text class="sub" x="48" y="495">other side to GND</text>
-
-  <!-- Left connectors -->
-  <line class="sig" x1="283" y1="120" x2="419" y2="120"/>
-  <polygon class="ha" points="273,120 283,115 283,125"/>
-  <polygon class="ha" points="429,120 419,115 419,125"/>
-  <text class="lab" x="351" y="112" text-anchor="middle">trig / echo</text>
-
-  <line class="sig" x1="283" y1="192" x2="419" y2="192"/>
-  <polygon class="ha" points="273,192 283,187 283,197"/>
-  <polygon class="ha" points="429,192 419,187 419,197"/>
-  <text class="lab" x="351" y="184" text-anchor="middle">trig / echo</text>
-
-  <line class="sig" x1="283" y1="264" x2="419" y2="264"/>
-  <polygon class="ha" points="273,264 283,259 283,269"/>
-  <polygon class="ha" points="429,264 419,259 419,269"/>
-  <text class="lab" x="351" y="256" text-anchor="middle">trig / echo</text>
-
-  <line class="sig" x1="283" y1="336" x2="419" y2="336"/>
-  <polygon class="ha" points="273,336 283,331 283,341"/>
-  <polygon class="ha" points="429,336 419,331 419,341"/>
-  <text class="lab" x="351" y="328" text-anchor="middle">SPI</text>
-
-  <line class="sig" x1="283" y1="408" x2="419" y2="408"/>
-  <polygon class="ha" points="273,408 283,403 283,413"/>
-  <polygon class="ha" points="429,408 419,403 419,413"/>
-  <text class="lab" x="351" y="400" text-anchor="middle">I2C</text>
-
-  <line class="sig" x1="272" y1="480" x2="419" y2="480"/>
-  <polygon class="ha" points="429,480 419,475 419,485"/>
-  <text class="lab" x="351" y="472" text-anchor="middle">digital input</text>
-
-  <!-- Controller -->
-  <rect class="mcu" x="430" y="92" width="220" height="416" rx="8"/>
-  <text class="pin" x="442" y="124.5">D13 / D7</text>
-  <text class="pin" x="442" y="196.5">D4 / D5</text>
-  <text class="pin" x="442" y="268.5">D2 / D9</text>
-  <text class="pin" x="442" y="340.5">ICSP</text>
-  <text class="pin" x="442" y="412.5">A4 / A5</text>
-  <text class="pin" x="442" y="484.5">A2</text>
-  <text class="name" x="540" y="296" text-anchor="middle" style="font-size:16px">Arduino Uno R3</text>
-  <text class="sub" x="540" y="316" text-anchor="middle">ATmega328P, 16 MHz</text>
-  <text class="pin" x="638" y="244.5" text-anchor="end">D3 / D8</text>
-  <text class="pin" x="638" y="456.5" text-anchor="end">D10</text>
-
-  <!-- Right column: power and outputs -->
-  <rect class="box" x="740" y="92" width="228" height="56" rx="6"/>
-  <text class="name" x="756" y="115">Battery 1, 2S LiPo</text>
-  <text class="sub" x="756" y="135">7.4 V nominal, motor only</text>
-
-  <rect class="box" x="740" y="212" width="228" height="56" rx="6"/>
-  <text class="name" x="756" y="235">Cytron MD13S</text>
-  <text class="sub" x="756" y="255">motor driver, PWM + DIR</text>
-
-  <rect class="box" x="740" y="308" width="228" height="56" rx="6"/>
-  <text class="name" x="756" y="331">Drive motor</text>
-  <text class="sub" x="756" y="351">brushed DC</text>
-
-  <rect class="box" x="740" y="424" width="228" height="56" rx="6"/>
-  <text class="name" x="756" y="447">Steering servo</text>
-  <text class="sub" x="756" y="467">90 = straight ahead</text>
-
-  <!-- Right connectors -->
-  <line class="sig" x1="650" y1="240" x2="729" y2="240"/>
-  <polygon class="ha" points="739,240 729,235 729,245"/>
-  <text class="lab" x="695" y="232" text-anchor="middle">PWM, DIR</text>
-
-  <line class="sig" x1="650" y1="452" x2="729" y2="452"/>
-  <polygon class="ha" points="739,452 729,447 729,457"/>
-  <text class="lab" x="695" y="444" text-anchor="middle">servo pulse</text>
-
-  <line class="pwr" x1="854" y1="148" x2="854" y2="201"/>
-  <polygon class="hp" points="854,211 849,201 859,201"/>
-  <text class="labg" x="866" y="184" style="fill:#1f2328">7.4 V</text>
-
-  <line class="pwr" x1="854" y1="268" x2="854" y2="297"/>
-  <polygon class="hp" points="854,307 849,297 859,297"/>
-  <text class="labg" x="866" y="292" style="fill:#1f2328">motor leads</text>
-
-  <!-- Notes and legend -->
-  <text class="sub" x="32" y="546">USB on the Uno: upload from the Arduino IDE and serial debug at 115200 baud on D0/D1. Free pins: A0, A1, A3, D6.</text>
-  <line class="sig" x1="32" y1="576" x2="62" y2="576"/>
-  <text class="sub" x="70" y="580">signal</text>
-  <line class="pwr" x1="130" y1="576" x2="160" y2="576"/>
-  <text class="sub" x="168" y="580">power</text>
-  <text class="sub" x="240" y="580">Battery 2 feeds the Uno VIN through the main power switch: see power_tree.svg.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<title>System overview: BW-2 (WLtoys 1:28 chassis + Raspberry Pi 5)</title>
+<defs><marker id="a1560bd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1560bd"/></marker><marker id="ac0392b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/></marker><marker id="ad9730d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d9730d"/></marker><marker id="a1b8fc4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1b8fc4"/></marker><marker id="a6b7a8f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b7a8f"/></marker><marker id="a0b1b2e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0b1b2e"/></marker><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#c0392b" stroke-width="2" opacity=".55"/></pattern></defs>
+<rect width="1400" height="900" fill="#ffffff"/>
+<text x="40.0" y="46.0" font-size="24" font-weight="700" fill="#0b1b2e" text-anchor="start">System overview: BW-2 (WLtoys 1:28 chassis + Raspberry Pi 5)</text>
+<text x="40.0" y="72.0" font-size="13.5" font-weight="400" fill="#5a6b80" text-anchor="start">What runs where and how the parts talk. Sources: mentorpi/bluewave/*.py, mentorpi/profiles/wltoys_bw2.json, mentorpi/WIRING.md, run logs of 2026-10-01.</text>
+<text x="1360.0" y="882.0" font-size="12" font-weight="600" fill="#5a6b80" text-anchor="end">BLUE WAVE · WRO Future Engineers 2026</text>
+<text x="40.0" y="112.0" font-size="12" font-weight="700" fill="#5a6b80" text-anchor="start">SENSORS AND INPUT</text>
+<text x="420.0" y="112.0" font-size="12" font-weight="700" fill="#5a6b80" text-anchor="start">COMPUTE</text>
+<text x="1090.0" y="112.0" font-size="12" font-weight="700" fill="#5a6b80" text-anchor="start">ACTUATORS AND DRIVE</text>
+<rect x="40" y="126" width="300" height="128" rx="8" fill="#e7f6fd" stroke="#1b8fc4" stroke-width="1.6"/>
+<path d="M40,156 v-22 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v22 z" fill="#1b8fc4"/>
+<text x="52.0" y="146.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">LD19 lidar</text>
+<text x="52.0" y="176.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">360° scan, 10 Hz (598–599 rpm), 1° bins</text>
+<text x="52.0" y="195.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">scan plane 50 mm above the mat</text>
+<text x="52.0" y="214.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">USB via CH340, 230400 baud</text>
+<rect x="40" y="274" width="300" height="128" rx="8" fill="#e7f6fd" stroke="#1b8fc4" stroke-width="1.6"/>
+<path d="M40,304 v-22 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v22 z" fill="#1b8fc4"/>
+<text x="52.0" y="294.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">HP60C RGB-D camera</text>
+<text x="52.0" y="324.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">RGB 640 × 480 at 14 fps</text>
+<text x="52.0" y="343.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">pitch 19.6° measured on the mat</text>
+<text x="52.0" y="362.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">USB; depth not used for ranging</text>
+<rect x="40" y="422" width="300" height="104" rx="8" fill="#e7f6fd" stroke="#1b8fc4" stroke-width="1.6"/>
+<path d="M40,452 v-22 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v22 z" fill="#1b8fc4"/>
+<text x="52.0" y="442.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">START button</text>
+<text x="52.0" y="472.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">12 mm push button</text>
+<text x="52.0" y="491.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">GPIO17 (pin 11), internal pull-up</text>
+<rect x="420" y="126" width="550" height="420" rx="8" fill="#eaf2fc" stroke="#1560bd" stroke-width="1.6"/>
+<path d="M420,156 v-22 a8,8 0 0 1 8,-8 h534 a8,8 0 0 1 8,8 v22 z" fill="#1560bd"/>
+<text x="432.0" y="146.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Raspberry Pi 5 (Active Cooler)</text>
+<rect x="436" y="166" width="518" height="254" rx="8" fill="#ffffff" stroke="#7fa7d9" stroke-width="1.6"/>
+<text x="448.0" y="188.0" font-size="14" font-weight="700" fill="#1560bd" text-anchor="start">bluewave agent (Python, own process)</text>
+<text x="450.0" y="216.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">lidar.py</text>
+<text x="450.0" y="231.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">LD19 driver</text>
+<text x="708.0" y="216.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">lidar_perc.py</text>
+<text x="708.0" y="231.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">walls, signs, lot from one scan</text>
+<text x="450.0" y="249.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">loc.py + ICP</text>
+<text x="450.0" y="264.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">pose fitted to the field walls</text>
+<text x="708.0" y="249.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">speed.py</text>
+<text x="708.0" y="264.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">speed without an encoder</text>
+<text x="450.0" y="282.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">camera.py, vision.py</text>
+<text x="450.0" y="297.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">frames and colour masks</text>
+<text x="708.0" y="282.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">seats.py</text>
+<text x="708.0" y="297.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">24 legal sign seats</text>
+<text x="450.0" y="315.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">programs/</text>
+<text x="450.0" y="330.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">obs_v17.py, BEST_OPEN_14s.py</text>
+<text x="708.0" y="315.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">park.py</text>
+<text x="708.0" y="330.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">parallel-park legs</text>
+<text x="450.0" y="348.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">shield.py</text>
+<text x="450.0" y="363.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">lidar check of every drive command</text>
+<text x="708.0" y="348.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">motor.py</text>
+<text x="708.0" y="363.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">MD13S PWM / DIR, guardian</text>
+<text x="450.0" y="381.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">rrc.py</text>
+<text x="450.0" y="396.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">RRC Lite serial link</text>
+<text x="708.0" y="381.0" font-size="12.5" font-weight="700" fill="#1560bd" text-anchor="start">blackbox.py</text>
+<text x="708.0" y="396.0" font-size="11.5" font-weight="400" fill="#0b1b2e" text-anchor="start">50 Hz IMU into the run file</text>
+<rect x="436" y="432" width="254" height="100" rx="8" fill="#ffffff" stroke="#7fa7d9" stroke-width="1.6"/>
+<text x="448.0" y="454.0" font-size="13.5" font-weight="700" fill="#1560bd" text-anchor="start">Docker: MentorPi (ROS 2)</text>
+<text x="448.0" y="476.0" font-size="12" font-weight="400" fill="#0b1b2e" text-anchor="start">HP60C vendor driver</text>
+<text x="448.0" y="494.0" font-size="12" font-weight="400" fill="#0b1b2e" text-anchor="start">RGB stream to the agent</text>
+<rect x="700" y="432" width="254" height="100" rx="8" fill="#ffffff" stroke="#7fa7d9" stroke-width="1.6"/>
+<text x="712.0" y="454.0" font-size="13.5" font-weight="700" fill="#1560bd" text-anchor="start">race/race_main.py</text>
+<text x="712.0" y="476.0" font-size="12" font-weight="400" fill="#0b1b2e" text-anchor="start">radios off, plans computed,</text>
+<text x="712.0" y="494.0" font-size="12" font-weight="400" fill="#0b1b2e" text-anchor="start">waits for START, runs the program</text>
+<rect x="420" y="598" width="550" height="130" rx="8" fill="#eaf2fc" stroke="#1560bd" stroke-width="1.6"/>
+<path d="M420,628 v-22 a8,8 0 0 1 8,-8 h534 a8,8 0 0 1 8,8 v22 z" fill="#1560bd"/>
+<text x="432.0" y="618.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Hiwonder RRC Lite (STM32F407)</text>
+<text x="432.0" y="648.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">servo PWM port 3  ·  6-axis IMU at 50 Hz  ·  buzzer  ·  keys</text>
+<text x="432.0" y="667.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">USB serial to the Pi 5 at 1,000,000 baud</text>
+<text x="432.0" y="686.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">powers the Pi 5 over USB-C, 5 V 5 A</text>
+<rect x="1090" y="126" width="280" height="128" rx="8" fill="#fff3e6" stroke="#d9730d" stroke-width="1.6"/>
+<path d="M1090,156 v-22 a8,8 0 0 1 8,-8 h264 a8,8 0 0 1 8,8 v22 z" fill="#d9730d"/>
+<text x="1102.0" y="146.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Steering servo</text>
+<text x="1102.0" y="176.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">WLtoys micro servo, RRC port 3</text>
+<text x="1102.0" y="195.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">1441 µs centre, 22.4 µs/deg</text>
+<text x="1102.0" y="214.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">true lock 30° left / 22° right</text>
+<rect x="1090" y="274" width="280" height="128" rx="8" fill="#fff3e6" stroke="#d9730d" stroke-width="1.6"/>
+<path d="M1090,304 v-22 a8,8 0 0 1 8,-8 h264 a8,8 0 0 1 8,8 v22 z" fill="#d9730d"/>
+<text x="1102.0" y="294.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Cytron MD13S driver</text>
+<text x="1102.0" y="324.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">6–30 V, 13 A</text>
+<text x="1102.0" y="343.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">PWM GPIO12 (490 Hz), DIR GPIO16</text>
+<text x="1102.0" y="362.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">PWM low = brake</text>
+<rect x="1090" y="422" width="280" height="124" rx="8" fill="#fff3e6" stroke="#d9730d" stroke-width="1.6"/>
+<path d="M1090,452 v-22 a8,8 0 0 1 8,-8 h264 a8,8 0 0 1 8,8 v22 z" fill="#d9730d"/>
+<text x="1102.0" y="442.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">130 motor and drivetrain</text>
+<text x="1102.0" y="472.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">one brushed 130 motor</text>
+<text x="1102.0" y="491.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">propshaft, front + rear differentials</text>
+<text x="1102.0" y="510.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">4 wheels, 27 mm</text>
+<rect x="1090" y="598" width="280" height="130" rx="8" fill="#fdeeee" stroke="#c0392b" stroke-width="1.6"/>
+<path d="M1090,628 v-22 a8,8 0 0 1 8,-8 h264 a8,8 0 0 1 8,8 v22 z" fill="#c0392b"/>
+<text x="1102.0" y="618.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Battery and POWER switch</text>
+<text x="1102.0" y="648.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">7.4 V 2200 mAh Li-ion pack</text>
+<text x="1102.0" y="667.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">16 mm latching POWER switch</text>
+<text x="1102.0" y="686.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">feeds the RRC Lite and the MD13S</text>
+<rect x="40" y="598" width="300" height="130" rx="8" fill="#f2f4f7" stroke="#6b7a8f" stroke-width="1.6"/>
+<path d="M40,628 v-22 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v22 z" fill="#6b7a8f"/>
+<text x="52.0" y="618.5" font-size="15" font-weight="700" fill="#ffffff" text-anchor="start">Laptop (development only)</text>
+<text x="52.0" y="648.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">deploy, run, pull logs: tools/bw.py</text>
+<text x="52.0" y="667.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">simulator: tools/sim_run.py</text>
+<text x="52.0" y="686.0" font-size="13" font-weight="400" fill="#0b1b2e" text-anchor="start">not connected in race mode</text>
+<polyline points="340.0,190.0 420.0,190.0" fill="none" stroke="#1b8fc4" stroke-width="2.2" marker-end="url(#a1b8fc4)" stroke-linejoin="round"/>
+<text x="380.0" y="182.0" font-size="12" font-weight="600" fill="#1b8fc4" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB</text>
+<polyline points="340.0,338.0 395.0,338.0 395.0,460.0 436.0,460.0" fill="none" stroke="#1b8fc4" stroke-width="2.2" marker-end="url(#a1b8fc4)" stroke-linejoin="round"/>
+<text x="366.0" y="330.0" font-size="12" font-weight="600" fill="#1b8fc4" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB</text>
+<polyline points="340.0,500.0 420.0,500.0" fill="none" stroke="#1b8fc4" stroke-width="2.2" marker-end="url(#a1b8fc4)" stroke-linejoin="round"/>
+<text x="378.0" y="492.0" font-size="12" font-weight="600" fill="#1b8fc4" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">GPIO17</text>
+<polyline points="620.0,546.0 620.0,598.0" fill="none" stroke="#1560bd" stroke-width="2.2" marker-end="url(#a1560bd)" marker-start="url(#a1560bd)" stroke-linejoin="round"/>
+<text x="630.0" y="576.0" font-size="12" font-weight="600" fill="#1560bd" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB serial 1 Mbaud</text>
+<polyline points="820.0,598.0 820.0,546.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="830.0" y="576.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">USB-C 5 V 5 A</text>
+<polyline points="970.0,640.0 1010.0,640.0 1010.0,190.0 1090.0,190.0" fill="none" stroke="#d9730d" stroke-width="2.2" marker-end="url(#ad9730d)" stroke-linejoin="round"/>
+<text x="1050.0" y="182.0" font-size="12" font-weight="600" fill="#d9730d" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">servo PWM</text>
+<polyline points="970.0,338.0 1090.0,338.0" fill="none" stroke="#d9730d" stroke-width="2.2" marker-end="url(#ad9730d)" stroke-linejoin="round"/>
+<text x="1050.0" y="330.0" font-size="12" font-weight="600" fill="#d9730d" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">PWM, DIR</text>
+<polyline points="1230.0,402.0 1230.0,422.0" fill="none" stroke="#d9730d" stroke-width="2.2" marker-end="url(#ad9730d)" stroke-linejoin="round"/>
+<text x="1240.0" y="414.0" font-size="12" font-weight="600" fill="#d9730d" text-anchor="start" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">motor</text>
+<polyline points="1090.0,690.0 970.0,690.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<text x="1030.0" y="682.0" font-size="12" font-weight="600" fill="#c0392b" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">7.4 V</text>
+<polyline points="1370.0,650.0 1388.0,650.0 1388.0,360.0 1372.0,360.0" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#ac0392b)" stroke-linejoin="round"/>
+<polyline points="340.0,640.0 372.0,640.0 372.0,530.0 420.0,530.0" fill="none" stroke="#6b7a8f" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#a6b7a8f)" marker-start="url(#a6b7a8f)" stroke-linejoin="round"/>
+<text x="372.0" y="590.0" font-size="12" font-weight="600" fill="#6b7a8f" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">Wi-Fi, dev only</text>
+<text x="40.0" y="790.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">Race mode (race/race_main.py) blocks the radios before a run (rule 11.10) and starts on the START button. The 2026-10-01 practice runs were started from the laptop.</text>
+<text x="40.0" y="812.0" font-size="13" font-weight="400" fill="#5a6b80" text-anchor="start">No wheel encoder on this car: speed comes from the lidar pose and a duty-to-speed line fitted on the mat (v = 5.276 × (duty − 0.1012) m/s).</text>
 </svg>
