@@ -173,15 +173,11 @@ Step-by-step commands, the bench check and the simulator: [Build, test and repro
 
 <p align="center"><img src="docs/images/team_cards.png" width="900" alt="BLUE WAVE team: Fawaz Alasousi and Dawood AlEneezi, team members; Shinu Mathew, coach"></p>
 
-| Name | Role |
-|---|---|
-| Fawaz Alasousi | team member |
-| Dawood AlEneezi | team member |
-| Shinu Mathew | coach |
-
 <p align="center">
-  <img src="docs/team_photos/team_action_1.jpg" height="240" alt="Work session at the table with laptops">
-  <img src="docs/team_photos/team_action_2.jpg" height="240" alt="Work session at the practice field">
+  <img src="docs/team_photos/team_action_1.jpg" height="260" alt="Work session: the car on the table with laptops">
+  <img src="docs/team_photos/team_action_2.jpg" height="260" alt="Work session: testing the car at the field">
+  <img src="docs/team_photos/team_action_3.jpg" height="260" alt="Work session: tuning the car on the mat">
+  <img src="docs/team_photos/team_action_4.jpg" height="260" alt="Work session: wiring the car at the bench">
 </p>
 
 <p align="center"><sub>BLUE WAVE · Kuwait · WRO Future Engineers 2026</sub></p>
